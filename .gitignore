@@ -2,13 +2,13 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
-/[Ll]ibrary/
-/[Tt]emp/
-/[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
-/[Ll]ogs/
-/[Mm]emoryCaptures/
+*[Ll]ibrary/
+/Traffic Way/[Tt]emp/
+/Traffic Way/[Oo]bj/
+/Traffic Way/[Bb]uild/
+/Traffic Way/[Bb]uilds/
+/Traffic Way/[Ll]ogs/
+/Traffic Way/[Mm]emoryCaptures/
 
 # Never ignore Asset meta data
 !/[Aa]ssets/**/*.meta
@@ -47,9 +47,6 @@ ExportedObj/
 *.pidb.meta
 *.pdb.meta
 *.mdb.meta
-/Library/
-/Temp/
-/Logs/
 Assembly-CSharp.csproj
 
 
