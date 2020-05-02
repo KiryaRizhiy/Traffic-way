@@ -6,10 +6,13 @@ public static class Settings
 {
     public static string googlePlayId = "3577053";
     public static bool testMode = true;
-    public static float carSpeed = 0.02f;
+    public const float carSpeed = 0.2f;
+    public const int levelReward = 4;
+    public const int extraRewardMultiplyer = 4;
     public static string savePath 
     { get { return Application.persistentDataPath + "/trafficWaySaves/"; } }
     public static string saveFile 
     { get { return savePath + "Save.svg"; } }
 }
 public enum PlacementType { video, rewardedVideo, banner }
+public enum Tags {Car}

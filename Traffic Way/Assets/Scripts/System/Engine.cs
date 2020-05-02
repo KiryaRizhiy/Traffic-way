@@ -149,7 +149,12 @@ public static class Engine
     }
     public static void SwitchPause()
     {
-        currentSession.paused = !currentSession.paused;
+        if (currentSession.state != GameSessionState.Lost && currentSession.state != GameSessionState.Won)
+            currentSession.paused = !currentSession.paused;
+    }
+    public static void AddCoins(int count)
+    {
+        meta.coinsCount += count;
     }
     internal static void RestartLevel()
     {
@@ -158,6 +163,10 @@ public static class Engine
     }
     internal static void SwitchLevel()
     {
+        if (currentSession.ExtraRewardReceoved)
+            AddCoins(Settings.levelReward * Settings.extraRewardMultiplyer);
+        else
+            AddCoins(Settings.levelReward);
         int nextLevelBuildIndex;
         if (meta.lastHandcraftPassedLevel < handcraftLevels)
             nextLevelBuildIndex = meta.lastHandcraftPassedLevel + 2;
@@ -226,6 +235,7 @@ public static class Engine
         }
         public void FinishLineReachHandler()
         {
+            Engine.SwitchPause();
             state = GameSessionState.Won;
         }
         public void OnCrashHappened()
@@ -325,4 +335,4 @@ public static class Engine
         }
     }
 }
-public enum GameSessionState { InProgress,Paused, Passed, Won, Lost }
+public enum GameSessionState { InProgress,Passed, Won, Lost }
