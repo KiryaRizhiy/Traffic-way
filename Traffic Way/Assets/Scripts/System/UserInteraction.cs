@@ -2,16 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Advertisements;
+using UnityEngine.EventSystems;
 
 public class UserInteraction : MonoBehaviour
 {
-
-    // Update is called once per frame
-    void Update()
+    public static bool gas
     {
-        
+        get;
+        private set;
     }
 
+    void Update()
+    {
+
+        gas = false;
+        if (Engine.paused)
+            return;
+        int pointerId;
+        if (Input.touchCount > 0)
+            pointerId = Input.touches[0].fingerId;
+        else
+            pointerId = -1;
+        Logger.UpdateContent(UILogDataType.Controls, "Pointer " + EventSystem.current.IsPointerOverGameObject(pointerId));
+        if (EventSystem.current.IsPointerOverGameObject(pointerId) && !GasButton.pressed)
+            return;
+        if (Input.GetMouseButton(0) || Input.touchCount == 1 || GasButton.pressed)
+            gas = true;
+        else
+            gas = false;
+    }
     public void NextLevel()
     {
         Engine.LevelDone();
@@ -19,6 +38,10 @@ public class UserInteraction : MonoBehaviour
     public void Restart()
     {
         Engine.LevelFailed();
+    }
+    public void SwitchPause()
+    {
+        Engine.SwitchPause();
     }
     public void ShowRewardedVideo()
     {

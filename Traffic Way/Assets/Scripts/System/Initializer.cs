@@ -11,5 +11,6 @@ public class Initializer : MonoBehaviour
         GameAnalytics.Initialize();
         Advertisement.Initialize(Settings.googlePlayId, Settings.testMode);
         Engine.Load();
+        Engine.Events.Initialized();
     }
 }

@@ -34,6 +34,16 @@ public static class Engine
     { get { return meta.passedLevels + 1; } }
     public static GameSessionState sessionState
     { get { return currentSession.state; } }
+    public static bool paused
+    {
+        get
+        {
+            if (currentSession != null) 
+                return currentSession.paused; 
+            else
+                return false;
+        }
+    }
     internal static GameData meta;
     private static int handcraftLevels
     {
@@ -137,6 +147,10 @@ public static class Engine
             Save();
         Application.Quit();
     }
+    public static void SwitchPause()
+    {
+        currentSession.paused = !currentSession.paused;
+    }
     internal static void RestartLevel()
     {
         Save();
@@ -193,11 +207,13 @@ public static class Engine
         }
         private GameSessionState _state;
         public bool ExtraRewardReceoved;
+        public bool paused;
 
         public LevelPlayingSession(Scene lvl)
         {
             level = lvl;
-            state = GameSessionState.inProgress;
+            state = GameSessionState.InProgress;
+            paused = false;
             Advertisement.AddListener(this);
             Engine.Events.finishLineReached += FinishLineReachHandler;
             Engine.Events.crashHappened += OnCrashHappened;
@@ -274,6 +290,7 @@ public static class Engine
         public static event Fact finishLineReached;
         public static event Fact crashHappened;
         public static event Fact extraRewardReceived;
+        public static event Fact initialized;
         public static event GameStateHandler gameSessionStateChanged;
 
         public static void GameSessionStateChanged(GameSessionState state)
@@ -300,6 +317,12 @@ public static class Engine
             if (crashHappened != null)
                 crashHappened();
         }
+        public static void Initialized()
+        {
+            Debug.Log("Game engine initialized");
+            if (initialized != null)
+                initialized();
+        }
     }
 }
-public enum GameSessionState { inProgress, Passed, Won, Lost }
+public enum GameSessionState { InProgress,Paused, Passed, Won, Lost }
