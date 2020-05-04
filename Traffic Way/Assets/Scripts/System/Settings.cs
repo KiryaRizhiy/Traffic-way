@@ -36,7 +36,8 @@ public static class Settings
     public static bool testMode = true;
     public const float carSpeed = 0.2f;
     public const int levelReward = 4;
-    public const int extraRewardMultiplyer = 4;
+    public const int extraRewardMultiplyer = 3;
+    public const string privacyPolicyLink = "https://justforward.co/privacy-policy/";
     public static string savePath 
     { get { return Application.persistentDataPath + "/trafficWaySaves/"; } }
     public static string saveFile 

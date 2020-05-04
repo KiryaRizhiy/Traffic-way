@@ -1,21 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Advertisements;
+//using UnityEngine.Advertisements; UNCOMMENT TO IMPLEMENT UNITY ADS
 using UnityEngine.UI;
 
-public class UIObjectActivator : MonoBehaviour, IUnityAdsListener
+public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO IMPLEMENT UNITY ADS */
 {
-    public enum ActivatorTargetEvent {adsVideoReady,adsRewardedVideoReady,extraRewardReceived,gameWon,gameLost,gamePassed}
+    public enum ActivatorTargetEvent {
+        adsVideoReady, adsInterstitialReady, adsRewardedVideoReady,
+        adsVideoNotReady, adsInterstitialNotReady, adsRewardedVideoNotReady,
+        adsVideoFinished, adsInterstitialFinished, adsRewardedVideoFinished,
+        adsVideoFailed, adsInterstitialFailed, adsRewardedVideoFailed,
+        extraRewardReceived, 
+        gameWon, gameLost, gamePassed,gamePaused,gameUnpaused }
+    public enum ActivatorTargetConditions {none, gameInProgress, gameWon, gameLost, gamePassed }
     public enum ActivatorActionType { activate, deactivate }
 
     public List<ActivatorTargetEvent> ActivationEventList;
+    public List<ActivatorTargetConditions> ActivationConditions;
     public List<ActivatorTargetEvent> DeactivationEventList;
+    public List<ActivatorTargetConditions> DeactivationConditions;
     public GameObject TargetObject;
     // Start is called before the first frame update
     void Start()
     {
-        //Debug.Log(string.Format("{0}'s activator, linked to {1} initializes", TargetObject.name, gameObject.name));
+        //Validation
         if (TargetObject == null)
         {
             Debug.LogError("Target object not set on " + gameObject.name + "'s activator");
@@ -24,15 +33,30 @@ public class UIObjectActivator : MonoBehaviour, IUnityAdsListener
         {
             Debug.LogError(TargetObject.name + "'s activator has no action events");
         }
-        Advertisement.AddListener(this);
+
+        //Subscription
+        //Advertisement.AddListener(this); UNCOMMENT TO IMPLEMENT UNITY ADS
         Engine.Events.gameSessionStateChanged += OnSessionStateChanged;
         Engine.Events.extraRewardReceived += OnExtraRewardReceived;
+        Engine.Events.adLoaded += OnAdLoaded;
+        Engine.Events.adFinished += OnAdFinished;
+        Engine.Events.adFailed += OnAdFailed;
+        Engine.Events.adNotReady += OnAdNotReady;
+        Engine.Events.paused += OnPause;
+        Engine.Events.unpaused += OnUnpause;
     }
     void OnDestroy()
     {
-        Advertisement.RemoveListener(this);
+        //Unsubscription
+        //Advertisement.RemoveListener(this); UNCOMMENT TO IMPLEMENT UNITY ADS
         Engine.Events.gameSessionStateChanged -= OnSessionStateChanged;
         Engine.Events.extraRewardReceived -= OnExtraRewardReceived;
+        Engine.Events.adLoaded -= OnAdLoaded;
+        Engine.Events.adFinished -= OnAdFinished;
+        Engine.Events.adFailed -= OnAdFailed;
+        Engine.Events.adNotReady -= OnAdNotReady;
+        Engine.Events.paused -= OnPause;
+        Engine.Events.unpaused -= OnUnpause;
     }
 
     //UNCOMMENT TO IMPLEMENT UNITY ADS
@@ -64,7 +88,135 @@ public class UIObjectActivator : MonoBehaviour, IUnityAdsListener
     //}
 
 
+    public void OnAdLoaded(PlacementType type)
+    {
+        if (type == PlacementType.video)
+        {
+            if (ActivationEventList.Contains(ActivatorTargetEvent.adsVideoReady))
+                PerformAction(ActivatorActionType.activate);
+            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsVideoReady))
+                PerformAction(ActivatorActionType.deactivate);
+        }
+        if (type == PlacementType.rewardedVideo)
+        {
+            if (ActivationEventList.Contains(ActivatorTargetEvent.adsRewardedVideoReady))
+                PerformAction(ActivatorActionType.activate);
+            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsRewardedVideoReady))
+                PerformAction(ActivatorActionType.deactivate);
+        }
+        if (type == PlacementType.interstitial)
+        {
+            if (ActivationEventList.Contains(ActivatorTargetEvent.adsInterstitialReady))
+                PerformAction(ActivatorActionType.activate);
+            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsInterstitialReady))
+                PerformAction(ActivatorActionType.deactivate);
+        }
+    }
+    public void OnAdNotReady(PlacementType type)
+    {
+        if (type == PlacementType.video)
+        {
+            if (ActivationEventList.Contains(ActivatorTargetEvent.adsVideoNotReady))
+                PerformAction(ActivatorActionType.activate);
+            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsVideoNotReady))
+                PerformAction(ActivatorActionType.deactivate);
+        }
+        if (type == PlacementType.rewardedVideo)
+        {
+            if (ActivationEventList.Contains(ActivatorTargetEvent.adsRewardedVideoNotReady))
+                PerformAction(ActivatorActionType.activate);
+            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsRewardedVideoNotReady))
+                PerformAction(ActivatorActionType.deactivate);
+        }
+        if (type == PlacementType.interstitial)
+        {
+            if (ActivationEventList.Contains(ActivatorTargetEvent.adsInterstitialNotReady))
+                PerformAction(ActivatorActionType.activate);
+            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsInterstitialNotReady))
+                PerformAction(ActivatorActionType.deactivate);
+        }
+    }
+    public void OnAdFinished(PlacementType type)
+    {
+        if (type == PlacementType.video)
+        {
+            if (ActivationEventList.Contains(ActivatorTargetEvent.adsVideoFinished))
+                PerformAction(ActivatorActionType.activate);
+            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsVideoFinished))
+                PerformAction(ActivatorActionType.deactivate);
+        }
+        if (type == PlacementType.rewardedVideo)
+        {
+            if (ActivationEventList.Contains(ActivatorTargetEvent.adsRewardedVideoFinished))
+                PerformAction(ActivatorActionType.activate);
+            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsRewardedVideoFinished))
+                PerformAction(ActivatorActionType.deactivate);
+        }
+        if (type == PlacementType.interstitial)
+        {
+            if (ActivationEventList.Contains(ActivatorTargetEvent.adsInterstitialFinished))
+                PerformAction(ActivatorActionType.activate);
+            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsInterstitialFinished))
+                PerformAction(ActivatorActionType.deactivate);
+        }
+    }
+    public void OnAdFailed(PlacementType type)
+    {
+        if (type == PlacementType.video)
+        {
+            if (ActivationEventList.Contains(ActivatorTargetEvent.adsVideoFailed))
+                PerformAction(ActivatorActionType.activate);
+            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsVideoFailed))
+                PerformAction(ActivatorActionType.deactivate);
+        }
+        if (type == PlacementType.rewardedVideo)
+        {
+            if (ActivationEventList.Contains(ActivatorTargetEvent.adsRewardedVideoFailed))
+                PerformAction(ActivatorActionType.activate);
+            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsRewardedVideoFailed))
+                PerformAction(ActivatorActionType.deactivate);
+        }
+        if (type == PlacementType.interstitial)
+        {
+            if (ActivationEventList.Contains(ActivatorTargetEvent.adsInterstitialFailed))
+                PerformAction(ActivatorActionType.activate);
+            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsInterstitialFailed))
+                PerformAction(ActivatorActionType.deactivate);
+        }
+    }
+    //    public static void AdSkipped(PlacementType type)
+    //    {
+    //        Debug.Log(type + " placement skipped");
+    //        if (adSkipped != null)
+    //            adSkipped(type);
+    //    }
+    //    public static void AdOpened(PlacementType type)
+    //    {
+    //        Debug.Log(type + " placement clicked");
+    //        if (adOpened != null)
+    //            adOpened(type);
+    //    }
+    //    public static void AdUserLeave(PlacementType type)
+    //    {
+    //        Debug.Log("User left the application watching" + type );
+    //        if (adUserLeave != null)
+    //            adUserLeave(type);
+    //    }
 
+    public void OnPause()
+    {
+        if (ActivationEventList.Contains(ActivatorTargetEvent.gamePaused))
+            PerformAction(ActivatorActionType.activate);
+        if (DeactivationEventList.Contains(ActivatorTargetEvent.gamePaused))
+            PerformAction(ActivatorActionType.deactivate);
+    }
+    public void OnUnpause()
+    {
+        if (ActivationEventList.Contains(ActivatorTargetEvent.gameUnpaused))
+            PerformAction(ActivatorActionType.activate);
+        if (DeactivationEventList.Contains(ActivatorTargetEvent.gameUnpaused))
+            PerformAction(ActivatorActionType.deactivate);
+    }
     public void OnSessionStateChanged(GameSessionState state)
     {
         if (state == GameSessionState.Won)
@@ -99,8 +251,34 @@ public class UIObjectActivator : MonoBehaviour, IUnityAdsListener
 
     private void PerformAction(ActivatorActionType action)
     {
-        TargetObject.SetActive(action == ActivatorActionType.activate);
-        if (TargetObject.GetComponent<Button>() != null)
-            TargetObject.GetComponent<Button>().interactable = (action == ActivatorActionType.activate);
+        if (
+            (
+                action == ActivatorActionType.activate &&
+                (
+                    ActivationConditions.Count == 0 ||
+                    ActivationConditions.Contains(ActivatorTargetConditions.none) ||
+                    (ActivationConditions.Contains(ActivatorTargetConditions.gameInProgress) && Engine.sessionState == GameSessionState.InProgress) ||
+                    (ActivationConditions.Contains(ActivatorTargetConditions.gameWon) && Engine.sessionState == GameSessionState.Won) ||
+                    (ActivationConditions.Contains(ActivatorTargetConditions.gameLost) && Engine.sessionState == GameSessionState.Lost) ||
+                    (ActivationConditions.Contains(ActivatorTargetConditions.gamePassed) && Engine.sessionState == GameSessionState.Passed)
+                )
+            ) ||
+            (
+                action == ActivatorActionType.deactivate &&
+                (
+                    DeactivationConditions.Count == 0 ||
+                    DeactivationConditions.Contains(ActivatorTargetConditions.none) ||
+                    (DeactivationConditions.Contains(ActivatorTargetConditions.gameInProgress) && Engine.sessionState == GameSessionState.InProgress) ||
+                    (DeactivationConditions.Contains(ActivatorTargetConditions.gameWon) && Engine.sessionState == GameSessionState.Won) ||
+                    (DeactivationConditions.Contains(ActivatorTargetConditions.gameLost) && Engine.sessionState == GameSessionState.Lost) ||
+                    (DeactivationConditions.Contains(ActivatorTargetConditions.gamePassed) && Engine.sessionState == GameSessionState.Passed)
+                )
+            )
+          )
+        {
+            TargetObject.SetActive(action == ActivatorActionType.activate);
+            if (TargetObject.GetComponent<Button>() != null)
+                TargetObject.GetComponent<Button>().interactable = (action == ActivatorActionType.activate);
+        }
     }
 }

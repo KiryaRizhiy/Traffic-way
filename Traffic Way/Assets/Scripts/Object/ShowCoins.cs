@@ -9,6 +9,7 @@ public class ShowCoins : MonoBehaviour
     void Awake()
     {
         Engine.Events.initialized += Show;
+        Show();
     }
     public void Show()
     {

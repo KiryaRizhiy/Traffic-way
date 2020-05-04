@@ -12,7 +12,7 @@ public class Initializer : MonoBehaviour
         GameAnalytics.Initialize();
         //Advertisement.Initialize(Settings.googlePlayId, Settings.testMode); UNCOMMENT TO IMPLEMENT UNITY ADS
         MobileAds.Initialize(initStatus => { });
-        Engine.Load();
+        Engine.Initialize();
         Engine.Events.Initialized();
     }
 }

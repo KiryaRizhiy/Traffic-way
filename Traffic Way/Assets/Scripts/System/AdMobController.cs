@@ -6,10 +6,40 @@ using GoogleMobileAds.Api;
 
 public class AdMobController : MonoBehaviour
 {
+    public bool isRegularVideoReady
+    {
+        get
+        {
+            if (interstitial != null)
+                return interstitial.IsLoaded();
+            else
+                return false;
+        }
+    }
+    public bool isRewardedVideoReady
+    {
+        get
+        {
+            if (rewarded != null)
+                return rewarded.IsLoaded();
+            else
+                return false;
+        }
+    }
+
     private BannerView banner;
-    private InterstitialAd interstital;
+    private InterstitialAd interstitial;
     private RewardBasedVideoAd rewarded;
     private AdRequest request;
+
+    public void ShowRegularAd()
+    {
+        interstitial.Show();
+    }
+    public void ShowRewardedAd()
+    {
+        rewarded.Show();
+    }
 
     void Start()
     {
@@ -35,13 +65,13 @@ public class AdMobController : MonoBehaviour
     }
     private void loadInterstitial()
     {
-        interstital = new InterstitialAd(Settings.adMobInterstitialId);
-        interstital.OnAdLoaded += interstitialHandleOnAdLoaded;
-        interstital.OnAdFailedToLoad += interstitialHandleOnAdFailedToLoad;
-        interstital.OnAdLeavingApplication += interstitialHandleOnAdLeavingApplication;
-        interstital.OnAdClosed += interstitialHandleOnAdClosed;
-        interstital.OnAdOpening += interstitialHandleOnAdOpened;
-        interstital.LoadAd(request);
+        interstitial = new InterstitialAd(Settings.adMobInterstitialId);
+        interstitial.OnAdLoaded += interstitialHandleOnAdLoaded;
+        interstitial.OnAdFailedToLoad += interstitialHandleOnAdFailedToLoad;
+        interstitial.OnAdLeavingApplication += interstitialHandleOnAdLeavingApplication;
+        interstitial.OnAdClosed += interstitialHandleOnAdClosed;
+        interstitial.OnAdOpening += interstitialHandleOnAdOpened;
+        interstitial.LoadAd(request);
     }
     private void loadRewarded()
     {
@@ -72,12 +102,12 @@ public class AdMobController : MonoBehaviour
         banner.OnAdClosed -= this.bannerHandleOnAdClosed;
         banner.OnAdLeavingApplication -= this.bannerHandleOnAdLeavingApplication;
         banner.Destroy();
-        interstital.OnAdLoaded -= interstitialHandleOnAdLoaded;
-        interstital.OnAdFailedToLoad -= interstitialHandleOnAdFailedToLoad;
-        interstital.OnAdLeavingApplication -= interstitialHandleOnAdLeavingApplication;
-        interstital.OnAdClosed -= interstitialHandleOnAdClosed;
-        interstital.OnAdOpening -= interstitialHandleOnAdOpened;
-        interstital.Destroy();
+        interstitial.OnAdLoaded -= interstitialHandleOnAdLoaded;
+        interstitial.OnAdFailedToLoad -= interstitialHandleOnAdFailedToLoad;
+        interstitial.OnAdLeavingApplication -= interstitialHandleOnAdLeavingApplication;
+        interstitial.OnAdClosed -= interstitialHandleOnAdClosed;
+        interstitial.OnAdOpening -= interstitialHandleOnAdOpened;
+        interstitial.Destroy();
         rewarded.OnAdFailedToLoad -= rewardedHandleOnAdFailedToLoad;
         rewarded.OnAdLeavingApplication -= rewardedHandleOnAdLeavingApplication;
         rewarded.OnAdLoaded -= rewardedHandleOnAdLoaded;
