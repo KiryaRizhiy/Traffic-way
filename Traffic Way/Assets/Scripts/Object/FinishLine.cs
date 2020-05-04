@@ -6,7 +6,7 @@ public class FinishLine : MonoBehaviour
 {
     void OnTriggerEnter2D(Collider2D collider)
     {
-        Debug.Log("Finish line reached with " + collider.name);
-        Engine.Events.FinishLineReached();
+        if (collider.tag == Tags.Car.ToString())
+            Engine.Events.FinishLineReached();
     }
 }

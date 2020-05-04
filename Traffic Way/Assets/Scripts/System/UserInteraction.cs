@@ -43,10 +43,21 @@ public class UserInteraction : MonoBehaviour
     {
         Engine.SwitchPause();
     }
+    public void ShowPrivacyPolicy()
+    {
+        Application.OpenURL(Settings.privacyPolicyLink);
+    }
     public void ShowRewardedVideo()
     {
-        if (Engine.isRewardedVideoReady)
-            Advertisement.Show(PlacementType.rewardedVideo.ToString());
+        Engine.ShowRewardedVideo();
+    }
+    public void RewardedWathced()
+    {
+        Engine.Events.AdFinished(PlacementType.rewardedVideo);
+    }
+    public void InterstitialWatched()
+    {
+        Engine.Events.AdFinished(PlacementType.interstitial);
     }
     public void FinishLineReached()
     {
