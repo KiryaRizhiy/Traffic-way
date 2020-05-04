@@ -35,32 +35,36 @@ public class UIObjectActivator : MonoBehaviour, IUnityAdsListener
         Engine.Events.extraRewardReceived -= OnExtraRewardReceived;
     }
 
-    public void OnUnityAdsReady(string placementId)
-    {
-        if (placementId == PlacementType.video.ToString())
-        {
-            if (ActivationEventList.Contains(ActivatorTargetEvent.adsVideoReady))
-                PerformAction(ActivatorActionType.activate);
-            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsVideoReady))
-                PerformAction(ActivatorActionType.deactivate);
-        }
-        if (placementId == PlacementType.rewardedVideo.ToString())
-        {
-            if (ActivationEventList.Contains(ActivatorTargetEvent.adsRewardedVideoReady))
-                PerformAction(ActivatorActionType.activate);
-            if (DeactivationEventList.Contains(ActivatorTargetEvent.adsRewardedVideoReady))
-                PerformAction(ActivatorActionType.deactivate);
-        }
-    }
-    public void OnUnityAdsDidError(string message)
-    {
-    }
-    public void OnUnityAdsDidFinish(string placementId, ShowResult showResult)
-    {
-    }
-    public void OnUnityAdsDidStart(string placementId)
-    {
-    }
+    //UNCOMMENT TO IMPLEMENT UNITY ADS
+    //public void OnUnityAdsReady(string placementId)
+    //{
+    //    if (placementId == PlacementType.video.ToString())
+    //    {
+    //        if (ActivationEventList.Contains(ActivatorTargetEvent.adsVideoReady))
+    //            PerformAction(ActivatorActionType.activate);
+    //        if (DeactivationEventList.Contains(ActivatorTargetEvent.adsVideoReady))
+    //            PerformAction(ActivatorActionType.deactivate);
+    //    }
+    //    if (placementId == PlacementType.rewardedVideo.ToString())
+    //    {
+    //        if (ActivationEventList.Contains(ActivatorTargetEvent.adsRewardedVideoReady))
+    //            PerformAction(ActivatorActionType.activate);
+    //        if (DeactivationEventList.Contains(ActivatorTargetEvent.adsRewardedVideoReady))
+    //            PerformAction(ActivatorActionType.deactivate);
+    //    }
+    //}
+    //public void OnUnityAdsDidError(string message)
+    //{
+    //}
+    //public void OnUnityAdsDidFinish(string placementId, ShowResult showResult)
+    //{
+    //}
+    //public void OnUnityAdsDidStart(string placementId)
+    //{
+    //}
+
+
+
     public void OnSessionStateChanged(GameSessionState state)
     {
         if (state == GameSessionState.Won)
