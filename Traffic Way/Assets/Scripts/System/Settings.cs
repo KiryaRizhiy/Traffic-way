@@ -34,14 +34,17 @@ public static class Settings
     }
     public static string adMobApplicationId = "ca-app-pub-6138084763477006~9956003923";
     public static bool testMode = true;
-    public const float carSpeed = 0.2f;
+    public const float carSpeedLimit = 7f;
+    public const float carAcceleration = 0.2f;
+    public const float carBraking = 0.7f;
     public const int levelReward = 4;
     public const int extraRewardMultiplyer = 3;
     public const string privacyPolicyLink = "https://justforward.co/privacy-policy/";
+    public const float tracesWidth = 0.2f;
     public static string savePath 
     { get { return Application.persistentDataPath + "/trafficWaySaves/"; } }
     public static string saveFile 
     { get { return savePath + "Save.svg"; } }
 }
 public enum PlacementType { video, rewardedVideo, banner, interstitial }
-public enum Tags {Car}
+public enum Tags {Car,Coin,NPCCar}

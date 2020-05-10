@@ -4,18 +4,50 @@ using UnityEngine;
 
 public class CarDriver : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private bool crashed = false;
+    private float currentSpeed;
+
     void Start()
     {
-        
+        currentSpeed = 0f;
+        Engine.Events.crashHappened += OnCrhashHappened;
+        if (Settings.testMode) Functions.DrawPolygonCollider(GetComponent<PolygonCollider2D>());
+    }
+
+    private void OnCrhashHappened()
+    {
+        currentSpeed = 0;
+        crashed = true;
+    }
+    private void Accelerate()
+    {
+        if (currentSpeed < Settings.carSpeedLimit - Settings.carAcceleration)
+            currentSpeed += Settings.carAcceleration;
+        else
+            currentSpeed = Settings.carSpeedLimit;
+    }
+    private void Break()
+    {
+        if (currentSpeed > Settings.carBraking)
+            currentSpeed -= Settings.carBraking;
+        else
+            currentSpeed = 0;
+    }
+
+    void OnDestroy()
+    {
+        Engine.Events.crashHappened -= OnCrhashHappened;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Engine.paused)
+        if (Engine.paused || crashed)
             return;
         if (UserInteraction.gas)
-            transform.Translate(Vector2.up * Settings.carSpeed);
+            Accelerate();
+        else
+            Break();
+        transform.Translate(Vector2.up * currentSpeed * Time.deltaTime);
     }
 }
