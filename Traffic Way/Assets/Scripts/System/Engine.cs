@@ -67,6 +67,7 @@ public static class Engine
     {
         Load();
         Subscribe();
+        NPCCarDriver.LoadResources();
     }
 
     public static void ClearSaveFile()
@@ -230,7 +231,7 @@ public static class Engine
     private static void HandleChashHappened()
     {
         currentSession.state = GameSessionState.Lost;
-        currentSession.paused = true;
+        //currentSession.paused = true;
         if (currentSession.adController.isRegularVideoReady)
             currentSession.adController.ShowRegularAd();
         else
