@@ -378,6 +378,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 90084219b77dce145b64f72436322f75, type: 3}
+--- !u!1 &677303895 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7974016911904919755, guid: 90084219b77dce145b64f72436322f75,
+    type: 3}
+  m_PrefabInstance: {fileID: 677303894}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &677303896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 677303895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 170352794343de54aad4f45900d02e82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &733729779
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -847,6 +865,11 @@ PrefabInstance:
       propertyPath: moveSpeed
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4946545677984278922, guid: 671cd86f80a1fc44fa1e852c8a270cc4,
+        type: 3}
+      propertyPath: hitpoints
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4946545677984278923, guid: 671cd86f80a1fc44fa1e852c8a270cc4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -940,6 +963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b34e4d5b60db4404fbe03448f652a97e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitpoints: 15
   moveSpeed: 0
   rotationSpeed: 30
   moveType: 4

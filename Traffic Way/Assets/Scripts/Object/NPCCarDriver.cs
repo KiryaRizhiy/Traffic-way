@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class NPCCarDriver : MonoBehaviour
 {
+    public int hitpoints;
     public float moveSpeed;
     public float rotationSpeed;
     public CarMoveType moveType;
@@ -22,6 +23,7 @@ public class NPCCarDriver : MonoBehaviour
             return car.GetComponent<NPCCarController>().crashed;
         }
     }
+    private int hitpointsLeft;
 
     private static GameObject[] RegularCars;
     private static GameObject[] Bosses;
@@ -81,10 +83,20 @@ public class NPCCarDriver : MonoBehaviour
                     break;
             }
         }
+        hitpointsLeft = hitpoints;
     }
     public void Crash()
     {
         StopCoroutine(moving);
+    }
+    public void BulletHit()
+    {
+        hitpointsLeft--;
+        if (hitpointsLeft < 1)
+        {
+            StopAllCoroutines();
+            Destroy(car);
+        }
     }
 
     private void CreateCar(CarType type)

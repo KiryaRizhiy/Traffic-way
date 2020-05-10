@@ -68,6 +68,7 @@ public static class Engine
         Load();
         Subscribe();
         NPCCarDriver.LoadResources();
+        CarShooter.LoadResources();
     }
 
     public static void ClearSaveFile()
@@ -89,8 +90,8 @@ public static class Engine
     }
     public static void LevelDone()
     {
-        Save();
         SwitchLevel();
+        Save();
     }
     public static void LevelFailed()
     {
@@ -302,6 +303,11 @@ public static class Engine
                     Engine.Events.Unpaused();
                 }
             }
+        }
+        public bool bossFight
+        {
+            get;
+            private set;
         }
 
         private bool _paused;

@@ -15,12 +15,22 @@ public class NPCCarController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.tag == Tags.Car.ToString())
+        switch (collider.tag)
         {
-            Logger.UpdateContent(UILogDataType.GameState, "Car crashed with " + gameObject.name);
-            crashed = true;
-            _drv.Crash();
-            Engine.Events.CrashHappened();
+            case "Car":
+                //Logger.UpdateContent(UILogDataType.GameState, "Car crashed with " + gameObject.name);
+                crashed = true;
+                _drv.Crash();
+                Engine.Events.CrashHappened();
+                break;
+            case "Bullet":
+                //Logger.UpdateContent(UILogDataType.GameState, "Car crashed with " + gameObject.name);
+                _drv.BulletHit();
+                Destroy(collider.gameObject);
+                break;
+            default:
+                Debug.Log("NPC car " + gameObject.name + "touched unknown object " + collider.name + ", tagged " + collider.tag);
+                break;
         }
     }
 }

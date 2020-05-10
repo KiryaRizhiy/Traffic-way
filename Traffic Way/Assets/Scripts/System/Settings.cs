@@ -41,10 +41,12 @@ public static class Settings
     public const int extraRewardMultiplyer = 3;
     public const string privacyPolicyLink = "https://justforward.co/privacy-policy/";
     public const float tracesWidth = 0.2f;
+    public const float bulletSpeed = 8f;
+    public const float shootFrequency = 0.2f;
     public static string savePath 
     { get { return Application.persistentDataPath + "/trafficWaySaves/"; } }
     public static string saveFile 
     { get { return savePath + "Save.svg"; } }
 }
 public enum PlacementType { video, rewardedVideo, banner, interstitial }
-public enum Tags {Car,Coin,NPCCar}
+public enum Tags {Car,Coin,NPCCar,Bullet}
