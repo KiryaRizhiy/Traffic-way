@@ -69,6 +69,7 @@ public static class Engine
         Subscribe();
         NPCCarDriver.LoadResources();
         CarShooter.LoadResources();
+        TrafficLight.LoadResources();
     }
 
     public static void ClearSaveFile()

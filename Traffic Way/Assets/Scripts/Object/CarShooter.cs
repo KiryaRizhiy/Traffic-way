@@ -16,7 +16,7 @@ public class CarShooter : MonoBehaviour
     {
         Engine.Events.crashHappened += StopShooting;
         Engine.Events.finishLineReached += StopShooting;
-        StartCoroutine(Shooting());
+        shooting = StartCoroutine(Shooting());
     }
     void OnDestroy()
     {

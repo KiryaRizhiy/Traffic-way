@@ -43,6 +43,7 @@ public static class Settings
     public const float tracesWidth = 0.2f;
     public const float bulletSpeed = 8f;
     public const float shootFrequency = 0.2f;
+    public const float trafficLightSwitchSpeed = 0.7f;
     public static string savePath 
     { get { return Application.persistentDataPath + "/trafficWaySaves/"; } }
     public static string saveFile 
