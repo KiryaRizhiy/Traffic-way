@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class NPCCarDriver : MonoBehaviour
 {
+    public int hitpoints;
     public float moveSpeed;
     public float rotationSpeed;
     public CarMoveType moveType;
@@ -11,6 +12,8 @@ public class NPCCarDriver : MonoBehaviour
     public float initialAngle;
     public CarType carType;
     public WaypointsType waypointsType;
+    public StartEventType startWhen;
+    public GameObject zone;
 
     private GameObject car;
     private List<Transform> waypoints;
@@ -22,6 +25,7 @@ public class NPCCarDriver : MonoBehaviour
             return car.GetComponent<NPCCarController>().crashed;
         }
     }
+    private int hitpointsLeft;
 
     private static GameObject[] RegularCars;
     private static GameObject[] Bosses;
@@ -50,43 +54,45 @@ public class NPCCarDriver : MonoBehaviour
         if (waypoints.Count == 1)
             car.transform.position = waypoints[0].position;
         ShowTraces();
-        if (waypoints.Count > 0)
+        car.transform.rotation = Quaternion.Euler(Vector3.forward * initialAngle);
+        switch (startWhen)
         {
-            waypoints[0].position -= Vector3.forward*0.001f;
-            car.transform.rotation = Quaternion.Euler(Vector3.forward * initialAngle);
-            switch (moveType)
-            {
-                case CarMoveType.once:
-                    car.transform.position = waypoints[0].position;
-                    moving = StartCoroutine(OnceMove());
-                    break;
-                case CarMoveType.round:
-                    car.transform.position = waypoints[0].position;
-                    StartCoroutine(RoundMove());
-                    break;
-                case CarMoveType.repeat:
-                    car.transform.position = waypoints[0].position;
-                    StartCoroutine(RepeatMove());
-                    break;
-                case CarMoveType.cycled:
-                    car.transform.position = waypoints[0].position;
-                    StartCoroutine(CycledMove());
-                    break;
-                case CarMoveType.rotation:
-                    car.transform.position = waypoints[0].position;
-                    moving = StartCoroutine(RotateCar());
-                    break;
-                default:
-                    Debug.Log("Unknown move type " + moveType.ToString());
-                    break;
-            }
+            case StartEventType.zoneReached:
+                Engine.Events.zoneReached += Go;
+                break;
+            case StartEventType.zoneLeft:
+                Engine.Events.zoneLeft += Go;
+                break;
+            case StartEventType.instant:
+                Go(null);
+                break;
+            default:
+                Debug.LogError("Unknown start event type " + startWhen.ToString());
+                break;
         }
+        hitpointsLeft = hitpoints;
     }
     public void Crash()
     {
         StopCoroutine(moving);
     }
+    public void BulletHit()
+    {
+        hitpointsLeft--;
+        if (hitpointsLeft < 1)
+        {
+            StopAllCoroutines();
+            Destroy(car);
+        }
+    }
 
+    private void Validate()
+    {
+        if(waypoints.Count == 0)
+            Debug.LogError(gameObject.name + " has no attached. At least one waypoint required");
+        if (startWhen != StartEventType.instant && zone == null)
+            Debug.LogError(gameObject.name + " has start event type, but no zone attached. Move will not be started");
+    }
     private void CreateCar(CarType type)
     {
         Texture2D _tex = null;
@@ -198,6 +204,40 @@ public class NPCCarDriver : MonoBehaviour
             }
         }
     }
+    private void Go(GameObject zoneSender)
+    {
+        if (startWhen != StartEventType.instant && zone != zoneSender)
+            return;
+        if (waypoints.Count > 0)
+        {
+            switch (moveType)
+            {
+                case CarMoveType.once:
+                    car.transform.position = waypoints[0].position;
+                    moving = StartCoroutine(OnceMove());
+                    break;
+                case CarMoveType.round:
+                    car.transform.position = waypoints[0].position;
+                    StartCoroutine(RoundMove());
+                    break;
+                case CarMoveType.repeat:
+                    car.transform.position = waypoints[0].position;
+                    StartCoroutine(RepeatMove());
+                    break;
+                case CarMoveType.cycled:
+                    car.transform.position = waypoints[0].position;
+                    StartCoroutine(CycledMove());
+                    break;
+                case CarMoveType.rotation:
+                    car.transform.position = waypoints[0].position;
+                    moving = StartCoroutine(RotateCar());
+                    break;
+                default:
+                    Debug.Log("Unknown move type " + moveType.ToString());
+                    break;
+            }
+        }
+    }
 
     private IEnumerator OnceMove()
     {
@@ -293,3 +333,4 @@ public class NPCCarDriver : MonoBehaviour
 public enum CarMoveType {once,cycled,repeat,round,rotation}
 public enum CarType {regular,excavator,rink,truck,boss,train }
 public enum WaypointsType {invisible, normalCircles, wideCircles}
+public enum StartEventType { instant, zoneReached, zoneLeft }

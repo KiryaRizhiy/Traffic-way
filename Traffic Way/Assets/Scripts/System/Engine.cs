@@ -68,6 +68,8 @@ public static class Engine
         Load();
         Subscribe();
         NPCCarDriver.LoadResources();
+        CarShooter.LoadResources();
+        TrafficLight.LoadResources();
     }
 
     public static void ClearSaveFile()
@@ -89,8 +91,8 @@ public static class Engine
     }
     public static void LevelDone()
     {
-        Save();
         SwitchLevel();
+        Save();
     }
     public static void LevelFailed()
     {
@@ -303,6 +305,11 @@ public static class Engine
                 }
             }
         }
+        public bool bossFight
+        {
+            get;
+            private set;
+        }
 
         private bool _paused;
         private GameSessionState _state;
@@ -383,6 +390,7 @@ public static class Engine
         public delegate void GameStateHandler(GameSessionState state);
         public delegate void Fact();
         public delegate void AdsInfo(PlacementType type);
+        public delegate void ZoneReach(GameObject zone);
 
         public static event Fact finishLineReached;
         public static event Fact crashHappened;
@@ -390,6 +398,8 @@ public static class Engine
         public static event Fact initialized;
         public static event Fact paused;
         public static event Fact unpaused;
+        public static event ZoneReach zoneReached;
+        public static event ZoneReach zoneLeft;
         public static event AdsInfo adLoaded;
         public static event AdsInfo adNotReady;
         public static event AdsInfo adFinished;
@@ -440,6 +450,18 @@ public static class Engine
             Debug.Log("Unpaused");
             if (unpaused != null)
                 unpaused();
+        }
+        public static void ZoneReached(GameObject zone)
+        {
+            Debug.Log(zone.name + " reached");
+            if (zoneReached != null)
+                zoneReached(zone);
+        }
+        public static void ZoneLeft(GameObject zone)
+        {
+            Debug.Log(zone.name + " left");
+            if (zoneLeft != null)
+                zoneLeft(zone);
         }
         public static void AdLoaded(PlacementType type)
         {
