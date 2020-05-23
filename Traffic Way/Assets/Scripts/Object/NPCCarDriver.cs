@@ -22,7 +22,10 @@ public class NPCCarDriver : MonoBehaviour
     {
         get
         {
-            return car.GetComponent<NPCCarController>().crashed;
+            if (car != null)
+                return car.GetComponent<NPCCarController>().crashed;
+            else
+                return true;
         }
     }
     private int hitpointsLeft;
@@ -33,26 +36,26 @@ public class NPCCarDriver : MonoBehaviour
     private static Texture2D WideCircle;
     private static Texture2D NormalCircle;
     private static Material LineMaterial;
-    private const float CircleDiameter = 0.5f;
+    private const float CircleDiameter = 0.6f;
     public static void LoadResources()
     {
-        RegularCars = Resources.LoadAll<GameObject>("Prefabs/NPCCars/Regular");
-        Bosses = Resources.LoadAll<GameObject>("Prefabs/NPCCars/Bosses");
-        Special = Resources.LoadAll<GameObject>("Prefabs/NPCCars/Special");
-        WideCircle = Resources.Load<Texture2D>("TrafficWay/NPCCars/Waypoints/WideCircle");
-        NormalCircle = Resources.Load<Texture2D>("TrafficWay/NPCCars/Waypoints/NormalCircle");
-        LineMaterial = Resources.Load<Material>("TrafficWay/NPCCars/Waypoints/LineMaterial");
+        RegularCars = Resources.LoadAll<GameObject>("TrafficWay/Prefabs/NPCCars/Regular");
+        Bosses = Resources.LoadAll<GameObject>("TrafficWay/Prefabs/NPCCars/Bosses");
+        Special = Resources.LoadAll<GameObject>("TrafficWay/Prefabs/NPCCars/Special");
+        WideCircle = Resources.Load<Texture2D>("TrafficWay/Textures/NPCCars/Waypoints/WideCircle");
+        NormalCircle = Resources.Load<Texture2D>("TrafficWay/Textures/NPCCars/Waypoints/NormalCircle");
+        LineMaterial = Resources.Load<Material>("TrafficWay/Textures/NPCCars/Waypoints/LineMaterial");
     }
 
     void Start()
     {
-        CreateCar(carType);
-        car.AddComponent<NPCCarController>();
         waypoints = new List<Transform>();
         for (int i = 0; i < transform.GetChild(0).childCount; i++)
             waypoints.Add(transform.GetChild(0).GetChild(i));
-        if (waypoints.Count == 1)
-            car.transform.position = waypoints[0].position;
+        Validate();
+        CreateCar(carType);
+        if (waypoints.Count > 0)
+            car.transform.position = new Vector3(waypoints[0].position.x,waypoints[0].position.y,0f);
         ShowTraces();
         car.transform.rotation = Quaternion.Euler(Vector3.forward * initialAngle);
         switch (startWhen)
@@ -95,7 +98,7 @@ public class NPCCarDriver : MonoBehaviour
     }
     private void CreateCar(CarType type)
     {
-        Texture2D _tex = null;
+        //Texture2D _tex = null;
         switch (type)
         {
             case CarType.regular:
@@ -126,12 +129,17 @@ public class NPCCarDriver : MonoBehaviour
                     if (_obj.name.Contains("Train"))
                         car = Instantiate(_obj, transform);
                 break;
+            case CarType.police:
+                foreach (GameObject _obj in Special)
+                    if (_obj.name.Contains("Police"))
+                        car = Instantiate(_obj, transform);
+                break;
         }
         //car = new GameObject();
         //car.transform.position = transform.position;
-        //car.transform.SetParent(transform);
-        //car.name = "Car-" + _tex.name;
-        //car.tag = Tags.NPCCar.ToString();
+        car.tag = Tags.NPCCar.ToString();
+        car.AddComponent<NPCCarController>();
+        car.transform.localScale = Settings.carsScale;
         //SpriteRenderer _sr = car.AddComponent<SpriteRenderer>();
         //_sr.sprite = Sprite.Create(_tex, new Rect(0.0f, 0.0f, _tex.width, _tex.height), new Vector2(0.5f, 0.5f));
         ////StartCoroutine(CrutchRoutine());
@@ -143,7 +151,7 @@ public class NPCCarDriver : MonoBehaviour
     {
         if (waypoints.Count == 0)
             return;
-        //Hide technical waypoint sprites
+        waypoints[0].parent.position += Vector3.forward * 0.5f;
         if (waypointsType == WaypointsType.invisible)
             return;
         if (waypointsType == WaypointsType.normalCircles || waypointsType == WaypointsType.wideCircles)
@@ -155,7 +163,7 @@ public class NPCCarDriver : MonoBehaviour
                 _tex = WideCircle;
             if (waypoints.Count > 1)
             {
-                waypoints[0].parent.localScale = Vector3.one;
+
                 LineRenderer _lr = waypoints[0].parent.gameObject.AddComponent<LineRenderer>();
                 _lr.numCornerVertices = 3;
                 _lr.useWorldSpace = false;
@@ -185,22 +193,23 @@ public class NPCCarDriver : MonoBehaviour
                 //    _lr.SetPosition(1, Vector3.up * (Vector2.Distance(waypoints[i].position, waypoints[i + 1].position)));
                 //    waypoints[i].localScale = Vector3.one;
                 //}
-                waypoints[0].rotation = Quaternion.Euler(Vector3.forward * Vector2.SignedAngle(Vector2.up, (waypoints[1].position - waypoints[0].position).normalized));                waypoints[0].gameObject.AddComponent<SpriteRenderer>();
+                waypoints[0].rotation = Quaternion.Euler(Vector3.forward * Vector2.SignedAngle(Vector2.up, (waypoints[1].position - waypoints[0].position).normalized));                
+                waypoints[0].gameObject.AddComponent<SpriteRenderer>();
                 waypoints[0].GetComponent<SpriteRenderer>().sprite = Sprite.Create(_tex, new Rect(0.0f, 0.0f, _tex.width, _tex.height), new Vector2(0.5f, 0.5f));
                 waypoints[0].GetComponent<SpriteRenderer>().color = Color.white;
-                waypoints[0].localScale = Vector3.one;
+                waypoints[0].localScale = Settings.carsScale;
                 waypoints[waypoints.Count - 1].rotation = Quaternion.Euler(Vector3.forward * Vector2.SignedAngle(Vector2.up, (waypoints[waypoints.Count - 2].position - waypoints[waypoints.Count - 1].position).normalized));
                 waypoints[waypoints.Count - 1].gameObject.AddComponent<SpriteRenderer>();
                 waypoints[waypoints.Count - 1].GetComponent<SpriteRenderer>().sprite = Sprite.Create(_tex, new Rect(0.0f, 0.0f, _tex.width, _tex.height), new Vector2(0.5f, 0.5f));
                 waypoints[waypoints.Count - 1].GetComponent<SpriteRenderer>().color = Color.white;
-                waypoints[waypoints.Count - 1].localScale = Vector3.one;
+                waypoints[waypoints.Count - 1].localScale = Settings.carsScale;
             }
             if (waypoints.Count == 1)
             {
                 waypoints[0].gameObject.AddComponent<SpriteRenderer>();
                 waypoints[0].GetComponent<SpriteRenderer>().sprite = Sprite.Create(_tex, new Rect(0.0f, 0.0f, _tex.width, _tex.height), new Vector2(0.5f, 0.5f));
                 waypoints[0].GetComponent<SpriteRenderer>().color = Color.white;
-                waypoints[0].localScale = Vector3.one;
+                waypoints[0].localScale = Settings.carsScale;
             }
         }
     }
@@ -237,6 +246,7 @@ public class NPCCarDriver : MonoBehaviour
                     break;
             }
         }
+        car.transform.position -= Vector3.forward * 0.01f;
     }
 
     private IEnumerator OnceMove()
@@ -260,7 +270,10 @@ public class NPCCarDriver : MonoBehaviour
     {
         while (true)
         {
+            Destroy(car);
+            CreateCar(carType);
             car.transform.position = waypoints[0].position;
+            car.transform.position -= Vector3.forward * 0.01f;
             moving = StartCoroutine(OnceMove());
             yield return moving;
         }
@@ -314,23 +327,8 @@ public class NPCCarDriver : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
-    private IEnumerator CrutchRoutine()
-    {
-        PolygonCollider2D _pd = car.AddComponent<PolygonCollider2D>();
-        _pd.isTrigger = true;
-        //_pd.SetPath(0, car.GetComponent<SpriteRenderer>().sprite.vertices);
-        if (Settings.testMode) Functions.DrawPolygonCollider(_pd);
-        while(_pd.points.Length == 5)
-        {
-            yield return new WaitForSeconds(0.3f);
-            Destroy(_pd);
-            _pd = car.AddComponent<PolygonCollider2D>();
-            _pd.isTrigger = true;
-            if (Settings.testMode) Functions.DrawPolygonCollider(_pd);
-        }
-    }
 }
 public enum CarMoveType {once,cycled,repeat,round,rotation}
-public enum CarType {regular,excavator,rink,truck,boss,train }
+public enum CarType {regular,excavator,rink,truck,boss,train,police}
 public enum WaypointsType {invisible, normalCircles, wideCircles}
 public enum StartEventType { instant, zoneReached, zoneLeft }

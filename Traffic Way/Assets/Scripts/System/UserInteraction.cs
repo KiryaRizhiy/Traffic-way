@@ -37,7 +37,7 @@ public class UserInteraction : MonoBehaviour
     }
     public void Restart()
     {
-        Engine.LevelFailed();
+        Engine.RestartLevel();
     }
     public void SwitchPause()
     {

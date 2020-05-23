@@ -5,33 +5,33 @@ using System;
 using UnityEngine;
 using GameAnalyticsSDK;
 using UnityEngine.SceneManagement;
-using UnityEngine.Advertisements;
+//using UnityEngine.Advertisements;
 //using GoogleMobileAds.Api;
 
 public static class Engine
 {
     //UNCOMMENT TO IMPLEMENT UNITY ADS
-    public static bool isVideoReady
-    {
-        get
-        {
-            return Advertisement.IsReady(PlacementType.video.ToString());
-        }
-    }
-    public static bool isRewardedVideoReady
-    {
-        get
-        {
-            return Advertisement.IsReady(PlacementType.rewardedVideo.ToString());
-        }
-    }
-    public static bool isBannerReady
-    {
-        get
-        {
-            return Advertisement.IsReady(PlacementType.banner.ToString());
-        }
-    }
+    //public static bool isVideoReady
+    //{
+    //    get
+    //    {
+    //        return Advertisement.IsReady(PlacementType.video.ToString());
+    //    }
+    //}
+    //public static bool isRewardedVideoReady
+    //{
+    //    get
+    //    {
+    //        return Advertisement.IsReady(PlacementType.rewardedVideo.ToString());
+    //    }
+    //}
+    //public static bool isBannerReady
+    //{
+    //    get
+    //    {
+    //        return Advertisement.IsReady(PlacementType.banner.ToString());
+    //    }
+    //}
     public static int actualLevel
     { get { return meta.passedLevels + 1; } }
     public static GameSessionState sessionState
@@ -70,6 +70,12 @@ public static class Engine
         NPCCarDriver.LoadResources();
         CarShooter.LoadResources();
         TrafficLight.LoadResources();
+        LevelGenerator.LoadResources();
+    }
+    public static void InitializeTest()
+    {
+        if (currentSession == null)
+            Initialize();
     }
 
     public static void ClearSaveFile()
@@ -80,7 +86,6 @@ public static class Engine
     }
     public static void Play()
     {
-        SceneManager.activeSceneChanged += OnLevelChanged;
         if (actualLevel <= handcraftLevels)
             SceneManager.LoadScene(actualLevel + 1);//Load handlecraft level
         else
@@ -94,12 +99,17 @@ public static class Engine
         SwitchLevel();
         Save();
     }
-    public static void LevelFailed()
+    //public static void LevelFailed()
+    //{
+    //    if (isVideoReady)
+    //        Advertisement.Show(PlacementType.video.ToString());
+    //    else
+    //        RestartLevel();
+    //}
+    public static void RestartLevel()
     {
-        if (isVideoReady)
-            Advertisement.Show(PlacementType.video.ToString());
-        else
-            RestartLevel();
+        Save();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     public static void Quit()
     {
@@ -123,11 +133,6 @@ public static class Engine
     internal static void AddCoins(int count)
     {
         meta.coinsCount += count;
-    }
-    internal static void RestartLevel()
-    {
-        Save();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     internal static void SwitchLevel()
     {
@@ -203,21 +208,23 @@ public static class Engine
         Events.finishLineReached += HandleFinishLineCrossed;
         Events.crashHappened += HandleChashHappened;
         Events.adFinished += OnAdFinished;
+        SceneManager.activeSceneChanged += OnLevelChanged;
     }
 
     private static void OnLevelChanged(Scene current, Scene next)
     {
-        Advertisement.Load(PlacementType.video.ToString());
-        Advertisement.Load(PlacementType.rewardedVideo.ToString());
-        Advertisement.Load(PlacementType.banner.ToString());
+        //UNCOMMENT TO IMPLEMENT UNITY ADS
+        //Advertisement.Load(PlacementType.video.ToString());
+        //Advertisement.Load(PlacementType.rewardedVideo.ToString());
+        //Advertisement.Load(PlacementType.banner.ToString());
         Debug.Log("Scene change detected. Current active scene is " + next.name);
         if (currentSession != null)//if current scene is not initial
             currentSession.Close(); //Closing previous session only if it existed
-        else
-        {
-            Advertisement.Banner.SetPosition(BannerPosition.BOTTOM_CENTER);
-            //Loading ads if we just started playing
-        }
+        //else
+        //{
+        //    Advertisement.Banner.SetPosition(BannerPosition.BOTTOM_CENTER);
+        //    //Loading ads if we just started playing
+        //}
         currentSession = new LevelPlayingSession(next);
         Logger.UpdateContent(UILogDataType.Level, next.name + ". Passed " + meta.passedLevels + " levels. Last passed handlecraft level: " + meta.lastHandcraftPassedLevel);
     }
@@ -261,6 +268,7 @@ public static class Engine
             set
             {
                 _state = value;
+                Debug.Log("State changed");
                 if (value == GameSessionState.Passed || value == GameSessionState.Won)
                 {
                     meta.passedLevels += 1;

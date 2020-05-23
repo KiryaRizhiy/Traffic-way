@@ -9,7 +9,7 @@ public class CarShooter : MonoBehaviour
 
     public static void LoadResources()
     {
-        bullet = Resources.Load<GameObject>("Prefabs/PlayerCars/Accessories/Bullet");
+        bullet = Resources.Load<GameObject>("TrafficWay/Prefabs/PlayerCars/Accessories/Bullet");
     }
 
     void Start()
@@ -32,6 +32,8 @@ public class CarShooter : MonoBehaviour
     {
         while (true)
         {
+            if (Engine.paused)
+                yield return new WaitUntil(() => !Engine.paused);
             yield return new WaitForSeconds(Settings.shootFrequency);
             Instantiate(bullet, transform.position, Quaternion.identity);
         }

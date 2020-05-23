@@ -19,14 +19,24 @@ public class NPCCarController : MonoBehaviour
         {
             case "Car":
                 //Logger.UpdateContent(UILogDataType.GameState, "Car crashed with " + gameObject.name);
-                crashed = true;
-                _drv.Crash();
-                Engine.Events.CrashHappened();
+                if (!crashed)
+                {
+                    crashed = true;
+                    _drv.Crash();
+                    Engine.Events.CrashHappened();
+                }
                 break;
             case "Bullet":
                 //Logger.UpdateContent(UILogDataType.GameState, "Car crashed with " + gameObject.name);
                 _drv.BulletHit();
                 Destroy(collider.gameObject);
+                break;
+            case "NPCCar":
+                Debug.Log("NPC cars crashed");
+                //Logger.UpdateContent(UILogDataType.GameState, "Car crashed with " + gameObject.name);
+                crashed = true;
+                _drv.Crash();
+                //Destroy(GetComponent<PolygonCollider2D>());
                 break;
             default:
                 Debug.Log("NPC car " + gameObject.name + "touched unknown object " + collider.name + ", tagged " + collider.tag);
