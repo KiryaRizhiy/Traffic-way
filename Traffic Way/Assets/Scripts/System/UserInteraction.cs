@@ -47,10 +47,6 @@ public class UserInteraction : MonoBehaviour
     {
         Application.OpenURL(Settings.privacyPolicyLink);
     }
-    public void ShowRewardedVideo()
-    {
-        Engine.ShowRewardedVideo();
-    }
     public void RewardedWathced()
     {
         Engine.Events.AdFinished(PlacementType.rewardedVideo);

@@ -3,35 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 using UnityEngine;
-using GameAnalyticsSDK;
 using UnityEngine.SceneManagement;
-//using UnityEngine.Advertisements;
-//using GoogleMobileAds.Api;
 
 public static class Engine
 {
-    //UNCOMMENT TO IMPLEMENT UNITY ADS
-    //public static bool isVideoReady
-    //{
-    //    get
-    //    {
-    //        return Advertisement.IsReady(PlacementType.video.ToString());
-    //    }
-    //}
-    //public static bool isRewardedVideoReady
-    //{
-    //    get
-    //    {
-    //        return Advertisement.IsReady(PlacementType.rewardedVideo.ToString());
-    //    }
-    //}
-    //public static bool isBannerReady
-    //{
-    //    get
-    //    {
-    //        return Advertisement.IsReady(PlacementType.banner.ToString());
-    //    }
-    //}
     public static int actualLevel
     { get { return meta.passedLevels + 1; } }
     public static GameSessionState sessionState
@@ -122,13 +97,6 @@ public static class Engine
         if (currentSession.state != GameSessionState.Lost && currentSession.state != GameSessionState.Won)
             currentSession.paused = !currentSession.paused;
     }
-    public static void ShowRewardedVideo()
-    {
-        if (currentSession.adController.isRewardedVideoReady)
-            currentSession.adController.ShowRewardedAd();
-        else
-            Engine.Events.AdNotReady(PlacementType.rewardedVideo);
-    }
 
     internal static void AddCoins(int count)
     {
@@ -179,7 +147,6 @@ public static class Engine
             else
             {
                 Debug.LogError("Save file has no version");
-                GameAnalytics.NewErrorEvent(GAErrorSeverity.Critical, "Save file has no version");
                 meta = new GameData();
             }
             if (saveFileVersion == GameData.Version)
@@ -192,7 +159,6 @@ public static class Engine
             else
             {
                 Debug.LogError("Save file has an old verson " + saveFileVersion);
-                GameAnalytics.NewErrorEvent(GAErrorSeverity.Critical, "Save file has an old verson " + saveFileVersion);
                 meta = new GameData();
             }
         }
@@ -213,18 +179,7 @@ public static class Engine
 
     private static void OnLevelChanged(Scene current, Scene next)
     {
-        //UNCOMMENT TO IMPLEMENT UNITY ADS
-        //Advertisement.Load(PlacementType.video.ToString());
-        //Advertisement.Load(PlacementType.rewardedVideo.ToString());
-        //Advertisement.Load(PlacementType.banner.ToString());
         Debug.Log("Scene change detected. Current active scene is " + next.name);
-        if (currentSession != null)//if current scene is not initial
-            currentSession.Close(); //Closing previous session only if it existed
-        //else
-        //{
-        //    Advertisement.Banner.SetPosition(BannerPosition.BOTTOM_CENTER);
-        //    //Loading ads if we just started playing
-        //}
         currentSession = new LevelPlayingSession(next);
         Logger.UpdateContent(UILogDataType.Level, next.name + ". Passed " + meta.passedLevels + " levels. Last passed handlecraft level: " + meta.lastHandcraftPassedLevel);
     }
@@ -232,19 +187,13 @@ public static class Engine
     {
         currentSession.state = GameSessionState.Won;
         currentSession.paused = true;
-        if (currentSession.adController.isRegularVideoReady)
-            currentSession.adController.ShowRegularAd();
-        else
-            Engine.Events.AdNotReady(PlacementType.interstitial);
+        Engine.Events.AdNotReady(PlacementType.interstitial);
     }
     private static void HandleChashHappened()
     {
         currentSession.state = GameSessionState.Lost;
         //currentSession.paused = true;
-        if (currentSession.adController.isRegularVideoReady)
-            currentSession.adController.ShowRegularAd();
-        else
-            Engine.Events.AdNotReady(PlacementType.interstitial);
+        Engine.Events.AdNotReady(PlacementType.interstitial);
     }
     private static void OnAdFinished(PlacementType type)
     {
@@ -278,8 +227,6 @@ public static class Engine
                 Engine.Events.GameSessionStateChanged(_state);
             }
         }
-        public AdMobController adController
-        { get; private set; }
         public int rewardAmount
         {
             get
@@ -327,46 +274,7 @@ public static class Engine
             level = lvl;
             state = GameSessionState.InProgress;
             paused = false;
-            adController = new GameObject().AddComponent<AdMobController>();
-            adController.gameObject.name = "AdMobController";
-            ////Advertisement.AddListener(this); UNCOMMENT TO IMPLEMENT UNITY ADS
-        }        
-        public void Close()
-        {
-            //Advertisement.RemoveListener(this); UNCOMMENT TO IMPLEMENT UNITY ADS
         }
-
-        //UNCOMMENT TO IMPLEMENT UNITY ADS
-        //public void OnUnityAdsReady(string placementId)
-        //{
-        //    if (placementId == PlacementType.banner.ToString())
-        //        Advertisement.Banner.Show(PlacementType.banner.ToString());
-        //    Debug.Log(placementId + " ready");
-        //}
-        //public void OnUnityAdsDidError(string message)
-        //{
-        //    GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, message);
-        //}
-        //public void OnUnityAdsDidFinish(string placementId, ShowResult showResult)
-        //{
-        //    Logger.UpdateContent(UILogDataType.Monetization, placementId + " " + showResult, true, true);
-        //    if (placementId == PlacementType.rewardedVideo.ToString())
-        //        if (showResult == ShowResult.Finished)
-        //        {
-        //            ExtraRewardReceoved = true;
-        //            Events.ExtraRewardReceived();
-        //        }
-        //    if (placementId == PlacementType.video.ToString())
-        //    {
-        //        if (state == GameSessionState.Won)
-        //            SwitchLevel();
-        //        if (state == GameSessionState.Lost)
-        //            RestartLevel();
-        //    }
-        //}
-        //public void OnUnityAdsDidStart(string placementId)
-        //{
-        //}
     }
 
     #region Metadata models versions
