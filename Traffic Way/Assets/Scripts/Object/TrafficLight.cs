@@ -16,8 +16,8 @@ public class TrafficLight : MonoBehaviour
 
     public static void LoadResources()
     {
-        TLYellow = Resources.Load<Texture2D>("TrafficWay/Objects/TrafficLight/TLYellow");
-        TLGreen = Resources.Load<Texture2D>("TrafficWay/Objects/TrafficLight/TLGreen");
+        TLYellow = Resources.Load<Texture2D>("TrafficWay/Textures/Objects/TrafficLight/TLYellow");
+        TLGreen = Resources.Load<Texture2D>("TrafficWay/Textures/Objects/TrafficLight/TLGreen");
     }
     public void StopLineCrossed()
     {

@@ -6,7 +6,7 @@ public class Bullet : MonoBehaviour
 {
     void Update()
     {
-        transform.Translate(Vector2.up * Settings.bulletSpeed * Time.deltaTime);
+        if(!Engine.paused) transform.Translate(Vector2.up * (Settings.bulletSpeed + CarDriver.currentSpeed)* Time.deltaTime);
     }
     void OnBecameInvisible()
     {

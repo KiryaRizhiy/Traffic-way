@@ -4,11 +4,24 @@ using UnityEngine;
 
 public class CarDriver : MonoBehaviour
 {
+    public static GameObject CurrentCar
+    { get; private set; }
+    public static float currentSpeed
+    {
+        get;
+        private set;
+    }
+
     private bool crashed = false;
-    private float currentSpeed;
+
+    void Awake()
+    {
+        CurrentCar = gameObject;
+    }
 
     void Start()
     {
+        transform.localScale = Settings.carsScale;
         currentSpeed = 0f;
         Engine.Events.crashHappened += OnCrhashHappened;
         if (Settings.testMode) Functions.DrawPolygonCollider(GetComponent<PolygonCollider2D>());
@@ -36,6 +49,7 @@ public class CarDriver : MonoBehaviour
 
     void OnDestroy()
     {
+        CurrentCar = null;
         Engine.Events.crashHappened -= OnCrhashHappened;
     }
 
