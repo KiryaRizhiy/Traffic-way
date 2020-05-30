@@ -44,6 +44,8 @@ public static class Settings
     public const float bulletSpeed = 19f;
     public const float shootFrequency = 0.2f;
     public const float trafficLightSwitchSpeed = 1.3f;
+    public const int coinMakerTickMinutes = 30;
+    public const int paidTicksLimit = 24;
     public static Vector3 carsScale
     {
         get

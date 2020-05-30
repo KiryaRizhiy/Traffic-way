@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Advertisements;
 using UnityEngine.EventSystems;
 
@@ -10,6 +11,11 @@ public class UserInteraction : MonoBehaviour
     {
         get;
         private set;
+    }
+    private GarageCoinMakerType currentCoinMakerType;
+    private Transform GarageUpgradePurchasePanel
+    {
+        get { return transform.GetChild(0).GetChild(5); }
     }
 
     void Update()
@@ -78,5 +84,38 @@ public class UserInteraction : MonoBehaviour
     public void ClearSaveFile()
     {
         Engine.ClearSaveFile();
+    }
+    public void CoinMakerUpgradeRequest(GarageCoinMakerType type)
+    {
+        currentCoinMakerType = type;
+        GarageUpgradePurchasePanel.GetChild(0).GetComponent<Image>().sprite =
+            Sprite.Create(Engine.meta.Garage.GetCoinMaker(type).futureTexture
+            , new Rect(0.0f, 0.0f, Engine.meta.Garage.GetCoinMaker(type).futureTexture.width, Engine.meta.Garage.GetCoinMaker(type).futureTexture.height)
+            , new Vector2(0.5f, 0.5f)
+            , 100f);
+        GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().text = Engine.meta.Garage.GetCoinMaker(type).updatePrice.ToString();
+        if (Engine.meta.coinsCount < Engine.meta.Garage.GetCoinMaker(type).updatePrice)
+        {
+            GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().color = Color.red;
+            GarageUpgradePurchasePanel.GetChild(2).GetChild(0).GetComponent<Text>().text = "Play to buy!";
+        }
+        else
+        {
+            GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().color = Color.white;
+            GarageUpgradePurchasePanel.GetChild(2).GetChild(0).GetComponent<Text>().text = "Upgrade";
+        }
+        GarageUpgradePurchasePanel.gameObject.SetActive(true);
+    }
+    public void CancelCoinMakerUpgrade()
+    {
+        GarageUpgradePurchasePanel.gameObject.SetActive(false);
+    }
+    public void PurchaseCoinMakerUpgrade()
+    {
+        GarageUpgradePurchasePanel.gameObject.SetActive(false);
+        if (Engine.meta.coinsCount < Engine.meta.Garage.GetCoinMaker(currentCoinMakerType).updatePrice)
+            Play();
+        else
+            Engine.meta.Garage.UpgradeCoinMaker(currentCoinMakerType);
     }
 }
