@@ -26,19 +26,26 @@ public class CoinMaker : MonoBehaviour
     }
     public void Draw()
     {
-        GetComponent<Image>().sprite = Sprite.Create(Engine.meta.Garage.GetCoinMaker(type).currentTexture
-            , new Rect(0.0f, 0.0f, Engine.meta.Garage.GetCoinMaker(type).currentTexture.width, Engine.meta.Garage.GetCoinMaker(type).currentTexture.height)
-            , new Vector2(0.5f, 0.5f)
-            , 100.0f);
+        try
+        {
+            GetComponent<Image>().sprite = Sprite.Create(Engine.meta.garage.GetCoinMaker(type).currentTexture
+                , new Rect(0.0f, 0.0f, Engine.meta.garage.GetCoinMaker(type).currentTexture.width, Engine.meta.garage.GetCoinMaker(type).currentTexture.height)
+                , new Vector2(0.5f, 0.5f)
+                , 100.0f);
             //Engine.meta.Garage.GetCoinMaker(type).currentTexture;
-        if (Engine.meta.Garage.GetCoinMaker(type).currentProfit == 0)
-        {
-            transform.GetChild(1).gameObject.SetActive(false);
+            if (Engine.meta.garage.GetCoinMaker(type).currentProfit == 0)
+            {
+                transform.GetChild(1).gameObject.SetActive(false);
+            }
+            else
+            {
+                transform.GetChild(1).gameObject.SetActive(true);
+                transform.GetChild(1).GetChild(0).GetComponent<Text>().text = Engine.meta.garage.GetCoinMaker(type).currentProfit.ToString();
+            }
         }
-        else
+        catch (System.Exception e)
         {
-            transform.GetChild(1).gameObject.SetActive(true);
-            transform.GetChild(1).GetChild(0).GetComponent<Text>().text = Engine.meta.Garage.GetCoinMaker(type).currentProfit.ToString();
+            Logger.AddContent(UILogDataType.Init,"Coin maker " + type.ToString() + " exception " + e.Message + Environment.NewLine + "trace: " + e.StackTrace);
         }
     }
     public void GaragePurchaseHandler(GarageCoinMakerType Type)
@@ -48,18 +55,20 @@ public class CoinMaker : MonoBehaviour
     }
     public void Tap()
     {
-        if (Engine.meta.Garage.GetCoinMaker(type).currentProfit == 0)
+        if (Engine.meta.garage.GetCoinMaker(type).currentProfit == 0)
             UI.CoinMakerUpgradeRequest(type);
         else
-            Engine.meta.Garage.CollectProfit(type);
+            Engine.meta.garage.CollectProfit(type);
     }
 
     void Update()
     {
-        if (Engine.meta.Garage.GetCoinMaker(type).currentProfit / Engine.meta.Garage.GetCoinMaker(type).profitRate == Settings.paidTicksLimit)
+        if (Engine.meta.garage.GetCoinMaker(type).level == 0)
             return;
-        if (DateTime.UtcNow <= new DateTime(Engine.meta.Garage.GetCoinMaker(type).lastCoinCollect)
-        + new TimeSpan(0, ((Engine.meta.Garage.GetCoinMaker(type).currentProfit / Engine.meta.Garage.GetCoinMaker(type).profitRate) + 1) * Settings.coinMakerTickMinutes, 0)) ;
+        if (Engine.meta.garage.GetCoinMaker(type).currentProfit / Engine.meta.garage.GetCoinMaker(type).profitRate == Settings.paidTicksLimit)
+            return;
+        if (DateTime.UtcNow <= new DateTime(Engine.meta.garage.GetCoinMaker(type).lastCoinCollect)
+        + new TimeSpan(0, ((Engine.meta.garage.GetCoinMaker(type).currentProfit / Engine.meta.garage.GetCoinMaker(type).profitRate) + 1) * Settings.coinMakerTickMinutes, 0)) ;
         Draw();
     }
 }

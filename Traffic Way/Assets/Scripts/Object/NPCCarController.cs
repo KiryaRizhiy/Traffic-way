@@ -21,9 +21,24 @@ public class NPCCarController : MonoBehaviour
                 //Logger.UpdateContent(UILogDataType.GameState, "Car crashed with " + gameObject.name);
                 if (!crashed)
                 {
-                    crashed = true;
-                    _drv.Crash();
-                    Engine.Events.CrashHappened();
+                    if (_drv.destroyShield)
+                    {
+                        if (Engine.meta.car.hasShield)
+                            Engine.Events.ShieldDestroyed();
+                        else
+                            Engine.Events.CrashHappened();
+                    }
+                    else
+                    {
+                        if (Engine.meta.car.hasShield)
+                            _drv.ShieldHit();
+                        else
+                        {
+                            crashed = true;
+                            _drv.Crash();
+                            Engine.Events.CrashHappened();
+                        }
+                    }
                 }
                 break;
             case "Bullet":

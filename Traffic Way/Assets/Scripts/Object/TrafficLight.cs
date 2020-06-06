@@ -21,7 +21,11 @@ public class TrafficLight : MonoBehaviour
     }
     public void StopLineCrossed()
     {
-        if (!isGreen) Engine.Events.CrashHappened();
+        if (!isGreen)
+            if (Engine.meta.car.hasShield)
+                Engine.Events.ShieldDestroyed();
+            else
+                Engine.Events.CrashHappened();
     }
 
     void Start()

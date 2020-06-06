@@ -17,6 +17,22 @@ public class UserInteraction : MonoBehaviour
     {
         get { return transform.GetChild(0).GetChild(5); }
     }
+    private Transform TVRewardPanel
+    {
+        get { return transform.GetChild(0).GetChild(6); }
+    }
+    private Transform TVAdsDemonstrationConfirmationPanel
+    {
+        get { return transform.GetChild(0).GetChild(7); }
+    }
+    private Transform NitroAdsDemonstrationConfirmationPanel
+    {
+        get { return transform.GetChild(0).GetChild(8); }
+    }
+    private Transform NitroRewardPanel
+    {
+        get { return transform.GetChild(0).GetChild(9); }
+    }
 
     void Update()
     {
@@ -88,21 +104,30 @@ public class UserInteraction : MonoBehaviour
     public void CoinMakerUpgradeRequest(GarageCoinMakerType type)
     {
         currentCoinMakerType = type;
+        if (!Engine.meta.garage.GetCoinMaker(type).updatable)
+            return;
         GarageUpgradePurchasePanel.GetChild(0).GetComponent<Image>().sprite =
-            Sprite.Create(Engine.meta.Garage.GetCoinMaker(type).futureTexture
-            , new Rect(0.0f, 0.0f, Engine.meta.Garage.GetCoinMaker(type).futureTexture.width, Engine.meta.Garage.GetCoinMaker(type).futureTexture.height)
+            Sprite.Create(Engine.meta.garage.GetCoinMaker(type).futureTexture
+            , new Rect(0.0f, 0.0f, Engine.meta.garage.GetCoinMaker(type).futureTexture.width, Engine.meta.garage.GetCoinMaker(type).futureTexture.height)
             , new Vector2(0.5f, 0.5f)
             , 100f);
-        GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().text = Engine.meta.Garage.GetCoinMaker(type).updatePrice.ToString();
-        if (Engine.meta.coinsCount < Engine.meta.Garage.GetCoinMaker(type).updatePrice)
+        GarageUpgradePurchasePanel.GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>().text = Engine.meta.garage.GetCoinMaker(type).updatePrice.ToString();
+        if (Engine.meta.coinsCount < Engine.meta.garage.GetCoinMaker(type).updatePrice)
         {
-            GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().color = Color.red;
-            GarageUpgradePurchasePanel.GetChild(2).GetChild(0).GetComponent<Text>().text = "Play to buy!";
+            GarageUpgradePurchasePanel.GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>().color = Color.red;
+            if (Engine.meta.garage.TVAbleToShow)
+            {
+                GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().text = "Watch Ads for more coins!";
+            }
+            else
+            {
+                GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().text = "Play to buy!";
+            }
         }
         else
         {
-            GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().color = Color.white;
-            GarageUpgradePurchasePanel.GetChild(2).GetChild(0).GetComponent<Text>().text = "Upgrade";
+            GarageUpgradePurchasePanel.GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>().color = Color.white;
+            GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().text = "Upgrade";
         }
         GarageUpgradePurchasePanel.gameObject.SetActive(true);
     }
@@ -113,9 +138,57 @@ public class UserInteraction : MonoBehaviour
     public void PurchaseCoinMakerUpgrade()
     {
         GarageUpgradePurchasePanel.gameObject.SetActive(false);
-        if (Engine.meta.coinsCount < Engine.meta.Garage.GetCoinMaker(currentCoinMakerType).updatePrice)
-            Play();
+        if (Engine.meta.coinsCount < Engine.meta.garage.GetCoinMaker(currentCoinMakerType).updatePrice)
+        {
+            if (Engine.meta.garage.TVAbleToShow)
+                ShowTVAds();
+            else
+                Play();
+        }
         else
-            Engine.meta.Garage.UpgradeCoinMaker(currentCoinMakerType);
+            Engine.meta.garage.UpgradeCoinMaker(currentCoinMakerType);
     }
+
+    public void RequestConfirmNitroAdsDemonstration()
+    {
+        if (!Engine.meta.car.isBoosted /*&& AdMobController.isRewardedVideoReady*/)
+            NitroAdsDemonstrationConfirmationPanel.gameObject.SetActive(true);
+    }
+    public void DeclineNitroAdsDemonstration()
+    {
+        NitroAdsDemonstrationConfirmationPanel.gameObject.SetActive(false);
+    }
+    public void ShowNitroAds()
+    {
+        NitroAdsDemonstrationConfirmationPanel.gameObject.SetActive(false);
+        AdMobController.ShowRewardedAd();
+        NitroRewardPanel.gameObject.SetActive(true);
+    }
+    public void CollectNitroWatchReward()
+    {
+        Engine.meta.car.BoostOn();
+        NitroRewardPanel.gameObject.SetActive(false);
+    }
+
+
+    public void RequestConfirmTVAdsDemonstration()
+    {
+        TVAdsDemonstrationConfirmationPanel.gameObject.SetActive(true);
+    }
+    public void DeclineTVAdsDemonstration()
+    {
+        TVAdsDemonstrationConfirmationPanel.gameObject.SetActive(false);
+    }
+    public void ShowTVAds()
+    {
+        TVAdsDemonstrationConfirmationPanel.gameObject.SetActive(false);
+        AdMobController.ShowRewardedAd();
+        TVRewardPanel.gameObject.SetActive(true);
+    }
+    public void CollectTVWatchReward()
+    {
+        Engine.meta.garage.TVWatched();
+        TVRewardPanel.gameObject.SetActive(false);
+    }
+
 }

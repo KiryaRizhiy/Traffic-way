@@ -26,4 +26,13 @@ public static class Functions
             collider.points[i] = collider.points[i] * scaleChange;
         }
     }
+    public static string EnumerableAsString(IEnumerable enumerable, char separator = '|')
+    {
+        string _s = "";
+        foreach (System.Object _o in enumerable)
+        {
+            _s += separator + _o.ToString() + separator;
+        }
+        return _s;
+    }
 }
