@@ -8,7 +8,7 @@ public class CoinPicker : MonoBehaviour
     {
         if (collider.tag == Tags.Car.ToString())
         {
-            Engine.AddCoins(1);
+            Engine.CoinCollected();
             Destroy(gameObject, 0.05f);
         }
     }

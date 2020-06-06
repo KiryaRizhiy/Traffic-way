@@ -7,6 +7,7 @@ public class ShowCoins : MonoBehaviour
     void Awake()
     {
         Engine.Events.initialized += Show;
+        Engine.Events.onGarageStateChanged += GaragePurchaseHandler;
         Show();
     }
     public void Show()
@@ -16,8 +17,13 @@ public class ShowCoins : MonoBehaviour
         else
             GetComponent<Text>().text = "0";
     }
+    public void GaragePurchaseHandler(GarageCoinMakerType type)
+    {
+        Show();
+    }
     void OnDestroy()
     {
         Engine.Events.initialized -= Show;
+        Engine.Events.onGarageStateChanged -= GaragePurchaseHandler;
     }
 }

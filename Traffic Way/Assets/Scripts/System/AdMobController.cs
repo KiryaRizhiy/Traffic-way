@@ -6,7 +6,7 @@ using GoogleMobileAds.Api;
 
 public class AdMobController : MonoBehaviour
 {
-    public bool isRegularVideoReady
+    public static bool isRegularVideoReady
     {
         get
         {
@@ -16,7 +16,7 @@ public class AdMobController : MonoBehaviour
                 return false;
         }
     }
-    public bool isRewardedVideoReady
+    public static bool isRewardedVideoReady
     {
         get
         {
@@ -27,16 +27,16 @@ public class AdMobController : MonoBehaviour
         }
     }
 
-    private BannerView banner;
-    private InterstitialAd interstitial;
-    private RewardBasedVideoAd rewarded;
-    private AdRequest request;
+    private static BannerView banner;
+    private static InterstitialAd interstitial;
+    private static RewardBasedVideoAd rewarded;
+    private static AdRequest request;
 
-    public void ShowRegularAd()
+    public static void ShowRegularAd()
     {
         interstitial.Show();
     }
-    public void ShowRewardedAd()
+    public static void ShowRewardedAd()
     {
         rewarded.Show();
     }

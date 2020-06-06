@@ -5,6 +5,7 @@ using UnityEngine;
 public class NPCCarDriver : MonoBehaviour
 {
     public int hitpoints;
+    public bool destroyShield;
     public float moveSpeed;
     public float rotationSpeed;
     public CarMoveType moveType;
@@ -87,6 +88,11 @@ public class NPCCarDriver : MonoBehaviour
             StopAllCoroutines();
             Destroy(car);
         }
+    }
+    public void ShieldHit()
+    {
+        StopAllCoroutines();
+        Destroy(car);
     }
 
     private void Validate()
