@@ -33,6 +33,13 @@ public class UserInteraction : MonoBehaviour
     {
         get { return transform.GetChild(0).GetChild(9); }
     }
+    private Transform CarSelectPanel
+    {
+        get
+        {
+            return transform.GetChild(0).GetChild(10);
+        }
+    }
 
     void Update()
     {
@@ -53,6 +60,7 @@ public class UserInteraction : MonoBehaviour
         else
             gas = false;
     }
+
     public void NextLevel()
     {
         Engine.LevelDone();
@@ -96,6 +104,11 @@ public class UserInteraction : MonoBehaviour
     public void Quit()
     {
         Engine.Quit();
+    }
+    public void ShowCarSelectPanel()
+    {
+        CarSelectPanel.gameObject.SetActive(true);
+        CarSelectPanel.GetComponent<CarSelectInterface>().Open();
     }
     public void ClearSaveFile()
     {
@@ -170,7 +183,6 @@ public class UserInteraction : MonoBehaviour
         NitroRewardPanel.gameObject.SetActive(false);
     }
 
-
     public void RequestConfirmTVAdsDemonstration()
     {
         TVAdsDemonstrationConfirmationPanel.gameObject.SetActive(true);
@@ -190,5 +202,4 @@ public class UserInteraction : MonoBehaviour
         Engine.meta.garage.TVWatched();
         TVRewardPanel.gameObject.SetActive(false);
     }
-
 }

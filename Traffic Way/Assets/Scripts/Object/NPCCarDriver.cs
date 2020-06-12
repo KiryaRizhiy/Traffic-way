@@ -6,6 +6,7 @@ public class NPCCarDriver : MonoBehaviour
 {
     public int hitpoints;
     public bool destroyShield;
+    public bool stopOnCrash;
     public float moveSpeed;
     public float rotationSpeed;
     public CarMoveType moveType;
