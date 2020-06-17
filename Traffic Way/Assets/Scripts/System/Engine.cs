@@ -58,6 +58,33 @@ public static class Engine
                 return true;
         }
     }
+    public static bool newCarAppearenceReceivedInCurrentSession
+    {
+        get
+        {
+            if (currentSession == null)
+                return false;
+            else
+                return currentSession.NewCarAppearenceReceived;
+        }
+    }
+    public static bool extraRewardReceivedInCurrentSession
+    {
+        get
+        {
+            if (currentSession == null)
+                return false;
+            else
+                return currentSession.ExtraRewardRequired;
+        }
+    }
+    public static bool isInPlayMode
+    {
+        get
+        {
+            return currentSession != null;
+        }
+    }
     public static int rewardAmount
     {
         get
@@ -75,25 +102,10 @@ public static class Engine
         get;
         private set;
     }
-    public static Texture2D nextPassedAppearenceTexture
+    public static bool initialized
     {
-        get
-        {
-            if (meta.car.nextPassedAppearenceNum == -1)
-                return null;
-            else
-                return CarsAppearences[meta.car.nextPassedAppearenceNum];
-        }
-    }
-    public static Texture2D nextPassedAppearenceShadowTexture
-    {
-        get
-        {
-            if (meta.car.nextPassedAppearenceNum == -1)
-                return null;
-            else
-                return CarAppearencesShadows[meta.car.nextPassedAppearenceNum];
-        }
+        get;
+        private set;
     }
     internal static GameData meta;
     private static int totalHandcraftLevelsAmount
@@ -130,6 +142,7 @@ public static class Engine
         TrafficLight.LoadResources();
         LevelGenerator.LoadResources();
         CarSelectInterface.LoadResources();
+        initialized = true;
     }
     public static void InitializeTest()
     {
@@ -174,6 +187,13 @@ public static class Engine
         Save();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+    public static void ToMainMenu()
+    {
+        Save();
+        currentSession.Close();
+        currentSession = null;
+        SceneManager.LoadScene(0);
+    }
     public static void Quit()
     {
         if (currentSession.state == GameSessionState.Won || currentSession.state == GameSessionState.Passed)
@@ -194,10 +214,10 @@ public static class Engine
     }
     public static CarAppearenceState GetAppearenceState(int appNum)
     {
-        if (meta.car.passedAppearences.FindAll(x => x == appNum).Count > 0)
-            return CarAppearenceState.Passed;
         if (meta.car.unlockedAppearences.FindAll(x => x == appNum).Count > 0)
             return CarAppearenceState.Unlocked;
+        if (meta.car.passedAppearences.FindAll(x => x == appNum).Count > 0)
+            return CarAppearenceState.Passed;
         if (appNum < CarsAppearences.Count)
             return CarAppearenceState.Locked;
         return CarAppearenceState.Missing;
@@ -364,8 +384,20 @@ public static class Engine
     {
         if (type == PlacementType.rewardedVideo && currentSession != null)
         {
-            currentSession.ExtraRewardRequired = true;
-            Events.ExtraRewardReceived();
+            if (meta.car.previousNextAppearenceProgress > 0 && meta.car.nextAppearenceProgress == 0 && !currentSession.NewCarAppearenceReceived)
+            {
+                if (meta.car.nextPassedAppearenceNum != -1)
+                    meta.car.UnlockAppearence(meta.car.nextPassedAppearenceNum - 1, true);
+                else
+                    meta.car.UnlockAppearence(CarsAppearences.Count - 1);
+                currentSession.NewCarAppearenceReceived = true;
+                Events.NewCarAppearenceReceived();
+            }
+            else
+            {
+                currentSession.ExtraRewardRequired = true;
+                Events.ExtraRewardReceived();
+            }
         }
     }
 
@@ -405,6 +437,7 @@ public static class Engine
             }
         }
         public bool ExtraRewardRequired;
+        public bool NewCarAppearenceReceived;
         public bool paused
         {
             get
@@ -502,6 +535,8 @@ public static class Engine
             _version = Version;
             garage = new GarageData();
             car = new CarData();
+            if (Settings.testMode)
+                coinsCount = 5000;
         }
 
         [Serializable]
@@ -510,9 +545,18 @@ public static class Engine
             public bool isBoosted;
             public List<int> unlockedAppearences;
             public List<int> passedAppearences;
-            public int currentAppearenceNum;
+            public int currentAppearenceNum
+            {
+                get { return _currentAppearenceNum; }
+                set
+                {
+                    _currentAppearenceNum = value;
+                    Events.CarAppearenceChanged();
+                }
+            }
             public int nextAppearenceProgress;
             public int previousNextAppearenceProgress;
+            private int _currentAppearenceNum;
             public bool hasShield
             {
                 get;
@@ -552,8 +596,8 @@ public static class Engine
             {
                 get
                 {
-                    if (unlockedAppearences.Max() < CarsAppearences.Count)
-                        return unlockedAppearences.Max() + 1;
+                    if (passedAppearences.Max() < CarsAppearences.Count - 1)
+                        return passedAppearences.Max() + 1;
                     else
                         return -1;
                 }
@@ -572,13 +616,29 @@ public static class Engine
             {
                 hasShield = false;
             }
+            public void UnlockAppearence(int appNum,bool setAsCurrent = false)
+            {
+                unlockedAppearences.Add(appNum);
+                if (setAsCurrent)
+                    currentAppearenceNum = appNum;
+            }
+            public void SwitchCurrentAppearenceTo(int appNum)
+            {
+                currentAppearenceNum = appNum;
+            }
             public void ProgressReached()
             {
+                if (nextPassedAppearenceNum == -1)
+                {
+                    previousNextAppearenceProgress = -1;
+                    nextAppearenceProgress = -1;
+                    return;
+                }
                 previousNextAppearenceProgress = nextAppearenceProgress;
                 nextAppearenceProgress += Settings.levelCarProgress;
                 if (nextAppearenceProgress >= 100)
                 {
-                    unlockedAppearences.Add(nextPassedAppearenceNum);
+                    passedAppearences.Add(nextPassedAppearenceNum);
                     nextAppearenceProgress = 0;
                 }
             }
@@ -750,6 +810,8 @@ public static class Engine
         public static event Fact crashHappened;
         public static event Fact shieldDestroyed;
         public static event Fact extraRewardReceived;
+        public static event Fact newCarAppearenceReceived;
+        public static event Fact carAppearenceChanged;
         public static event Fact initialized;
         public static event Fact paused;
         public static event Fact unpaused;
@@ -776,6 +838,18 @@ public static class Engine
             Debug.Log("Finish line reached");
             if (finishLineReached != null)
                 finishLineReached();
+        }
+        public static void NewCarAppearenceReceived()
+        {
+            Debug.Log("New car appearence received");
+            if (newCarAppearenceReceived != null)
+                newCarAppearenceReceived();
+        }
+        public static void CarAppearenceChanged()
+        {
+            Debug.Log("Car appearence changed");
+            if (carAppearenceChanged != null)
+                carAppearenceChanged();
         }
         public static void ExtraRewardReceived()
         {

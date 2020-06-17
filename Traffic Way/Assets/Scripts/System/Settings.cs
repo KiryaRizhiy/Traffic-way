@@ -52,7 +52,7 @@ public static class Settings
     public const int TVWatchReward = 15;
     public const int levelCarProgress = 51;
     public const float carProgressDemoTime = 0.8f;
-    public const float carProgressPauseTime = 0.2f;
+    public const float carProgressPauseTime = 0.1f;
     public static Vector3 carsScale
     {
         get
