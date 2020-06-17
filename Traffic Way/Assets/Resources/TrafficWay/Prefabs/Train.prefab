@@ -695,6 +695,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitpoints: 10
+  destroyShield: 1
+  notStopOnCrash: 1
   moveSpeed: 26
   rotationSpeed: 0
   moveType: 0

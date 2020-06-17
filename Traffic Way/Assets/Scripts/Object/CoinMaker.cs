@@ -18,6 +18,8 @@ public class CoinMaker : MonoBehaviour
         lastInfoUpdate = DateTime.UtcNow;
         Engine.Events.initialized += Draw;
         Engine.Events.onGarageStateChanged += GaragePurchaseHandler;
+        if (Engine.initialized)
+            Draw();
     }
     void OnDestroy()
     {
@@ -46,6 +48,7 @@ public class CoinMaker : MonoBehaviour
         catch (System.Exception e)
         {
             Logger.AddContent(UILogDataType.Init,"Coin maker " + type.ToString() + " exception " + e.Message + Environment.NewLine + "trace: " + e.StackTrace);
+            Debug.LogError(e);
         }
     }
     public void GaragePurchaseHandler(GarageCoinMakerType Type)

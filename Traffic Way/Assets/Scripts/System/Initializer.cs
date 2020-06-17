@@ -9,6 +9,8 @@ public class Initializer : MonoBehaviour
 {
     void Start()
     {
+        if (Engine.initialized)
+            return;
         //Logger.UpdateContent(UILogDataType.Init,"Game analytics initialization");
         GameAnalytics.Initialize();
         //Logger.AddContent(UILogDataType.Init, "Game analytics initialized");

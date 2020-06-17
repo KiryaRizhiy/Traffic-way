@@ -16,7 +16,6 @@ public class TVSetController : MonoBehaviour
         else
             GetComponent<Animator>().SetBool("isActive", false);
     }
-
     public void Tap()
     {
         if (Engine.meta.garage.TVAbleToShow)

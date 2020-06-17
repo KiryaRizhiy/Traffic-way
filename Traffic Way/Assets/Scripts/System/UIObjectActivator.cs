@@ -12,8 +12,9 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         adsVideoFinished, adsInterstitialFinished, adsRewardedVideoFinished,
         adsVideoFailed, adsInterstitialFailed, adsRewardedVideoFailed,
         extraRewardReceived, 
-        gameWon, gameLost, gamePassed,gamePaused,gameUnpaused }
-    public enum ActivatorTargetConditions {none, gameInProgress, gameWon, gameLost, gamePassed }
+        gameWon, gameLost, gamePassed,gamePaused,gameUnpaused,
+        newCarAppeareenceReceived}
+    public enum ActivatorTargetConditions { none, gameInProgress, gameWon, gameLost, gamePassed, readyToGiveNewCarAppearence, newCarAppearenceReceived, notReadyToGiveNewCarAppearence }
     public enum ActivatorActionType { activate, deactivate }
 
     public List<ActivatorTargetEvent> ActivationEventList;
@@ -44,6 +45,7 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         Engine.Events.adNotReady += OnAdNotReady;
         Engine.Events.paused += OnPause;
         Engine.Events.unpaused += OnUnpause;
+        Engine.Events.newCarAppearenceReceived += OnNewCarAppearenceReceived;
     }
     void OnDestroy()
     {
@@ -57,6 +59,7 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         Engine.Events.adNotReady -= OnAdNotReady;
         Engine.Events.paused -= OnPause;
         Engine.Events.unpaused -= OnUnpause;
+        Engine.Events.newCarAppearenceReceived -= OnNewCarAppearenceReceived;
     }
 
     //UNCOMMENT TO IMPLEMENT UNITY ADS
@@ -248,6 +251,13 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
             if (DeactivationEventList.Contains(ActivatorTargetEvent.extraRewardReceived))
                 PerformAction(ActivatorActionType.deactivate);
     }
+    public void OnNewCarAppearenceReceived()
+    {
+        if (ActivationEventList.Contains(ActivatorTargetEvent.newCarAppeareenceReceived))
+            PerformAction(ActivatorActionType.activate);
+        if (DeactivationEventList.Contains(ActivatorTargetEvent.newCarAppeareenceReceived))
+            PerformAction(ActivatorActionType.deactivate);
+    }
 
     private void PerformAction(ActivatorActionType action)
     {
@@ -260,7 +270,10 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
                     (ActivationConditions.Contains(ActivatorTargetConditions.gameInProgress) && Engine.sessionState == GameSessionState.InProgress) ||
                     (ActivationConditions.Contains(ActivatorTargetConditions.gameWon) && Engine.sessionState == GameSessionState.Won) ||
                     (ActivationConditions.Contains(ActivatorTargetConditions.gameLost) && Engine.sessionState == GameSessionState.Lost) ||
-                    (ActivationConditions.Contains(ActivatorTargetConditions.gamePassed) && Engine.sessionState == GameSessionState.Passed)
+                    (ActivationConditions.Contains(ActivatorTargetConditions.gamePassed) && Engine.sessionState == GameSessionState.Passed) ||
+                    (ActivationConditions.Contains(ActivatorTargetConditions.readyToGiveNewCarAppearence) && (Engine.meta.car.nextAppearenceProgress == 0 && Engine.meta.car.previousNextAppearenceProgress >= 0)) ||
+                    (ActivationConditions.Contains(ActivatorTargetConditions.notReadyToGiveNewCarAppearence) && !(Engine.meta.car.nextAppearenceProgress == 0 && Engine.meta.car.previousNextAppearenceProgress >= 0)) ||
+                    (ActivationConditions.Contains(ActivatorTargetConditions.newCarAppearenceReceived) && Engine.newCarAppearenceReceivedInCurrentSession)
                 )
             ) ||
             (
@@ -271,7 +284,10 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
                     (DeactivationConditions.Contains(ActivatorTargetConditions.gameInProgress) && Engine.sessionState == GameSessionState.InProgress) ||
                     (DeactivationConditions.Contains(ActivatorTargetConditions.gameWon) && Engine.sessionState == GameSessionState.Won) ||
                     (DeactivationConditions.Contains(ActivatorTargetConditions.gameLost) && Engine.sessionState == GameSessionState.Lost) ||
-                    (DeactivationConditions.Contains(ActivatorTargetConditions.gamePassed) && Engine.sessionState == GameSessionState.Passed)
+                    (DeactivationConditions.Contains(ActivatorTargetConditions.gamePassed) && Engine.sessionState == GameSessionState.Passed) ||
+                    (ActivationConditions.Contains(ActivatorTargetConditions.readyToGiveNewCarAppearence) && (Engine.meta.car.nextAppearenceProgress == 0 && Engine.meta.car.previousNextAppearenceProgress >= 0)) ||
+                    (ActivationConditions.Contains(ActivatorTargetConditions.notReadyToGiveNewCarAppearence) && !(Engine.meta.car.nextAppearenceProgress == 0 && Engine.meta.car.previousNextAppearenceProgress >= 0)) ||
+                    (ActivationConditions.Contains(ActivatorTargetConditions.newCarAppearenceReceived) && Engine.newCarAppearenceReceivedInCurrentSession)
                 )
             )
           )

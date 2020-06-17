@@ -50,6 +50,9 @@ public static class Settings
     public const int paidTicksLimit = 24;
     public const int TVCooldownMinutes = 1;
     public const int TVWatchReward = 15;
+    public const int levelCarProgress = 51;
+    public const float carProgressDemoTime = 0.8f;
+    public const float carProgressPauseTime = 0.1f;
     public static Vector3 carsScale
     {
         get
@@ -63,4 +66,4 @@ public static class Settings
     { get { return savePath + "Save.svg"; } }
 }
 public enum PlacementType { video, rewardedVideo, banner, interstitial }
-public enum Tags {Car,Coin,NPCCar,Bullet}
+public enum Tags { Car, Coin, NPCCar, Bullet }

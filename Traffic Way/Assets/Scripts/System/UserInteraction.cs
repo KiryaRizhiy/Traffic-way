@@ -33,6 +33,27 @@ public class UserInteraction : MonoBehaviour
     {
         get { return transform.GetChild(0).GetChild(9); }
     }
+    private Transform CarSelectPanel
+    {
+        get
+        {
+            return transform.GetChild(0).GetChild(10);
+        }
+    }
+    private Transform CarUnlockConfirmationPanel
+    {
+        get
+        {
+            return CarSelectPanel.GetChild(0).GetChild(2);
+        }
+    }
+    private Transform CarUnlockedPanel
+    {
+        get
+        {
+            return CarSelectPanel.GetChild(0).GetChild(3);
+        }
+    }
 
     void Update()
     {
@@ -52,6 +73,29 @@ public class UserInteraction : MonoBehaviour
             gas = true;
         else
             gas = false;
+    }
+    void Awake()
+    {
+        Engine.Events.initialized += ShowCurrentCar;
+        Engine.Events.carAppearenceChanged += ShowCurrentCar;
+    }
+    void Start()
+    {
+        ShowCurrentCar();
+    }
+    void OnDestroy()
+    {
+        Engine.Events.initialized -= ShowCurrentCar;
+        Engine.Events.carAppearenceChanged -= ShowCurrentCar;
+    }
+
+    public void ShowCurrentCar()
+    {
+        if (gameObject.name == "Interface" && Engine.initialized)
+            transform.GetChild(0).GetChild(1).GetChild(1).GetComponent<Image>().sprite = Sprite.Create(
+                Engine.CarsAppearences[Engine.meta.car.currentAppearenceNum],
+                new Rect(0f, 0f, Engine.CarsAppearences[Engine.meta.car.currentAppearenceNum].width, Engine.CarsAppearences[Engine.meta.car.currentAppearenceNum].height),
+                    Vector2.one * 0.5f);
     }
     public void NextLevel()
     {
@@ -96,6 +140,15 @@ public class UserInteraction : MonoBehaviour
     public void Quit()
     {
         Engine.Quit();
+    }
+    public void ToMainMenu()
+    {
+        Engine.ToMainMenu();
+    }
+    public void ShowCarSelectPanel()
+    {
+        CarSelectPanel.gameObject.SetActive(true);
+        CarSelectPanel.GetComponent<CarSelectInterface>().Open();
     }
     public void ClearSaveFile()
     {
@@ -170,6 +223,22 @@ public class UserInteraction : MonoBehaviour
         NitroRewardPanel.gameObject.SetActive(false);
     }
 
+    public void DeclineCarAdsDemonstration()
+    {
+        CarUnlockConfirmationPanel.gameObject.SetActive(false);
+    }
+    public void ShowCarAds()
+    {
+        CarUnlockConfirmationPanel.gameObject.SetActive(false);
+        AdMobController.ShowRewardedAd();
+        CarUnlockedPanel.gameObject.SetActive(true);
+    }
+    public void CollectCarAdsWatchReward()
+    {
+        CarSelectInterface.UnlockAppearence();
+        CarSelectPanel.GetComponent<CarSelectInterface>().Refresh();
+        CarUnlockedPanel.gameObject.SetActive(false);
+    }
 
     public void RequestConfirmTVAdsDemonstration()
     {
@@ -190,5 +259,4 @@ public class UserInteraction : MonoBehaviour
         Engine.meta.garage.TVWatched();
         TVRewardPanel.gameObject.SetActive(false);
     }
-
 }

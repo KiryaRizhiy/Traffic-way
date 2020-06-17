@@ -247,6 +247,11 @@ PrefabInstance:
       propertyPath: destroyShield
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 234533217085805894, guid: cd60ec872f0b446448795fb7c8105c58,
+        type: 3}
+      propertyPath: stopOnCrash
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2353516284231007538, guid: cd60ec872f0b446448795fb7c8105c58,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -307,9 +312,19 @@ PrefabInstance:
       propertyPath: destroyShield
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2849110303000542142, guid: cd60ec872f0b446448795fb7c8105c58,
+        type: 3}
+      propertyPath: stopOnCrash
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2913233378988797036, guid: cd60ec872f0b446448795fb7c8105c58,
         type: 3}
       propertyPath: destroyShield
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2913233378988797036, guid: cd60ec872f0b446448795fb7c8105c58,
+        type: 3}
+      propertyPath: stopOnCrash
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3432597092985812250, guid: cd60ec872f0b446448795fb7c8105c58,
@@ -561,10 +576,20 @@ PrefabInstance:
       propertyPath: destroyShield
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2384576821996247507, guid: 20ee4d6fa6df7a04abc27ddc7cf7cccc,
+        type: 3}
+      propertyPath: stopOnCrash
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2384576822326507512, guid: 20ee4d6fa6df7a04abc27ddc7cf7cccc,
         type: 3}
       propertyPath: destroyShield
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384576822326507512, guid: 20ee4d6fa6df7a04abc27ddc7cf7cccc,
+        type: 3}
+      propertyPath: stopOnCrash
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7327953534233701432, guid: 20ee4d6fa6df7a04abc27ddc7cf7cccc,
         type: 3}

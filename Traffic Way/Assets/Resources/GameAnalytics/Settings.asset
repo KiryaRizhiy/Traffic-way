@@ -30,7 +30,7 @@ MonoBehaviour:
   secretKey:
   - 3a37ca6850677ecf8f634567881b0ae09944cae3
   Build:
-  - 0.23.0
+  - 0.25.0
   SelectedPlatformStudio:
   - KiryaRizhiy
   SelectedPlatformGame:
@@ -38,16 +38,28 @@ MonoBehaviour:
   SelectedPlatformGameID: 12870100
   SelectedStudio: 01000000
   SelectedGame: 02000000
-  NewVersion: 6.1.5
-  Changes: '6.1.5
+  NewVersion: 6.2.1
+  Changes: '6.2.1
+
+    - added better error messages for API calls potentially being
+    removed in the future
+
+
+    6.2.0
+
+    - exposed functions to get AB testing
+    id and variant id
+
+
+    6.1.5
 
     - fixed bug in ui for settings.asset
 
 
     6.1.4
 
-    - fixed
-    instant app bug(android)
+    -
+    fixed instant app bug(android)
 
     - remember to update your proguard file (https://gameanalytics.com/docs/item/unity-sdk#proguard-only-android)
 

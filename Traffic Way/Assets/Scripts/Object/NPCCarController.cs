@@ -26,7 +26,14 @@ public class NPCCarController : MonoBehaviour
                         if (Engine.meta.car.hasShield)
                             Engine.Events.ShieldDestroyed();
                         else
+                        {
+                            if (!_drv.notStopOnCrash)
+                            {
+                                crashed = true;
+                                _drv.Crash();
+                            }
                             Engine.Events.CrashHappened();
+                        }
                     }
                     else
                     {
@@ -34,8 +41,11 @@ public class NPCCarController : MonoBehaviour
                             _drv.ShieldHit();
                         else
                         {
-                            crashed = true;
-                            _drv.Crash();
+                            if (!_drv.notStopOnCrash)
+                            {
+                                crashed = true;
+                                _drv.Crash();
+                            }
                             Engine.Events.CrashHappened();
                         }
                     }
