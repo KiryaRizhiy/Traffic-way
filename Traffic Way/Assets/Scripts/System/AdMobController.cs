@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using GameAnalyticsSDK;
 using GoogleMobileAds.Api;
 
 public class AdMobController : MonoBehaviour
@@ -34,21 +35,46 @@ public class AdMobController : MonoBehaviour
 
     public static void ShowRegularAd()
     {
-        interstitial.Show();
+        try
+        {
+            interstitial.Show();
+            //GameAnalytics.NewAdEvent(GAAdAction.Request, GAAdType.Interstitial, "AdMob",PlacementType.interstitial.ToString());
+        }
+        catch (Exception e)
+        {
+            GameAnalytics.NewAdEvent(GAAdAction.FailedShow, GAAdType.Interstitial, "AdMob", PlacementType.interstitial.ToString());
+            GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, e.Message + Environment.NewLine + "-------Trace------" + Environment.NewLine + e.StackTrace);
+        }
     }
     public static void ShowRewardedAd()
     {
-        rewarded.Show();
+        try
+        {
+            rewarded.Show();
+            //GameAnalytics.NewAdEvent(GAAdAction.Request, GAAdType.RewardedVideo, "AdMob", PlacementType.rewardedVideo.ToString());
+        }
+        catch (Exception e)
+        {
+            GameAnalytics.NewAdEvent(GAAdAction.FailedShow, GAAdType.RewardedVideo, "AdMob", PlacementType.rewardedVideo.ToString());
+            GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, e.Message + Environment.NewLine + "-------Trace------" + Environment.NewLine + e.StackTrace);
+        }
     }
-
+    
     void Start()
     {
-        Logger.UpdateContent(UILogDataType.Monetization, "Ads initialization start");
-        request = new AdRequest.Builder().Build();
-        loadBanner();
-        loadInterstitial();
-        loadRewarded();
-        Logger.AddContent(UILogDataType.Monetization, "Ads initialized");
+        try
+        {
+            Logger.UpdateContent(UILogDataType.Monetization, "Ads initialization start");
+            request = new AdRequest.Builder().Build();
+            loadBanner();
+            loadInterstitial();
+            loadRewarded();
+            Logger.AddContent(UILogDataType.Monetization, "Ads initialized");
+        }
+        catch (Exception e)
+        {
+            GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, e.Message + Environment.NewLine + "-------Trace------" + Environment.NewLine + e.StackTrace);
+        }
     }
     
     # region Loading ads methods
@@ -127,10 +153,12 @@ public class AdMobController : MonoBehaviour
                             + args.Message);
         Logger.AddContent(UILogDataType.Monetization, "Load fail event handling");
         Engine.Events.AdFailed(PlacementType.banner);
+        GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, "Banner ad load error:" + Environment.NewLine + args.Message);
     }
     public void bannerHandleOnAdOpened(object sender, EventArgs args)
     {
         Engine.Events.AdOpened(PlacementType.banner);
+        GameAnalytics.NewAdEvent(GAAdAction.Show, GAAdType.Banner, "AdMob", PlacementType.banner.ToString());
     }
     public void bannerHandleOnAdClosed(object sender, EventArgs args)
     {
@@ -154,6 +182,7 @@ public class AdMobController : MonoBehaviour
         Debug.Log("HandleFailedToReceiveAd event received with message: "
                             + args.Message);
         Engine.Events.AdFailed(PlacementType.interstitial);
+        GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, "Interstitial ad load error:" + Environment.NewLine + args.Message);
     }
     public void interstitialHandleOnAdOpened(object sender, EventArgs args)
     {
@@ -162,6 +191,7 @@ public class AdMobController : MonoBehaviour
     public void interstitialHandleOnAdClosed(object sender, EventArgs args)
     {
         Engine.Events.AdFinished(PlacementType.interstitial);
+        GameAnalytics.NewAdEvent(GAAdAction.Show, GAAdType.Interstitial, "AdMob", PlacementType.interstitial.ToString());
     }
     public void interstitialHandleOnAdLeavingApplication(object sender, EventArgs args)
     {
@@ -181,6 +211,7 @@ public class AdMobController : MonoBehaviour
         Debug.Log("HandleFailedToReceiveAd event received with message: "
                             + args.Message);
         Engine.Events.AdFailed(PlacementType.rewardedVideo);
+        GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, "Rewarded ad load error:" + Environment.NewLine + args.Message);
     }
     public void rewardedHandleOnAdOpened(object sender, EventArgs args)
     {
@@ -193,6 +224,7 @@ public class AdMobController : MonoBehaviour
     public void rewardedRewardBasedVideoRewarded(object sender, Reward args)
     {
         Engine.Events.AdFinished(PlacementType.rewardedVideo);
+        GameAnalytics.NewAdEvent(GAAdAction.Show, GAAdType.RewardedVideo, "AdMob", PlacementType.rewardedVideo.ToString());
     }
 
     #endregion

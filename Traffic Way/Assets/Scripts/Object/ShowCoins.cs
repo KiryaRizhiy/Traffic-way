@@ -8,6 +8,11 @@ public class ShowCoins : MonoBehaviour
     {
         Engine.Events.initialized += Show;
         Engine.Events.onGarageStateChanged += GaragePurchaseHandler;
+        Engine.Events.adFailed += HandleAdEvent;
+        Engine.Events.adFinished += HandleAdEvent;
+        Engine.Events.adLoaded += HandleAdEvent;
+        Engine.Events.adNotReady += HandleAdEvent;
+        Engine.Events.adSkipped += HandleAdEvent;
         Show();
     }
     public void Show()
@@ -21,9 +26,18 @@ public class ShowCoins : MonoBehaviour
     {
         Show();
     }
+    private void HandleAdEvent(PlacementType type)
+    {
+        Show();
+    }
     void OnDestroy()
     {
         Engine.Events.initialized -= Show;
         Engine.Events.onGarageStateChanged -= GaragePurchaseHandler;
+        Engine.Events.adFailed -= HandleAdEvent;
+        Engine.Events.adFinished -= HandleAdEvent;
+        Engine.Events.adLoaded -= HandleAdEvent;
+        Engine.Events.adNotReady -= HandleAdEvent;
+        Engine.Events.adSkipped -= HandleAdEvent;
     }
 }

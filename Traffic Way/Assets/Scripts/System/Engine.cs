@@ -142,6 +142,7 @@ public static class Engine
         TrafficLight.LoadResources();
         LevelGenerator.LoadResources();
         CarSelectInterface.LoadResources();
+        Localization.LoadLocals(meta.selectedLanguage);
         initialized = true;
     }
     public static void InitializeTest()
@@ -421,6 +422,15 @@ public static class Engine
                     if (level.buildIndex != 1)
                         meta.lastHandcraftPassedLevel += 1;
                 }
+                switch (value)
+                {
+                    case GameSessionState.Won:
+                        GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Traffic way", level.name, "Level progress", actualLevel);
+                        break;
+                    case GameSessionState.Lost:
+                        GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Traffic way", level.name, "Level progress", actualLevel);
+                        break;
+                }
                 Engine.Events.GameSessionStateChanged(_state);
             }
         }
@@ -477,7 +487,8 @@ public static class Engine
             adController = new GameObject().AddComponent<AdMobController>();
             adController.gameObject.name = "AdMobController";
             ////Advertisement.AddListener(this); UNCOMMENT TO IMPLEMENT UNITY ADS
-        }        
+            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start,"Traffic way", level.name,"Level progress",actualLevel);
+        }
         public void Close()
         {
             meta.car.BoostOff();
@@ -517,16 +528,33 @@ public static class Engine
         //}
     }
 
-    #region Metadata models versions
+    #region Metadata models versions    
     internal class GameData
     {
-        public const int Version = 2;
+        public const int Version = 0;
         [SerializeField]
         private int _version;
         public int passedLevels;
         public int lastHandcraftPassedLevel;
-        public int coinsCount;
+        public Localization.Language selectedLanguage;
+        public int coinsCount
+        {
+            get 
+            { 
+                return _coinsCount;
+            }
+            set 
+            {
+                int diff = value - _coinsCount;
+                    _coinsCount = value;
+                if (diff>0)//Increase coins amount                
+                    GameAnalytics.NewResourceEvent(GAResourceFlowType.Source, "Coin", diff,"Coin","Coin");                
+                else
+                    GameAnalytics.NewResourceEvent(GAResourceFlowType.Sink, "Coin", -diff, "Coin", "Coin");  
+            }
+        }
         [SerializeField]
+        private int _coinsCount;
         public GarageData garage;
         [SerializeField]
         public CarData car;
@@ -537,6 +565,7 @@ public static class Engine
             car = new CarData();
             if (Settings.testMode)
                 coinsCount = 5000;
+            selectedLanguage = Localization.Language.Ru;
         }
 
         [Serializable]
@@ -547,7 +576,7 @@ public static class Engine
             public List<int> passedAppearences;
             public int currentAppearenceNum
             {
-                get { return _currentAppearenceNum; }
+                get {return _currentAppearenceNum; }
                 set
                 {
                     _currentAppearenceNum = value;
@@ -606,6 +635,7 @@ public static class Engine
             {
                 isBoosted = true;
                 hasShield = true;
+                GameAnalytics.NewDesignEvent("Meta:Car:Boosted");
             }
             public void BoostOff()
             {
@@ -615,15 +645,18 @@ public static class Engine
             public void RemoveShield()
             {
                 hasShield = false;
+                GameAnalytics.NewDesignEvent("Meta:Car:Shield destroyed");
             }
             public void UnlockAppearence(int appNum,bool setAsCurrent = false)
             {
                 unlockedAppearences.Add(appNum);
                 if (setAsCurrent)
-                    currentAppearenceNum = appNum;
+                    SwitchCurrentAppearenceTo(appNum);
+                GameAnalytics.NewDesignEvent("Meta:Car:UnlkAppearence_" + Engine.CarsAppearences[appNum].name);
             }
             public void SwitchCurrentAppearenceTo(int appNum)
             {
+                GameAnalytics.NewDesignEvent("Meta:Car:Activated_appearence_" + appNum.ToString());
                 currentAppearenceNum = appNum;
             }
             public void ProgressReached()
@@ -639,6 +672,7 @@ public static class Engine
                 if (nextAppearenceProgress >= 100)
                 {
                     passedAppearences.Add(nextPassedAppearenceNum);
+                    GameAnalytics.NewDesignEvent("Meta:Car:PssAppearence_" + Engine.CarsAppearences[passedAppearences.Max()].name); 
                     nextAppearenceProgress = 0;
                 }
             }
@@ -647,7 +681,7 @@ public static class Engine
                 BoostOff();
                 unlockedAppearences = new List<int> { 0 };
                 passedAppearences = new List<int> { 0 };
-                currentAppearenceNum = 0;
+                SwitchCurrentAppearenceTo(0);
                 nextAppearenceProgress = 0;
                 previousNextAppearenceProgress = 0;
             }
@@ -663,8 +697,8 @@ public static class Engine
                 get
                 {
                     Logger.UpdateContent(UILogDataType.GameState, "Video ready: " + Engine.isRewardedVideoReady);
-                    Logger.AddContent(UILogDataType.GameState, "TV cooldown passed: " + ((DateTime.UtcNow - new DateTime(Engine.meta.garage.lastTVWatched)).TotalMinutes >= Settings.TVCooldownMinutes));
-                    return Engine.isRewardedVideoReady && (DateTime.UtcNow - new DateTime(lastTVWatched)).TotalMinutes >= Settings.TVCooldownMinutes;
+                    Logger.AddContent(UILogDataType.GameState, "TV cooldown passed: " + (DateTime.UtcNow - new DateTime(lastTVWatched) >= new TimeSpan(0,Settings.TVCooldownMinutes,0)));
+                    return Engine.isRewardedVideoReady && (DateTime.UtcNow - new DateTime(lastTVWatched) >= new TimeSpan(0,Settings.TVCooldownMinutes,0));
                 }
             }
             public GarageData()
@@ -692,6 +726,7 @@ public static class Engine
                 GetCoinMaker(Type).lastCoinCollect = DateTime.UtcNow.Ticks;
                 Save();
                 Engine.Events.GarageStateChanged(Type);
+                GameAnalytics.NewDesignEvent("Meta:Garage:Upg_" + Type.ToString() + "_" + GetCoinMaker(Type).level.ToString());
             }
             public void CollectProfit(GarageCoinMakerType Type)
             {
@@ -705,7 +740,7 @@ public static class Engine
                 lastTVWatched = DateTime.UtcNow.Ticks;
                 AddCoins(Settings.TVWatchReward);
                 Save();
-                Events.GarageStateChanged(GarageCoinMakerType.MaterialsPedestal);
+                GameAnalytics.NewDesignEvent("Meta:Garage:TV_Watched");
             }
         }
         [Serializable]
@@ -775,25 +810,6 @@ public static class Engine
                 lastCoinCollect = DateTime.UtcNow.Ticks;
             }
         }
-    }
-    internal class GameData_v1
-    {
-        public const int Version = 1;
-        [SerializeField]
-        private int _version;
-        public int passedLevels;
-        public int lastHandcraftPassedLevel;
-        public int coinsCount;
-        public GameData_v1()
-        {
-            _version = Version;
-        }
-    }
-    internal class GameData_v0
-    {
-        public int passedLevels;
-        public int lastHandcraftPassedLevel;
-        public int coinsCount;
     }
 
     #endregion

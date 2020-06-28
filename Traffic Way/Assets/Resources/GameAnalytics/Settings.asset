@@ -89,8 +89,12 @@ MonoBehaviour:
   CustomDimensions01: []
   CustomDimensions02: []
   CustomDimensions03: []
-  ResourceItemTypes: []
-  ResourceCurrencies: []
+  ResourceItemTypes:
+  - Coin
+  ResourceCurrencies:
+  - Coin
+  - Empty
+  - Empty
   LastCreatedGamePlatform: -1
   Platforms: 0b000000
   CurrentInspectorState: 1
@@ -119,9 +123,9 @@ MonoBehaviour:
   IncludeGooglePlay: 1
   FpsCriticalThreshold: 20
   FpsCirticalSubmitInterval: 1
-  PlatformFoldOut: 01
+  PlatformFoldOut: 00
   CustomDimensions01FoldOut: 0
   CustomDimensions02FoldOut: 0
   CustomDimensions03FoldOut: 0
-  ResourceItemTypesFoldOut: 0
+  ResourceItemTypesFoldOut: 1
   ResourceCurrenciesFoldOut: 0

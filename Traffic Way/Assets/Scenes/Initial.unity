@@ -8652,6 +8652,7 @@ GameObject:
   - component: {fileID: 1699777628}
   - component: {fileID: 1699777630}
   - component: {fileID: 1699777629}
+  - component: {fileID: 1699777631}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -8710,7 +8711,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Eron don don
+  m_Text: NitroButton
 --- !u!222 &1699777630
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8719,6 +8720,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1699777627}
   m_CullTransparentMesh: 0
+--- !u!114 &1699777631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699777627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a922dc8f58594642b4d1761d9afd267, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1723698347
 GameObject:
   m_ObjectHideFlags: 0

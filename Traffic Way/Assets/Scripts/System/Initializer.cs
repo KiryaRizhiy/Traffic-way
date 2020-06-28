@@ -4,6 +4,7 @@ using UnityEngine;
 using GameAnalyticsSDK;
 using UnityEngine.Advertisements;
 using GoogleMobileAds.Api;
+using System;
 
 public class Initializer : MonoBehaviour
 {
@@ -13,16 +14,19 @@ public class Initializer : MonoBehaviour
             return;
         //Logger.UpdateContent(UILogDataType.Init,"Game analytics initialization");
         GameAnalytics.Initialize();
-        //Logger.AddContent(UILogDataType.Init, "Game analytics initialized");
-        //Advertisement.Initialize(Settings.googlePlayId, Settings.testMode); UNCOMMENT TO IMPLEMENT UNITY ADS
-        //Logger.AddContent(UILogDataType.Init, "AdMob initialization");
-        MobileAds.Initialize(initStatus => { });
-        //Logger.AddContent(UILogDataType.Init, "AdMob initialized");
-        Logger.AddContent(UILogDataType.Init, "Engine initialization");
-        Engine.Initialize();
-        Logger.AddContent(UILogDataType.Init, "Engine initialized");
-        AdMobController adController = new GameObject().AddComponent<AdMobController>();
-        adController.gameObject.name = "AdMobController";
+        GameAnalytics.NewDesignEvent("Technical:Info:Version_" + Application.version);
+        try
+        {
+            //Advertisement.Initialize(Settings.googlePlayId, Settings.testMode); UNCOMMENT TO IMPLEMENT UNITY ADS
+            MobileAds.Initialize(initStatus => { });
+            Engine.Initialize();
+            AdMobController adController = new GameObject().AddComponent<AdMobController>();
+            adController.gameObject.name = "AdMobController";
+        }
+        catch (Exception e)
+        {
+            GameAnalytics.NewErrorEvent(GAErrorSeverity.Critical, e.Message + Environment.NewLine + "-------Trace------" + Environment.NewLine + e.StackTrace);
+        }
         Engine.Events.Initialized();
     }
 }
