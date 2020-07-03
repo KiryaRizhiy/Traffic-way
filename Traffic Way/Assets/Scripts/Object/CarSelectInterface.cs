@@ -197,7 +197,7 @@ public class CarSelectInterface : MonoBehaviour
                         , new Rect(0f, 0f, Engine.CarAppearencesShadows[_currentPage * 6 + i].width, Engine.CarAppearencesShadows[_currentPage * 6 + i].height)
                         , Vector2.one * 0.5f);
                     _carAppearencesPanel.GetChild(i).GetChild(1).gameObject.SetActive(true);
-                    _carAppearencesPanel.GetChild(i).GetChild(1).GetComponent<Text>().text = "Level " + ComputeLevelForAppearence(_currentPage * 6 + i).ToString();
+                    _carAppearencesPanel.GetChild(i).GetChild(1).GetComponent<Text>().text = Localization.GetLocal("LevelToOpenACar") + ComputeLevelForAppearence(_currentPage * 6 + i).ToString();
                     _carAppearencesPanel.GetChild(i).GetChild(2).gameObject.SetActive(true);
                     break;
                 case CarAppearenceState.Unlocked:
@@ -218,7 +218,7 @@ public class CarSelectInterface : MonoBehaviour
                         , new Rect(0f, 0f, Engine.CarAppearencesShadows[_currentPage * 6 + i].width, Engine.CarAppearencesShadows[_currentPage * 6 + i].height)
                         , Vector2.one * 0.5f);
                     _carAppearencesPanel.GetChild(i).GetChild(1).gameObject.SetActive(true);
-                    _carAppearencesPanel.GetChild(i).GetChild(1).GetComponent<Text>().text = "Watch it";
+                    _carAppearencesPanel.GetChild(i).GetChild(1).GetComponent<Text>().text = Localization.GetLocal("WatchVideoToOpenACar");
                     _carAppearencesPanel.GetChild(i).GetChild(2).gameObject.SetActive(false);
                     break;
                 default:

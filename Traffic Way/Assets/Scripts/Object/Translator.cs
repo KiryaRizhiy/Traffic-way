@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Translator : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
         if (Engine.initialized)
@@ -21,9 +20,20 @@ public class Translator : MonoBehaviour
 
     void Translate()
     {
-        if (GetComponent<Text>() != null)
+        TranslateObject(gameObject);
+    }
+    void TranslateObject(GameObject obj)
+    {
+        if (obj.GetComponent<Text>() != null)
         {
-            GetComponent<Text>().text = Localization.GetLocal(GetComponent<Text>().text);
+            obj.GetComponent<Text>().text = Localization.GetLocal(obj.GetComponent<Text>().text);
+        }
+        if (obj.transform.childCount > 0)
+        {
+            for (int i = 0; i < obj.transform.childCount; i++)
+            {
+                TranslateObject(obj.transform.GetChild(i).gameObject);
+            }
         }
     }
 }

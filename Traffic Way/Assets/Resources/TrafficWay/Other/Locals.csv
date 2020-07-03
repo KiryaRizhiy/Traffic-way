@@ -1,4 +1,7 @@
-phrase;En;Ru
+phrase;English;Russian
 NitroButton;Nitro;Нитро
-aab;aab;ааб
-aac;aac;аав
+LevelToOpenACar;Level;Уровень
+WatchVideoToOpenACar;Watch for open;Смотреть
+WatchVideoForCoinsWhenNoMoneyToBuyUpgradeButton;Watch for money!;Смотреть
+PlayWhenNoMoneyToBuyUpgradeButton;Play for more money;Играть
+UpgradeGarageElementButton;Upgrade;Прокачать

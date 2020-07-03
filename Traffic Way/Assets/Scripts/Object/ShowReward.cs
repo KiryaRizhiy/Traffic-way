@@ -13,10 +13,10 @@ public class ShowReward : MonoBehaviour
         switch (rewardType)
         {
             case DisplayableRewardType.levelFinishReward:
-                GetComponent<Text>().text = prefix + " " + Engine.rewardAmount;
+                GetComponent<Text>().text = Localization.GetLocal(prefix) + " " + Engine.rewardAmount;
                 break;
             case DisplayableRewardType.TVWatchReward:
-                GetComponent<Text>().text = prefix + " " + Settings.TVWatchReward;
+                GetComponent<Text>().text = Localization.GetLocal(prefix) + " " + Settings.TVWatchReward;
                 break;
             default:
                 Debug.LogError("Unknown type of reward to display " + rewardType.ToString());

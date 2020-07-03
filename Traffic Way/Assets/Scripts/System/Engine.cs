@@ -142,7 +142,7 @@ public static class Engine
         TrafficLight.LoadResources();
         LevelGenerator.LoadResources();
         CarSelectInterface.LoadResources();
-        Localization.LoadLocals(meta.selectedLanguage);
+        Localization.LoadLocals(Application.systemLanguage);
         initialized = true;
     }
     public static void InitializeTest()
@@ -536,7 +536,6 @@ public static class Engine
         private int _version;
         public int passedLevels;
         public int lastHandcraftPassedLevel;
-        public Localization.Language selectedLanguage;
         public int coinsCount
         {
             get 
@@ -565,7 +564,6 @@ public static class Engine
             car = new CarData();
             if (Settings.testMode)
                 coinsCount = 5000;
-            selectedLanguage = Localization.Language.Ru;
         }
 
         [Serializable]

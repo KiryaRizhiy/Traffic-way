@@ -7,12 +7,11 @@ using UnityEngine;
 
 public static class Localization
 {
-    public enum Language {Ru,En};
     private static String[] texts;
     private static String[] indexes;
     private const char Separator = ';';
 
-    public static void LoadLocals(Language lang)
+    public static void LoadLocals(SystemLanguage lang)
     {
         TextAsset _txt = Resources.Load<TextAsset>("TrafficWay/Other/Locals");
         String[] _full = _txt.text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
@@ -26,10 +25,13 @@ public static class Localization
             indexes[i] = _full[i].Split(Separator)[0];
             texts[i] = Regex.Match(_full[i], @"(?<=^([^" + Separator + @"]+" + Separator + @"){" + rowNum + @"})[^" + Separator + @"]*").Value;
         }
-        Debug.Log("Locals loaded. Indexes:" + Environment.NewLine + Functions.EnumerableAsString(indexes) + Environment.NewLine + "Texts:" +Environment.NewLine + Functions.EnumerableAsString(texts));
+        Debug.Log("Locals loaded. Indexes:" + Environment.NewLine + Functions.EnumerableAsString(indexes) + Environment.NewLine + lang.ToString() + " texts:" +Environment.NewLine + Functions.EnumerableAsString(texts));
     }
     public static string GetLocal(string code)
     {
-        return texts[Array.IndexOf(indexes, code)];
+        if (Array.IndexOf(indexes, code) > 0)
+            return texts[Array.IndexOf(indexes, code)];
+        else
+            return code;
     }
 }

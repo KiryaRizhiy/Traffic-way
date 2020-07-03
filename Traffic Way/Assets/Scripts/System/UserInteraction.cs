@@ -170,17 +170,17 @@ public class UserInteraction : MonoBehaviour
             GarageUpgradePurchasePanel.GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>().color = Color.red;
             if (Engine.meta.garage.TVAbleToShow)
             {
-                GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().text = "Watch Ads for more coins!";
+                GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().text = Localization.GetLocal("WatchVideoForCoinsWhenNoMoneyToBuyUpgrade");
             }
             else
             {
-                GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().text = "Play to buy!";
+                GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().text = Localization.GetLocal("PlayWhenNoMoneyToBuyUpgrade");
             }
         }
         else
         {
             GarageUpgradePurchasePanel.GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>().color = Color.white;
-            GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().text = "Upgrade";
+            GarageUpgradePurchasePanel.GetChild(1).GetChild(0).GetComponent<Text>().text = Localization.GetLocal("UpgradeGarageElementButton");
         }
         GarageUpgradePurchasePanel.gameObject.SetActive(true);
     }
