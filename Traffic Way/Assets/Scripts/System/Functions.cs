@@ -35,4 +35,41 @@ public static class Functions
         }
         return _s;
     }
+    public static Texture2D CutAndLerpTexture(Texture2D source, int percent, float lerpCoeffitient, Color color, bool useTextureAlpha = true)
+    {
+        if (lerpCoeffitient > 1f)
+        {
+            lerpCoeffitient = 1f;
+            Debug.LogWarning("Unable to use interpolation coeffitient " + lerpCoeffitient + " used 1 instead");
+        }
+        if (percent > 100)
+        {
+            percent = 100;
+            Debug.LogWarning("Unable to use drawing percent" + percent + " used 100 instead");
+        }
+        Texture2D _txt = new Texture2D(source.width, source.height, source.format, false);
+        Color currentColor = color;
+        RenderTexture currentRT = RenderTexture.active;
+        RenderTexture renderTexture = new RenderTexture(source.width, source.height, 3, RenderTextureFormat.ARGB32);
+        Graphics.Blit(source, renderTexture);
+        _txt.ReadPixels(new Rect(0f, 0f, renderTexture.width, renderTexture.height), 0, 0);
+        _txt.Apply();
+        for (int x = 0; x < _txt.width; x++)
+            for (int y = 0; y < _txt.height; y++)
+            {
+                if (useTextureAlpha)
+                    currentColor.a = _txt.GetPixel(x, y).a;
+                if (y >= _txt.height * (percent / 100f))
+                {
+                    currentColor.a = 0f;
+                    _txt.SetPixel(x, y, currentColor);
+                }
+                else
+                    _txt.SetPixel(x, y, Color.Lerp(_txt.GetPixel(x, y), currentColor, lerpCoeffitient));
+            }
+        _txt.Apply();
+        RenderTexture.active = currentRT;
+        renderTexture.Release();
+        return _txt;
+    }
 }

@@ -51,8 +51,10 @@ public static class Settings
     public const int TVCooldownMinutes = 1;
     public const int TVWatchReward = 15;
     public const int levelCarProgress = 51;
-    public const float carProgressDemoTime = 0.8f;
-    public const float carProgressPauseTime = 0.1f;
+    public const float carProgressDemoTime = 1.7f;
+    public const float carProgressPauseTime = 0.12f;
+    public const float carProgressBlinkTime = 2.0f;
+    public const float carProgressBlingOffset = 0.7f;
     public static Vector3 carsScale
     {
         get

@@ -583,6 +583,7 @@ public static class Engine
             }
             public int nextAppearenceProgress;
             public int previousNextAppearenceProgress;
+            [SerializeField]
             private int _currentAppearenceNum;
             public bool hasShield
             {
