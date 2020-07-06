@@ -173,6 +173,7 @@ public static class Engine
     }
     public static void LevelDone()
     {
+        meta.currentRandomLevelBlocks = null;
         SwitchLevel();
         Save();
     }
@@ -554,6 +555,7 @@ public static class Engine
         }
         [SerializeField]
         private int _coinsCount;
+        public List<string> currentRandomLevelBlocks;
         public GarageData garage;
         [SerializeField]
         public CarData car;
