@@ -59,7 +59,7 @@ public static class Settings
     {
         get
         {
-            return new Vector3(2f, 2f, 1f);
+            return new Vector3(2.2f, 2.2f, 1f);
         }
     }
     public static string savePath 

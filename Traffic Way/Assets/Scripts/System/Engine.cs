@@ -108,6 +108,13 @@ public static class Engine
         private set;
     }
     internal static GameData meta;
+    public static bool isBossFight
+    {
+        get
+        {
+            return CarDriver.CurrentCar.GetComponent<CarShooter>().isActiveAndEnabled;
+        }
+    }
     private static int totalHandcraftLevelsAmount
     {
         get
@@ -174,8 +181,11 @@ public static class Engine
     public static void LevelDone()
     {
         meta.currentRandomLevelBlocks = null;
-        SwitchLevel();
         Save();
+        if (isBossFight)
+            ToMainMenu();
+        else
+            SwitchLevel();
     }
     //public static void LevelFailed()
     //{

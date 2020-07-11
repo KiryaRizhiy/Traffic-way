@@ -76,6 +76,8 @@ public class ProgressPanelDemostrator : MonoBehaviour
     {
         get
         {
+            if (passedTimeWithoutPause <= 0)
+                return fromPercent;
             if (passedTimeWithoutPause < Settings.carProgressDemoTime)
                 return fromPercent + (toPercent - fromPercent) * (passedTimeWithoutPause / Settings.carProgressDemoTime);
             else 
@@ -199,7 +201,7 @@ public class ProgressPanelDemostrator : MonoBehaviour
             }
         }
         carShadowImg.GetComponent<Image>().sprite = Sprite.Create(_carAppearenceShadow, new Rect(0f, 0f, _carAppearenceShadow.width, _carAppearenceShadow.height), Vector2.one * 0.5f, 100f);
-        Texture2D _t = GetTextureAccordingToPercent(Engine.meta.car.previousNextAppearenceProgress);
+        Texture2D _t = Functions.CutAndLerpTexture(_carAppearence, Mathf.RoundToInt(fromPercent), 0, Color.white);
         carImg.GetComponent<Image>().sprite = Sprite.Create(_t,
             new Rect(0f, 0f, _t.width, _t.height),
             Vector2.one * 0.5f);
@@ -210,10 +212,10 @@ public class ProgressPanelDemostrator : MonoBehaviour
         //Check if pause
         if (_passedTime < Settings.carProgressPauseTime)
         {
-            Texture2D _t = GetTextureAccordingToPercent(Engine.meta.car.previousNextAppearenceProgress);
-            carImg.GetComponent<Image>().sprite = Sprite.Create(_t,
-                new Rect(0f, 0f, _t.width, _t.height),
-                Vector2.one * 0.5f);
+            //Texture2D _t = GetTextureAccordingToPercent(Engine.meta.car.previousNextAppearenceProgress);
+            //carImg.GetComponent<Image>().sprite = Sprite.Create(_t,
+            //    new Rect(0f, 0f, _t.width, _t.height),
+            //    Vector2.one * 0.5f);
             return;
         }
         //Check if progress done
@@ -258,55 +260,55 @@ public class ProgressPanelDemostrator : MonoBehaviour
         StopAllCoroutines();
     }
 
-    private Texture2D GetTextureAccordingToPercent(int percent)
-    {
-        //Debug.Log("Drawing " + percent + "%");
-        if (percent > 100)
-        {
-            percent = 100;
-            Debug.LogWarning("Unable to use drawing percent" + percent + " used 100 instead");
-        }
-        Texture2D _txt = new Texture2D(_carAppearence.width, _carAppearence.height,_carAppearence.format,false);
-        RenderTexture currentRT = RenderTexture.active;
-        RenderTexture renderTexture = new RenderTexture(_carAppearence.width, _carAppearence.height, 3, RenderTextureFormat.ARGB32);
-        Graphics.Blit(_carAppearence, renderTexture);
-        _txt.ReadPixels(new Rect(0f, 0f, renderTexture.width, renderTexture.height), 0, 0);
-        _txt.Apply();
-        for (int x = 0; x < _txt.width; x++)
-            for (int y = _txt.height; y > _txt.height * (percent / 100f); y--)
-                    _txt.SetPixel(x, y, _transparent);
-        _txt.Apply();
-        RenderTexture.active = currentRT;
-        renderTexture.Release();
-        return _txt;
-    }
-    private Texture2D LerpTextureWithColor(Texture2D source, float lighteningCoeffitient, Color color,bool useTextureAlpha = true)
-    {
-        if (lighteningCoeffitient > 1f)
-        {
-            lighteningCoeffitient = 1f;
-            Debug.LogWarning("Unable to use lightening coeffitient " + lighteningCoeffitient + " used 1 instead");
-        }
-        Texture2D _txt = new Texture2D(source.width, source.height, source.format, false);
-        Color currentColor = color;
-        RenderTexture currentRT = RenderTexture.active;
-        RenderTexture renderTexture = new RenderTexture(source.width, source.height, 3, RenderTextureFormat.ARGB32);
-        Graphics.Blit(source, renderTexture);
-        _txt.ReadPixels(new Rect(0f, 0f, renderTexture.width, renderTexture.height), 0, 0);
-        _txt.Apply();
-        for (int x = 0; x < _txt.width - 1; x++)
-            for (int y = 0; y < _txt.height - 1; y++)
-            {
-                if (useTextureAlpha)
-                    currentColor.a = _txt.GetPixel(x, y).a;
-                //Debug.Log("Coeffitient:_txt.GetPixel(x, y) " + lighteningCoeffitient + " old color " + _txt.GetPixel(x, y).ToString() + " new color: " + Color.Lerp(_txt.GetPixel(x, y), color, lighteningCoeffitient).ToString());
-                _txt.SetPixel(x, y, Color.Lerp(_txt.GetPixel(x, y), currentColor, lighteningCoeffitient));
-            }
-        _txt.Apply();
-        RenderTexture.active = currentRT;
-        renderTexture.Release();
-        return _txt;
-    }
+    //private Texture2D GetTextureAccordingToPercent(int percent)
+    //{
+    //    //Debug.Log("Drawing " + percent + "%");
+    //    if (percent > 100)
+    //    {
+    //        percent = 100;
+    //        Debug.LogWarning("Unable to use drawing percent" + percent + " used 100 instead");
+    //    }
+    //    Texture2D _txt = new Texture2D(_carAppearence.width, _carAppearence.height,_carAppearence.format,false);
+    //    RenderTexture currentRT = RenderTexture.active;
+    //    RenderTexture renderTexture = new RenderTexture(_carAppearence.width, _carAppearence.height, 3, RenderTextureFormat.ARGB32);
+    //    Graphics.Blit(_carAppearence, renderTexture);
+    //    _txt.ReadPixels(new Rect(0f, 0f, renderTexture.width, renderTexture.height), 0, 0);
+    //    _txt.Apply();
+    //    for (int x = 0; x < _txt.width; x++)
+    //        for (int y = _txt.height; y > _txt.height * (percent / 100f); y--)
+    //                _txt.SetPixel(x, y, _transparent);
+    //    _txt.Apply();
+    //    RenderTexture.active = currentRT;
+    //    renderTexture.Release();
+    //    return _txt;
+    //}
+    //private Texture2D LerpTextureWithColor(Texture2D source, float lighteningCoeffitient, Color color,bool useTextureAlpha = true)
+    //{
+    //    if (lighteningCoeffitient > 1f)
+    //    {
+    //        lighteningCoeffitient = 1f;
+    //        Debug.LogWarning("Unable to use lightening coeffitient " + lighteningCoeffitient + " used 1 instead");
+    //    }
+    //    Texture2D _txt = new Texture2D(source.width, source.height, source.format, false);
+    //    Color currentColor = color;
+    //    RenderTexture currentRT = RenderTexture.active;
+    //    RenderTexture renderTexture = new RenderTexture(source.width, source.height, 3, RenderTextureFormat.ARGB32);
+    //    Graphics.Blit(source, renderTexture);
+    //    _txt.ReadPixels(new Rect(0f, 0f, renderTexture.width, renderTexture.height), 0, 0);
+    //    _txt.Apply();
+    //    for (int x = 0; x < _txt.width - 1; x++)
+    //        for (int y = 0; y < _txt.height - 1; y++)
+    //        {
+    //            if (useTextureAlpha)
+    //                currentColor.a = _txt.GetPixel(x, y).a;
+    //            //Debug.Log("Coeffitient:_txt.GetPixel(x, y) " + lighteningCoeffitient + " old color " + _txt.GetPixel(x, y).ToString() + " new color: " + Color.Lerp(_txt.GetPixel(x, y), color, lighteningCoeffitient).ToString());
+    //            _txt.SetPixel(x, y, Color.Lerp(_txt.GetPixel(x, y), currentColor, lighteningCoeffitient));
+    //        }
+    //    _txt.Apply();
+    //    RenderTexture.active = currentRT;
+    //    renderTexture.Release();
+    //    return _txt;
+    //}
     private IEnumerator Blink()
     {
         carOpenDemonstrated = true;

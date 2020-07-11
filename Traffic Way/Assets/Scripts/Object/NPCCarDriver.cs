@@ -334,8 +334,20 @@ public class NPCCarDriver : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
+    private IEnumerator CircleMove()
+    {
+        while (true)
+        {
+            if (Engine.paused)
+                yield return new WaitUntil(() => !Engine.paused);
+            if (crashed)
+                yield return new WaitUntil(() => false);
+            //car.transform.Translate(
+        }
+    }
 }
-public enum CarMoveType {once,cycled,repeat,round,rotation}
+public enum CarMoveType {once,cycled,repeat,round,rotation,circle}
 public enum CarType {regular,excavator,rink,truck,boss,train,police}
 public enum WaypointsType {invisible, normalCircles, wideCircles}
 public enum StartEventType { instant, zoneReached, zoneLeft }
+public enum CircleMoveDiraction { clockwise, counterclockwise }

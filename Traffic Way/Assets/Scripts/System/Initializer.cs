@@ -5,13 +5,27 @@ using GameAnalyticsSDK;
 using UnityEngine.Advertisements;
 using GoogleMobileAds.Api;
 using System;
+using UnityEngine.UI;
 
 public class Initializer : MonoBehaviour
 {
+    private Transform progressLine
+    {
+        get
+        {
+            return transform.GetChild(1).GetChild(0).GetChild(0).GetChild(1);
+        }
+    }
     void Start()
     {
+        StartCoroutine(LoadingSimulation());
+        Debug.Log("Initialization started at :" + Time.realtimeSinceStartup + " seconds");
+        float startTime = Time.realtimeSinceStartup;
         if (Engine.initialized)
+        {
+            transform.GetChild(1).gameObject.SetActive(false);
             return;
+        }
         //Logger.UpdateContent(UILogDataType.Init,"Game analytics initialization");
         GameAnalytics.Initialize();
         GameAnalytics.NewDesignEvent("Technical:Info:Version_" + Application.version);
@@ -28,5 +42,18 @@ public class Initializer : MonoBehaviour
             GameAnalytics.NewErrorEvent(GAErrorSeverity.Critical, e.Message + Environment.NewLine + "-------Trace------" + Environment.NewLine + e.StackTrace);
         }
         Engine.Events.Initialized();
+        Debug.Log("Initialization done. Time spent: " + (Time.realtimeSinceStartup - startTime) + " seconds. Initialization start time: " + startTime + " seconds. Initialization end time: " + Time.realtimeSinceStartup + " seconds");
+    }
+    private IEnumerator LoadingSimulation()
+    {
+        for (int i = 0; i < 11; i++)
+        {
+            yield return new WaitForSeconds(0.07f);
+            progressLine.GetComponent<RectTransform>().anchorMax = Vector2.right * (i / 10f) + Vector2.up;
+        }
+        yield return new WaitForSeconds(0.25f);
+        while (!Engine.initialized)
+            yield return new WaitForEndOfFrame();
+        transform.GetChild(1).gameObject.SetActive(false);
     }
 }

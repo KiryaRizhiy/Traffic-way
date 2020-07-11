@@ -1,7 +1,8 @@
-phrase;English;Russian
-NitroButton;Nitro;Нитро
-LevelToOpenACar;Level;Уровень
-WatchVideoToOpenACar;Watch for open;Смотреть
-WatchVideoForCoinsWhenNoMoneyToBuyUpgradeButton;Watch for money!;Смотреть
-PlayWhenNoMoneyToBuyUpgradeButton;Play for more money;Играть
-UpgradeGarageElementButton;Upgrade;Прокачать
+phrase;English;Russian;;;
+NitroButton;Nitro;Нитро;;;
+LevelToOpenACar;Level;Уровень;;;
+WatchVideoToOpenACar;Watch;for;open;Смотреть;
+WatchVideoForCoinsWhenNoMoneyToBuyUpgradeButton;Watch;for;money!;Смотреть;
+PlayWhenNoMoneyToBuyUpgradeButton;Play;for;more;money;Играть
+UpgradeGarageElementButton;Upgrade;Прокачать;;;
+LoadingText;Loading;Загрузка;;;
