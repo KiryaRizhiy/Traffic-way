@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameAnalyticsSDK;
 
 public class NPCCarDriver : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class NPCCarDriver : MonoBehaviour
     public float moveSpeed;
     public float rotationSpeed;
     public CarMoveType moveType;
+    public CircleMoveDiraction circleMoveDiraction;
     public bool lookAtNextWaypoint;
     public float initialAngle;
     public CarType carType;
@@ -28,6 +30,11 @@ public class NPCCarDriver : MonoBehaviour
                 return car.GetComponent<NPCCarController>().crashed;
             else
                 return true;
+        }
+        set
+        {
+            if (car != null)
+                car.GetComponent<NPCCarController>().crashed = value;
         }
     }
     private int hitpointsLeft;
@@ -56,10 +63,23 @@ public class NPCCarDriver : MonoBehaviour
             waypoints.Add(transform.GetChild(0).GetChild(i));
         Validate();
         CreateCar(carType);
-        if (waypoints.Count > 0)
-            car.transform.position = new Vector3(waypoints[0].position.x,waypoints[0].position.y,0f);
+        //if (waypoints.Count > 0)
+        //    car.transform.position = new Vector3(waypoints[0].position.x, waypoints[0].position.y, 0f);
+        //if (waypoints.Count > 1 && lookAtNextWaypoint)
+        //        car.transform.rotation = Quaternion.Euler(Vector3.forward * Vector2.SignedAngle(Vector2.up, (waypoints[1].position - car.transform.position).normalized));
+        //else
+        //    car.transform.rotation = Quaternion.Euler(Vector3.forward * initialAngle);
+        //if (moveType == CarMoveType.circle)
+        //{
+        //    car.transform.position = new Vector3(waypoints[1].position.x, waypoints[1].position.y, 0f);
+        //    if (circleMoveDiraction == CircleMoveDiraction.clockwise)
+        //        car.transform.rotation = Quaternion.Euler(Vector3.forward *
+        //            (Vector3.SignedAngle(Vector3.up, (waypoints[1].position - waypoints[0].position), Vector3.forward) - 90));
+        //    if (circleMoveDiraction == CircleMoveDiraction.counterclockwise)
+        //        car.transform.rotation = Quaternion.Euler(Vector3.forward *
+        //            (Vector3.SignedAngle(Vector3.up, (waypoints[1].position - waypoints[0].position), Vector3.forward) + 90));
+        //}
         ShowTraces();
-        car.transform.rotation = Quaternion.Euler(Vector3.forward * initialAngle);
         switch (startWhen)
         {
             case StartEventType.zoneReached:
@@ -73,6 +93,8 @@ public class NPCCarDriver : MonoBehaviour
                 break;
             default:
                 Debug.LogError("Unknown start event type " + startWhen.ToString());
+                crashed = true;
+                GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, "NPC car driver unknown start event type " + startWhen.ToString());
                 break;
         }
         hitpointsLeft = hitpoints;
@@ -98,60 +120,82 @@ public class NPCCarDriver : MonoBehaviour
 
     private void Validate()
     {
-        if(waypoints.Count == 0)
-            Debug.LogError(gameObject.name + " has no attached. At least one waypoint required");
+        if (waypoints.Count == 0)
+        {
+            Debug.LogError(gameObject.name + " has no attached waypoints. At least one waypoint required");
+            crashed = true;
+            GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, "NPC car driver " + gameObject.name + " has no attached waypoints. At least one waypoint required");
+        }
         if (startWhen != StartEventType.instant && zone == null)
-            Debug.LogError(gameObject.name + " has start event type, but no zone attached. Move will not be started");
+        {
+            Debug.LogError(gameObject.name + " has start event type, but no zone attached. Moving will not be started");
+            crashed = true;
+            GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, "NPC car driver " + gameObject.name + " has start event type, but no zone attached. Moving will not be started");
+        }
+        if (moveType == CarMoveType.circle && waypoints.Count < 2)
+        {
+            Debug.LogError(gameObject.name + " cant move on circle trajectory having less than 2 waypoints");
+            crashed = true;
+            GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, "NPC car driver " + gameObject.name + " cant move on circle trajectory having less than 2 waypoints");
+        }
     }
     private void CreateCar(CarType type)
     {
-        //Texture2D _tex = null;
+        Vector3 _position;
+        Quaternion _rotation;
+        _position = waypoints[0].position;
+        if (waypoints.Count > 1 && lookAtNextWaypoint)
+            _rotation = Quaternion.Euler(Vector3.forward * Vector2.SignedAngle(Vector2.up, (waypoints[1].position - waypoints[0].position).normalized));
+        else
+            _rotation = Quaternion.Euler(Vector3.forward * initialAngle);
+        if (moveType == CarMoveType.circle)
+        {
+            _position = waypoints[1].position;
+            if (circleMoveDiraction == CircleMoveDiraction.clockwise)
+                _rotation = Quaternion.Euler(Vector3.forward *
+                    (Vector3.SignedAngle(Vector3.up, (waypoints[1].position - waypoints[0].position), Vector3.forward) - 90));
+            if (circleMoveDiraction == CircleMoveDiraction.counterclockwise)
+                _rotation = Quaternion.Euler(Vector3.forward *
+                    (Vector3.SignedAngle(Vector3.up, (waypoints[1].position - waypoints[0].position), Vector3.forward) + 90));
+        }
+
         switch (type)
         {
             case CarType.regular:
-                //_tex = RegularCars[Random.Range(0, RegularCars.Length - 1)];
-                car = Instantiate(RegularCars[Random.Range(0, RegularCars.Length - 1)], transform);
+                car = Instantiate(RegularCars[Random.Range(0, RegularCars.Length - 1)],_position,_rotation,transform);
                 break;
             case CarType.boss:
-                //_tex = Bosses[Random.Range(0, Bosses.Length - 1)];
-                car = Instantiate(Bosses[Random.Range(0, Bosses.Length - 1)], transform);
+                car = Instantiate(Bosses[Random.Range(0, Bosses.Length - 1)],_position,_rotation, transform);
                 break;
             case CarType.excavator:
                 foreach (GameObject _obj in Special)
                     if (_obj.name.Contains("Excavator"))
-                        car = Instantiate(_obj, transform);
+                        car = Instantiate(_obj,_position,_rotation, transform);
                 break;
             case CarType.rink:
                 foreach (GameObject _obj in Special)
                     if (_obj.name.Contains("Rink"))
-                        car = Instantiate(_obj, transform);
+                        car = Instantiate(_obj,_position,_rotation, transform);
                 break;
             case CarType.truck:
                 foreach (GameObject _obj in Special)
                     if (_obj.name.Contains("Truck"))
-                        car = Instantiate(_obj, transform);
+                        car = Instantiate(_obj,_position,_rotation, transform);
                 break;
             case CarType.train:
                 foreach (GameObject _obj in Special)
                     if (_obj.name.Contains("Train"))
-                        car = Instantiate(_obj, transform);
+                        car = Instantiate(_obj,_position,_rotation, transform);
                 break;
             case CarType.police:
                 foreach (GameObject _obj in Special)
                     if (_obj.name.Contains("Police"))
-                        car = Instantiate(_obj, transform);
+                        car = Instantiate(_obj,_position,_rotation, transform);
                 break;
         }
-        //car = new GameObject();
-        //car.transform.position = transform.position;
         car.tag = Tags.NPCCar.ToString();
         car.AddComponent<NPCCarController>();
         car.transform.localScale = Settings.carsScale;
-        //SpriteRenderer _sr = car.AddComponent<SpriteRenderer>();
-        //_sr.sprite = Sprite.Create(_tex, new Rect(0.0f, 0.0f, _tex.width, _tex.height), new Vector2(0.5f, 0.5f));
-        ////StartCoroutine(CrutchRoutine());
-        //PolygonCollider2D _pd = car.AddComponent<PolygonCollider2D>();
-        //_pd.isTrigger = true;
         if (Settings.testMode) Functions.DrawPolygonCollider(car.GetComponent<PolygonCollider2D>());
     }
     private void ShowTraces()
@@ -170,7 +214,6 @@ public class NPCCarDriver : MonoBehaviour
                 _tex = WideCircle;
             if (waypoints.Count > 1)
             {
-
                 LineRenderer _lr = waypoints[0].parent.gameObject.AddComponent<LineRenderer>();
                 _lr.numCornerVertices = 3;
                 _lr.useWorldSpace = false;
@@ -248,8 +291,13 @@ public class NPCCarDriver : MonoBehaviour
                     car.transform.position = waypoints[0].position;
                     moving = StartCoroutine(RotateCar());
                     break;
+                case CarMoveType.circle:
+                    car.transform.position = waypoints[1].position;
+                    moving = StartCoroutine(CircleMove());
+                    break;
                 default:
                     Debug.Log("Unknown move type " + moveType.ToString());
+                    crashed = true;
                     break;
             }
         }
@@ -260,7 +308,7 @@ public class NPCCarDriver : MonoBehaviour
     {
         foreach (Transform _t in waypoints)
         {
-            if (lookAtNextWaypoint)            
+            if (lookAtNextWaypoint && _t.position != car.transform.position)            
                 car.transform.rotation = Quaternion.Euler(Vector3.forward * Vector2.SignedAngle(Vector2.up, (_t.position - car.transform.position).normalized));            
             yield return StartCoroutine(GoToWaypoint(_t));
         }
@@ -277,12 +325,16 @@ public class NPCCarDriver : MonoBehaviour
     {
         while (true)
         {
-            Destroy(car);
-            CreateCar(carType);
-            car.transform.position = waypoints[0].position;
-            car.transform.position -= Vector3.forward * 0.01f;
+            //car.transform.position = waypoints[0].position;
+            //car.transform.position -= Vector3.forward * 0.01f; 
+            //if (waypoints.Count > 1 && lookAtNextWaypoint)
+            //    car.transform.rotation = Quaternion.Euler(Vector3.forward * Vector2.SignedAngle(Vector2.up, (waypoints[1].position - car.transform.position).normalized));
+            //else
+            //    car.transform.rotation = Quaternion.Euler(Vector3.forward * initialAngle);
             moving = StartCoroutine(OnceMove());
             yield return moving;
+            Destroy(car);
+            CreateCar(carType);
         }
     }
     private IEnumerator CycledMove()
@@ -334,8 +386,26 @@ public class NPCCarDriver : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
+    private IEnumerator CircleMove()
+    {
+        Vector3 rotationAxis;
+        if (circleMoveDiraction == CircleMoveDiraction.clockwise)
+            rotationAxis = Vector3.back;
+        else
+            rotationAxis = Vector3.forward;
+        while (true)
+        {
+            if (Engine.paused)
+                yield return new WaitUntil(() => !Engine.paused);
+            if (crashed)
+                yield return new WaitUntil(() => false);
+            car.transform.RotateAround(waypoints[0].position, rotationAxis, moveSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+    }
 }
-public enum CarMoveType {once,cycled,repeat,round,rotation}
+public enum CarMoveType {once,cycled,repeat,round,rotation,circle}
 public enum CarType {regular,excavator,rink,truck,boss,train,police}
 public enum WaypointsType {invisible, normalCircles, wideCircles}
 public enum StartEventType { instant, zoneReached, zoneLeft }
+public enum CircleMoveDiraction { clockwise, counterclockwise }

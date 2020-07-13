@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 //using UnityEngine.Advertisements; UNCOMMENT TO IMPLEMENT UNITY ADS
 using UnityEngine.UI;
 
@@ -13,8 +14,8 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         adsVideoFailed, adsInterstitialFailed, adsRewardedVideoFailed,
         extraRewardReceived, 
         gameWon, gameLost, gamePassed,gamePaused,gameUnpaused,
-        newCarAppeareenceReceived}
-    public enum ActivatorTargetConditions { none, gameInProgress, gameWon, gameLost, gamePassed, readyToGiveNewCarAppearence, newCarAppearenceReceived, notReadyToGiveNewCarAppearence }
+        newCarAppeareenceReceived, sceneLoaded}
+    public enum ActivatorTargetConditions { none, gameInProgress, gameWon, gameLost, gamePassed, readyToGiveNewCarAppearence, newCarAppearenceReceived, notReadyToGiveNewCarAppearence, isBossFight, isNotBossFight }
     public enum ActivatorActionType { activate, deactivate }
 
     public List<ActivatorTargetEvent> ActivationEventList;
@@ -23,7 +24,7 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
     public List<ActivatorTargetConditions> DeactivationConditions;
     public GameObject TargetObject;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         //Validation
         if (TargetObject == null)
@@ -46,6 +47,7 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         Engine.Events.paused += OnPause;
         Engine.Events.unpaused += OnUnpause;
         Engine.Events.newCarAppearenceReceived += OnNewCarAppearenceReceived;
+        SceneManager.activeSceneChanged += OnLevelChanged;
     }
     void OnDestroy()
     {
@@ -60,6 +62,7 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         Engine.Events.paused -= OnPause;
         Engine.Events.unpaused -= OnUnpause;
         Engine.Events.newCarAppearenceReceived -= OnNewCarAppearenceReceived;
+        SceneManager.activeSceneChanged -= OnLevelChanged;
     }
 
     //UNCOMMENT TO IMPLEMENT UNITY ADS
@@ -258,7 +261,13 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         if (DeactivationEventList.Contains(ActivatorTargetEvent.newCarAppeareenceReceived))
             PerformAction(ActivatorActionType.deactivate);
     }
-
+    public void OnLevelChanged(Scene current, Scene next)
+    {
+        if (ActivationEventList.Contains(ActivatorTargetEvent.sceneLoaded))
+            PerformAction(ActivatorActionType.activate);
+        if (DeactivationEventList.Contains(ActivatorTargetEvent.sceneLoaded))
+            PerformAction(ActivatorActionType.deactivate);
+    }
     private void PerformAction(ActivatorActionType action)
     {
         if (
@@ -273,7 +282,9 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
                     (ActivationConditions.Contains(ActivatorTargetConditions.gamePassed) && Engine.sessionState == GameSessionState.Passed) ||
                     (ActivationConditions.Contains(ActivatorTargetConditions.readyToGiveNewCarAppearence) && (Engine.meta.car.nextAppearenceProgress == 0 && Engine.meta.car.previousNextAppearenceProgress >= 0)) ||
                     (ActivationConditions.Contains(ActivatorTargetConditions.notReadyToGiveNewCarAppearence) && !(Engine.meta.car.nextAppearenceProgress == 0 && Engine.meta.car.previousNextAppearenceProgress >= 0)) ||
-                    (ActivationConditions.Contains(ActivatorTargetConditions.newCarAppearenceReceived) && Engine.newCarAppearenceReceivedInCurrentSession)
+                    (ActivationConditions.Contains(ActivatorTargetConditions.newCarAppearenceReceived) && Engine.newCarAppearenceReceivedInCurrentSession) ||
+                    (ActivationConditions.Contains(ActivatorTargetConditions.isBossFight) && Engine.isBossFight) ||
+                    (ActivationConditions.Contains(ActivatorTargetConditions.isNotBossFight) && !Engine.isBossFight)
                 )
             ) ||
             (
@@ -285,13 +296,16 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
                     (DeactivationConditions.Contains(ActivatorTargetConditions.gameWon) && Engine.sessionState == GameSessionState.Won) ||
                     (DeactivationConditions.Contains(ActivatorTargetConditions.gameLost) && Engine.sessionState == GameSessionState.Lost) ||
                     (DeactivationConditions.Contains(ActivatorTargetConditions.gamePassed) && Engine.sessionState == GameSessionState.Passed) ||
-                    (ActivationConditions.Contains(ActivatorTargetConditions.readyToGiveNewCarAppearence) && (Engine.meta.car.nextAppearenceProgress == 0 && Engine.meta.car.previousNextAppearenceProgress >= 0)) ||
-                    (ActivationConditions.Contains(ActivatorTargetConditions.notReadyToGiveNewCarAppearence) && !(Engine.meta.car.nextAppearenceProgress == 0 && Engine.meta.car.previousNextAppearenceProgress >= 0)) ||
-                    (ActivationConditions.Contains(ActivatorTargetConditions.newCarAppearenceReceived) && Engine.newCarAppearenceReceivedInCurrentSession)
+                    (DeactivationConditions.Contains(ActivatorTargetConditions.readyToGiveNewCarAppearence) && (Engine.meta.car.nextAppearenceProgress == 0 && Engine.meta.car.previousNextAppearenceProgress >= 0)) ||
+                    (DeactivationConditions.Contains(ActivatorTargetConditions.notReadyToGiveNewCarAppearence) && !(Engine.meta.car.nextAppearenceProgress == 0 && Engine.meta.car.previousNextAppearenceProgress >= 0)) ||
+                    (DeactivationConditions.Contains(ActivatorTargetConditions.newCarAppearenceReceived) && Engine.newCarAppearenceReceivedInCurrentSession) ||
+                    (DeactivationConditions.Contains(ActivatorTargetConditions.isBossFight) && Engine.isBossFight) ||
+                    (DeactivationConditions.Contains(ActivatorTargetConditions.isNotBossFight) && !Engine.isBossFight)
                 )
             )
           )
         {
+            Debug.Log(action.ToString() + " " + TargetObject.name);
             TargetObject.SetActive(action == ActivatorActionType.activate);
             if (TargetObject.GetComponent<Button>() != null)
                 TargetObject.GetComponent<Button>().interactable = (action == ActivatorActionType.activate);

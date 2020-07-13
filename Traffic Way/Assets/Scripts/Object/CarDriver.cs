@@ -17,10 +17,11 @@ public class CarDriver : MonoBehaviour
     void Awake()
     {
         CurrentCar = gameObject;
-        GetComponent<SpriteRenderer>().sprite = Sprite.Create(
-            Engine.CarsAppearences[Engine.meta.car.currentAppearenceNum],
-            new Rect(0f, 0f, Engine.CarsAppearences[Engine.meta.car.currentAppearenceNum].width, Engine.CarsAppearences[Engine.meta.car.currentAppearenceNum].height),
-            Vector2.one * 0.5f);
+        if (Engine.initialized)
+            GetComponent<SpriteRenderer>().sprite = Sprite.Create(
+                Engine.CarsAppearences[Engine.meta.car.currentAppearenceNum],
+                new Rect(0f, 0f, Engine.CarsAppearences[Engine.meta.car.currentAppearenceNum].width, Engine.CarsAppearences[Engine.meta.car.currentAppearenceNum].height),
+                Vector2.one * 0.5f);
     }
 
     void Start()

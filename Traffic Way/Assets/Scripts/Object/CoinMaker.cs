@@ -70,8 +70,9 @@ public class CoinMaker : MonoBehaviour
             return;
         if (Engine.meta.garage.GetCoinMaker(type).currentProfit / Engine.meta.garage.GetCoinMaker(type).profitRate == Settings.paidTicksLimit)
             return;
-        if (DateTime.UtcNow <= new DateTime(Engine.meta.garage.GetCoinMaker(type).lastCoinCollect)
-        + new TimeSpan(0, ((Engine.meta.garage.GetCoinMaker(type).currentProfit / Engine.meta.garage.GetCoinMaker(type).profitRate) + 1) * Settings.coinMakerTickMinutes, 0)) ;
-        Draw();
+        if (DateTime.UtcNow <=
+            new DateTime(Engine.meta.garage.GetCoinMaker(type).lastCoinCollect)
+            + new TimeSpan(0, ((Engine.meta.garage.GetCoinMaker(type).currentProfit / Engine.meta.garage.GetCoinMaker(type).profitRate) + 1) * Settings.coinMakerTickMinutes, 0))
+            Draw();
     }
 }
