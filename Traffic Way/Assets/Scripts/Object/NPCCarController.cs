@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class NPCCarController : MonoBehaviour
 {
-    public bool crashed
-    { get; private set; }
+    public bool crashed;
     private NPCCarDriver _drv;
     void Start()
     {

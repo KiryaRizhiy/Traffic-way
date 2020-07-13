@@ -208,6 +208,7 @@ public static class Engine
     }
     public static void Quit()
     {
+        meta.car.BoostOff();
         if (currentSession.state == GameSessionState.Won || currentSession.state == GameSessionState.Passed)
             Save();
         Application.Quit();
@@ -373,6 +374,7 @@ public static class Engine
         currentSession.state = GameSessionState.Won;
         meta.car.ProgressReached();
         currentSession.paused = true;
+        meta.car.BoostOff();
         //if (currentSession.adController.isRegularVideoReady)
         if (AdMobController.isRegularVideoReady)
             /*currentSession.adController*/AdMobController.ShowRegularAd();
@@ -382,6 +384,7 @@ public static class Engine
     private static void HandleChashHappened()
     {
         currentSession.state = GameSessionState.Lost;
+        meta.car.BoostOff();
         //currentSession.paused = true;
         if (/*currentSession.adController*/AdMobController.isRegularVideoReady)
             /*currentSession.adController*/AdMobController.ShowRegularAd();
@@ -502,7 +505,7 @@ public static class Engine
         }
         public void Close()
         {
-            meta.car.BoostOff();
+            //meta.car.BoostOff();
             //Advertisement.RemoveListener(this); UNCOMMENT TO IMPLEMENT UNITY ADS
         }
 

@@ -210,6 +210,8 @@ public class ProgressPanelDemostrator : MonoBehaviour
     {
         _passedTime += Time.deltaTime;
         //Check if pause
+        if (_carAppearence == null)
+            return;
         if (_passedTime < Settings.carProgressPauseTime)
         {
             //Texture2D _t = GetTextureAccordingToPercent(Engine.meta.car.previousNextAppearenceProgress);
