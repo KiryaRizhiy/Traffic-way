@@ -8,6 +8,10 @@ TagManager:
   - Coin
   - NPCCar
   - Bullet
+  - EnvAirport
+  - EnvCity
+  - EnvDocks
+  - EnvVillage
   layers:
   - Default
   - TransparentFX

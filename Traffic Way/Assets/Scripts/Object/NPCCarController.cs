@@ -6,6 +6,14 @@ public class NPCCarController : MonoBehaviour
 {
     public bool crashed;
     private NPCCarDriver _drv;
+
+    private static GameObject _hitParticles;
+
+    public static void LoadResources()
+    {
+        _hitParticles = Resources.Load<GameObject>("TrafficWay/Prefabs/HitParticles");
+    }
+
     void Start()
     {
         crashed = false;
@@ -53,6 +61,8 @@ public class NPCCarController : MonoBehaviour
             case "Bullet":
                 //Logger.UpdateContent(UILogDataType.GameState, "Car crashed with " + gameObject.name);
                 _drv.BulletHit();
+                GameObject _prt = Instantiate(_hitParticles, collider.transform.position - Vector3.forward * 0.01f,_hitParticles.transform.rotation);
+                Destroy(_prt, 2f);
                 Destroy(collider.gameObject);
                 break;
             case "NPCCar":

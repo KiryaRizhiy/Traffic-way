@@ -54,6 +54,13 @@ public class UserInteraction : MonoBehaviour
             return CarSelectPanel.GetChild(0).GetChild(3);
         }
     }
+    private Transform GDPRPanel
+    {
+        get
+        {
+            return transform.GetChild(1);
+        }
+    }
 
     void Update()
     {
@@ -78,6 +85,8 @@ public class UserInteraction : MonoBehaviour
     {
         Engine.Events.initialized += ShowCurrentCar;
         Engine.Events.carAppearenceChanged += ShowCurrentCar;
+        Engine.Events.initialized += HideGDPRPanel;
+        HideGDPRPanel();
     }
     void Start()
     {
@@ -87,6 +96,7 @@ public class UserInteraction : MonoBehaviour
     {
         Engine.Events.initialized -= ShowCurrentCar;
         Engine.Events.carAppearenceChanged -= ShowCurrentCar;
+        Engine.Events.initialized -= HideGDPRPanel;
     }
 
     public void ShowCurrentCar()
@@ -258,5 +268,16 @@ public class UserInteraction : MonoBehaviour
     {
         Engine.meta.garage.TVWatched();
         TVRewardPanel.gameObject.SetActive(false);
+    }
+
+    public void AcceptGDPR()
+    {
+        Engine.AcceptGDPR();
+        HideGDPRPanel();
+    }
+    public void HideGDPRPanel()
+    {
+        if (Engine.initialized)
+            GDPRPanel.gameObject.SetActive(!Engine.meta.GDPRAccepted);
     }
 }

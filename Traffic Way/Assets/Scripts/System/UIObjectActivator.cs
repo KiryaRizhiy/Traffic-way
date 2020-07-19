@@ -14,7 +14,7 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         adsVideoFailed, adsInterstitialFailed, adsRewardedVideoFailed,
         extraRewardReceived, 
         gameWon, gameLost, gamePassed,gamePaused,gameUnpaused,
-        newCarAppeareenceReceived, sceneLoaded}
+        newCarAppeareenceReceived, sceneLoaded, levelGenerated}
     public enum ActivatorTargetConditions { none, gameInProgress, gameWon, gameLost, gamePassed, readyToGiveNewCarAppearence, newCarAppearenceReceived, notReadyToGiveNewCarAppearence, isBossFight, isNotBossFight }
     public enum ActivatorActionType { activate, deactivate }
 
@@ -48,6 +48,7 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         Engine.Events.unpaused += OnUnpause;
         Engine.Events.newCarAppearenceReceived += OnNewCarAppearenceReceived;
         SceneManager.activeSceneChanged += OnLevelChanged;
+        Engine.Events.levelGenerated += OnLevelGenerated;
     }
     void OnDestroy()
     {
@@ -63,6 +64,7 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         Engine.Events.unpaused -= OnUnpause;
         Engine.Events.newCarAppearenceReceived -= OnNewCarAppearenceReceived;
         SceneManager.activeSceneChanged -= OnLevelChanged;
+        Engine.Events.levelGenerated -= OnLevelGenerated;
     }
 
     //UNCOMMENT TO IMPLEMENT UNITY ADS
@@ -266,6 +268,13 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         if (ActivationEventList.Contains(ActivatorTargetEvent.sceneLoaded))
             PerformAction(ActivatorActionType.activate);
         if (DeactivationEventList.Contains(ActivatorTargetEvent.sceneLoaded))
+            PerformAction(ActivatorActionType.deactivate);
+    }
+    public void OnLevelGenerated()
+    {
+        if (ActivationEventList.Contains(ActivatorTargetEvent.levelGenerated))
+            PerformAction(ActivatorActionType.activate);
+        if (DeactivationEventList.Contains(ActivatorTargetEvent.levelGenerated))
             PerformAction(ActivatorActionType.deactivate);
     }
     private void PerformAction(ActivatorActionType action)
