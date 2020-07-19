@@ -13,7 +13,7 @@ public class Initializer : MonoBehaviour
     {
         get
         {
-            return transform.GetChild(1).GetChild(0).GetChild(0).GetChild(1);
+            return transform.GetChild(2).GetChild(0).GetChild(0).GetChild(1);
         }
     }
     void Start()
@@ -23,7 +23,7 @@ public class Initializer : MonoBehaviour
         float startTime = Time.realtimeSinceStartup;
         if (Engine.initialized)
         {
-            transform.GetChild(1).gameObject.SetActive(false);
+            transform.GetChild(2).gameObject.SetActive(false);
             return;
         }
         //Logger.UpdateContent(UILogDataType.Init,"Game analytics initialization");
@@ -54,6 +54,6 @@ public class Initializer : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
         while (!Engine.initialized)
             yield return new WaitForEndOfFrame();
-        transform.GetChild(1).gameObject.SetActive(false);
+        transform.GetChild(2).gameObject.SetActive(false);
     }
 }

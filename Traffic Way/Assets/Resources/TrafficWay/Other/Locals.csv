@@ -1,8 +1,13 @@
-phrase;English;Russian;;;
-NitroButton;Nitro;Нитро;;;
-LevelToOpenACar;Level;Уровень;;;
-WatchVideoToOpenACar;Watch;for;open;Смотреть;
-WatchVideoForCoinsWhenNoMoneyToBuyUpgradeButton;Watch;for;money!;Смотреть;
-PlayWhenNoMoneyToBuyUpgradeButton;Play;for;more;money;Играть
-UpgradeGarageElementButton;Upgrade;Прокачать;;;
-LoadingText;Loading;Загрузка;;;
+phrase;English;Russian
+NitroButton;Nitro;Нитро
+LevelToOpenACar;Level;Уровень
+WatchVideoToOpenACar;Watch for open for open;Смотреть
+WatchVideoForCoinsWhenNoMoneyToBuyUpgradeButton;Watch for money!;Смотреть
+PlayWhenNoMoneyToBuyUpgradeButton;Play for more;Играть
+UpgradeGarageElementButton;Upgrade;Прокачать
+LoadingText;Loading;Загрузка
+LevelNumber;Level;Уровень
+GDPRAgreementText;Agree to give all data about me;Согласен раздавать всю инфу о себе
+GDPRAgreementAccept;Accept;Принять
+GDPRAgreementDecline;Decline;Отказаться
+GDPRAgreementLink;Link;Ссылка

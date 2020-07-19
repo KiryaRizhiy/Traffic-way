@@ -486,6 +486,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   length: 37
+  environmentType: 0
+  classification: 4
 --- !u!1 &561491930760131183
 GameObject:
   m_ObjectHideFlags: 0

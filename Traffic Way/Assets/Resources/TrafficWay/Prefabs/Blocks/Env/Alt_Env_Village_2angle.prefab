@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2214723367744631288}
+  - component: {fileID: 2158319008620513033}
   m_Layer: 0
   m_Name: Alt_Env_Village_2angle
   m_TagString: Untagged
@@ -74,6 +75,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2158319008620513033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2214723367744631291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21d43f66b12ce1a4a9590c8e1017ccf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 3
+  classification: 0
 --- !u!1 &7896014424871640184
 GameObject:
   m_ObjectHideFlags: 0

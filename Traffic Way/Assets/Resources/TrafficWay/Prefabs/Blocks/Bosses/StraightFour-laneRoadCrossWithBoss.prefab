@@ -1043,6 +1043,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   length: 37
+  environmentType: 0
+  classification: 0
 --- !u!1 &1612591326073099541
 GameObject:
   m_ObjectHideFlags: 0
@@ -2062,10 +2064,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b34e4d5b60db4404fbe03448f652a97e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitpoints: 2
+  hitpoints: 20
+  destroyShield: 0
+  notStopOnCrash: 0
   moveSpeed: 4
   rotationSpeed: 0
   moveType: 3
+  circleMoveDiraction: 0
   lookAtNextWaypoint: 0
   initialAngle: 90
   carType: 4
