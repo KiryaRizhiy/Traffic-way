@@ -132,6 +132,7 @@ public class LevelGenerator : MonoBehaviour
         }
         BlockSequence.Add(FinishBlock.name);
 
+        Engine.meta.environmentType = (EnvironmentType)UnityEngine.Random.Range(1, 5);
         Engine.meta.currentRandomLevelBlocks = BlockSequence;
 
     }
@@ -166,13 +167,15 @@ public class LevelGenerator : MonoBehaviour
                                 _prefab = FinishBlock;
                             }
             GameObject _currB = Instantiate(_prefab, transform);
+            _currB.GetComponent<Block>().environmentType = Engine.meta.environmentType;
+            _currB.GetComponent<Block>().Show();
             _currB.transform.position = new Vector3(0f, lvlLength, 0f);
             _currB.name = _b;
             lvlLength += _prefab.GetComponent<Block>().length;
         }
-
         //If boss fight
         if (isBossFignt)
             CarDriver.CurrentCar.GetComponent<CarShooter>().enabled = true;
+        Engine.Events.LevelGenerated();
     }
 }

@@ -264,9 +264,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitpoints: 2
+  destroyShield: 0
+  notStopOnCrash: 0
   moveSpeed: 15
   rotationSpeed: 0
   moveType: 3
+  circleMoveDiraction: 0
   lookAtNextWaypoint: 1
   initialAngle: 0
   carType: 0
@@ -589,6 +592,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   length: 37
+  environmentType: 0
+  classification: 0
 --- !u!1 &453650565266388237
 GameObject:
   m_ObjectHideFlags: 0
@@ -10159,9 +10164,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitpoints: 2
+  destroyShield: 0
+  notStopOnCrash: 0
   moveSpeed: 15
   rotationSpeed: 0
   moveType: 3
+  circleMoveDiraction: 0
   lookAtNextWaypoint: 1
   initialAngle: 0
   carType: 0

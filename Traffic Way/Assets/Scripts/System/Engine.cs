@@ -149,6 +149,8 @@ public static class Engine
         TrafficLight.LoadResources();
         LevelGenerator.LoadResources();
         CarSelectInterface.LoadResources();
+        Block.LoadResources();
+        NPCCarController.LoadResources();
         Localization.LoadLocals(Application.systemLanguage);
         initialized = true;
     }
@@ -209,8 +211,8 @@ public static class Engine
     public static void Quit()
     {
         meta.car.BoostOff();
-        if (currentSession.state == GameSessionState.Won || currentSession.state == GameSessionState.Passed)
-            Save();
+        //if (currentSession.state == GameSessionState.Won || currentSession.state == GameSessionState.Passed)
+        Save();
         Application.Quit();
     }
     public static void SwitchPause()
@@ -234,6 +236,11 @@ public static class Engine
         if (appNum < CarsAppearences.Count)
             return CarAppearenceState.Locked;
         return CarAppearenceState.Missing;
+    }
+    public static void AcceptGDPR()
+    {
+        meta.GDPRAccepted = true;
+        Save();
     }
     private static void AddCoins(int count)
     {
@@ -346,6 +353,7 @@ public static class Engine
     {
         Events.extraRewardReceived += Save;
         Events.finishLineReached += HandleFinishLineCrossed;
+        Events.passLineReached += HandlePassLineReach;
         Events.crashHappened += HandleChashHappened;
         Events.shieldDestroyed += HandleShieldDestroy;
         Events.adFinished += OnAdFinished;
@@ -380,6 +388,10 @@ public static class Engine
             /*currentSession.adController*/AdMobController.ShowRegularAd();
         else
             Engine.Events.AdNotReady(PlacementType.interstitial);
+    }
+    private static void HandlePassLineReach()
+    {
+        currentSession.state = GameSessionState.Passed;
     }
     private static void HandleChashHappened()
     {
@@ -430,7 +442,7 @@ public static class Engine
             {
                 _state = value;
                 Debug.Log("State changed");
-                if (value == GameSessionState.Passed || value == GameSessionState.Won)
+                if (value == GameSessionState.Won)
                 {
                     meta.passedLevels += 1;
                     if (level.buildIndex != 1)
@@ -569,6 +581,8 @@ public static class Engine
         [SerializeField]
         private int _coinsCount;
         public List<string> currentRandomLevelBlocks;
+        public EnvironmentType environmentType;
+        public bool GDPRAccepted;
         public GarageData garage;
         [SerializeField]
         public CarData car;
@@ -579,6 +593,7 @@ public static class Engine
             car = new CarData();
             if (Settings.testMode)
                 coinsCount = 5000;
+            GDPRAccepted = false;
         }
 
         [Serializable]
@@ -837,12 +852,14 @@ public static class Engine
         public delegate void GarageStateChange(GarageCoinMakerType type);
 
         public static event Fact finishLineReached;
+        public static event Fact passLineReached;
         public static event Fact crashHappened;
         public static event Fact shieldDestroyed;
         public static event Fact extraRewardReceived;
         public static event Fact newCarAppearenceReceived;
         public static event Fact carAppearenceChanged;
         public static event Fact initialized;
+        public static event Fact levelGenerated;
         public static event Fact paused;
         public static event Fact unpaused;
         public static event ZoneReach zoneReached;
@@ -868,6 +885,12 @@ public static class Engine
             Debug.Log("Finish line reached");
             if (finishLineReached != null)
                 finishLineReached();
+        }
+        public static void PassLineReached()
+        {
+            Debug.Log("Pass line reached");
+            if (passLineReached != null)
+                passLineReached();
         }
         public static void NewCarAppearenceReceived()
         {
@@ -904,6 +927,12 @@ public static class Engine
             Debug.Log("Game engine initialized");
             if (initialized != null)
                 initialized();
+        }
+        public static void LevelGenerated()
+        {
+            Debug.Log("Level generated");
+            if (levelGenerated != null)
+                levelGenerated();
         }
         public static void Paused()
         {

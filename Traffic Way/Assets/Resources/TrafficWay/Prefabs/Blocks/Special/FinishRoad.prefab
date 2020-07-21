@@ -634,6 +634,7 @@ Transform:
   m_Children:
   - {fileID: 2269325787367039070}
   - {fileID: 8396066094944447754}
+  - {fileID: 7813256144056653535}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -650,6 +651,98 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   length: 37
+  environmentType: 0
+  classification: 0
+--- !u!1001 &22491822113306736
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8396066095661345350}
+    m_Modifications:
+    - target: {fileID: 7791696985979399848, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399854, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_Name
+      value: PassLine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a85eb2d864ccb364d83438e372e80578, type: 3}
+--- !u!4 &7813256144056653535 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7791696985979399855, guid: a85eb2d864ccb364d83438e372e80578,
+    type: 3}
+  m_PrefabInstance: {fileID: 22491822113306736}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8313619519699275505
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -657,6 +750,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8396066095661345350}
     m_Modifications:
+    - target: {fileID: 7791696985979399850, guid: a85eb2d864ccb364d83438e372e80578,
+        type: 3}
+      propertyPath: trueFinishLine
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7791696985979399854, guid: a85eb2d864ccb364d83438e372e80578,
         type: 3}
       propertyPath: m_Name

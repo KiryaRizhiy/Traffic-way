@@ -11,6 +11,8 @@ public class CarDriver : MonoBehaviour
         get;
         private set;
     }
+    public float cameraMaxVelocityOffset;
+    public float cameraConstantOffset;
 
     private bool crashed = false;
 
@@ -27,6 +29,8 @@ public class CarDriver : MonoBehaviour
     void Start()
     {
         transform.localScale = Settings.carsScale;
+        transform.GetChild(1).localScale = new Vector3(1f / Settings.carsScale.x, 1f / Settings.carsScale.y, 1f / Settings.carsScale.z);
+        transform.GetChild(1).position += Vector3.up * cameraConstantOffset;
         currentSpeed = 0f;
         Engine.Events.crashHappened += OnCrhashHappened;
         Engine.Events.shieldDestroyed += OnShieldDestroyed;
@@ -74,6 +78,8 @@ public class CarDriver : MonoBehaviour
             Accelerate();
         else
             Break();
+        //transform.GetChild(0).GetComponent<Camera>().orthographicSize = 15 + (1.5f / (Settings.carSpeedLimit * 1.2f)) * currentSpeed;
+        transform.GetChild(0).localPosition = new Vector3(0, cameraConstantOffset + (cameraMaxVelocityOffset / (Settings.carSpeedLimit * 1.2f)) * currentSpeed, transform.GetChild(0).localPosition.z);
         transform.Translate(Vector2.up * currentSpeed * Time.deltaTime);
         Logger.UpdateContent(UILogDataType.Controls, "Car speed: " + currentSpeed);
     }

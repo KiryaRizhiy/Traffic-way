@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1294643049671014014}
+  - component: {fileID: 8304526820767054836}
   m_Layer: 0
-  m_Name: Alt_City_2angle
+  m_Name: Alt_Env_City_2angle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49,6 +50,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8304526820767054836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1294643049671014013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21d43f66b12ce1a4a9590c8e1017ccf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 4
+  classification: 0
 --- !u!1 &1294643050774647517
 GameObject:
   m_ObjectHideFlags: 0
