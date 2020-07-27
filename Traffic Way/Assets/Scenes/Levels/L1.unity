@@ -183,16 +183,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-<<<<<<< HEAD
     - target: {fileID: 2913233378988797036, guid: 3188ee254b94f3746b959a97b9f125f8,
-=======
-    - target: {fileID: 5948230148450181830, guid: 46bc71c2711220f4b89543c2a277c0b2,
-        type: 3}
-      propertyPath: environmentType
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6872390273091739995, guid: 46bc71c2711220f4b89543c2a277c0b2,
->>>>>>> master
         type: 3}
       propertyPath: moveType
       value: 1
@@ -222,21 +213,7 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1664451728}
     m_Modifications:
-<<<<<<< HEAD
     - target: {fileID: 8396066095661345350, guid: 5b5959079446f2e44ba3dec9999912b0,
-=======
-    - target: {fileID: -5147413004819161472, guid: 3188ee254b94f3746b959a97b9f125f8,
-        type: 3}
-      propertyPath: environmentType
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: -5147413004819161472, guid: 3188ee254b94f3746b959a97b9f125f8,
-        type: 3}
-      propertyPath: classification
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2353516284231007538, guid: 3188ee254b94f3746b959a97b9f125f8,
->>>>>>> master
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

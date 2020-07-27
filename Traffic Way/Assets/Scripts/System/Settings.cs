@@ -55,6 +55,7 @@ public static class Settings
     public const float carProgressPauseTime = 0.12f;
     public const float carProgressBlinkTime = 2.0f;
     public const float carProgressBlingOffset = 0.7f;
+    public const char LocalsSeparator = ';';
     public static Vector3 carsScale
     {
         get

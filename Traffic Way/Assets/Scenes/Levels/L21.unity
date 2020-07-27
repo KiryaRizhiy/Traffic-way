@@ -1899,6 +1899,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   length: 37
+  environmentType: 0
+  classification: 0
 --- !u!1 &1498042963
 GameObject:
   m_ObjectHideFlags: 0
@@ -2952,7 +2954,7 @@ PrefabInstance:
     - target: {fileID: 5510993595828519688, guid: 55f34f8af7fd77a468f81d9fb94175b6,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5510993595828519692, guid: 55f34f8af7fd77a468f81d9fb94175b6,
         type: 3}
