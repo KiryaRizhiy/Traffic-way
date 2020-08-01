@@ -33,7 +33,7 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         }
         if (ActivationEventList == null && DeactivationEventList == null)
         {
-            Debug.LogError(TargetObject.name + "'s activator has no action events");
+            Debug.LogError(gameObject.name + "'s activator has no action events");
         }
 
         //Subscription
@@ -283,6 +283,7 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
             (
                 action == ActivatorActionType.activate &&
                 (
+                    ActivationConditions == null ||
                     ActivationConditions.Count == 0 ||
                     ActivationConditions.Contains(ActivatorTargetConditions.none) ||
                     (ActivationConditions.Contains(ActivatorTargetConditions.gameInProgress) && Engine.sessionState == GameSessionState.InProgress) ||
@@ -299,6 +300,7 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
             (
                 action == ActivatorActionType.deactivate &&
                 (
+                    DeactivationConditions == null ||
                     DeactivationConditions.Count == 0 ||
                     DeactivationConditions.Contains(ActivatorTargetConditions.none) ||
                     (DeactivationConditions.Contains(ActivatorTargetConditions.gameInProgress) && Engine.sessionState == GameSessionState.InProgress) ||
