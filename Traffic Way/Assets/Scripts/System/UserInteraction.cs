@@ -214,7 +214,7 @@ public class UserInteraction : MonoBehaviour
 
     public void RequestConfirmNitroAdsDemonstration()
     {
-        if (!Engine.meta.car.isBoosted /*&& AdMobController.isRewardedVideoReady*/)
+        if (!Engine.meta.car.isBoosted /*&& AdMobController.isRewardedVideoReady*/ && AdMobController.isRewardedVideoReady)
             NitroAdsDemonstrationConfirmationPanel.gameObject.SetActive(true);
     }
     public void DeclineNitroAdsDemonstration()
@@ -225,12 +225,24 @@ public class UserInteraction : MonoBehaviour
     {
         NitroAdsDemonstrationConfirmationPanel.gameObject.SetActive(false);
         AdMobController.ShowRewardedAd();
-        NitroRewardPanel.gameObject.SetActive(true);
+        UIObjectActivator _act = gameObject.AddComponent<UIObjectActivator>();
+        _act.TargetObject = NitroRewardPanel.gameObject;
+        _act.DeactivationEventList = new List<UIObjectActivator.ActivatorTargetEvent>();
+        _act.ActivationEventList = new List<UIObjectActivator.ActivatorTargetEvent>() { UIObjectActivator.ActivatorTargetEvent.adsRewardedVideoFinished };
+        //NitroRewardPanel.gameObject.SetActive(true);
     }
     public void CollectNitroWatchReward()
     {
         Engine.meta.car.BoostOn();
         NitroRewardPanel.gameObject.SetActive(false);
+        UIObjectActivator[] _aarr = GetComponents<UIObjectActivator>();
+        foreach (UIObjectActivator _a in _aarr)
+        {
+            if (_a.TargetObject.name == NitroRewardPanel.name)
+                Destroy(_a);
+            else
+                Debug.Log("This component has target " + _a.TargetObject.name + " , not " + NitroRewardPanel.name);
+        }
     }
 
     public void DeclineCarAdsDemonstration()
@@ -241,18 +253,31 @@ public class UserInteraction : MonoBehaviour
     {
         CarUnlockConfirmationPanel.gameObject.SetActive(false);
         AdMobController.ShowRewardedAd();
-        CarUnlockedPanel.gameObject.SetActive(true);
+        UIObjectActivator _act = gameObject.AddComponent<UIObjectActivator>();
+        _act.TargetObject = CarUnlockedPanel.gameObject;
+        _act.DeactivationEventList = new List<UIObjectActivator.ActivatorTargetEvent>();
+        _act.ActivationEventList = new List<UIObjectActivator.ActivatorTargetEvent>() { UIObjectActivator.ActivatorTargetEvent.adsRewardedVideoFinished };
+        //CarUnlockedPanel.gameObject.SetActive(true);
     }
     public void CollectCarAdsWatchReward()
     {
         CarSelectInterface.UnlockAppearence();
         CarSelectPanel.GetComponent<CarSelectInterface>().Refresh();
         CarUnlockedPanel.gameObject.SetActive(false);
+        UIObjectActivator[] _aarr = GetComponents<UIObjectActivator>();
+        foreach (UIObjectActivator _a in _aarr)
+        {
+            if (_a.TargetObject.name == CarUnlockedPanel.name)
+                Destroy(_a);
+            else
+                Debug.Log("This component has target " + _a.TargetObject.name + " , not " + CarUnlockedPanel.name);
+        }
     }
 
     public void RequestConfirmTVAdsDemonstration()
     {
-        TVAdsDemonstrationConfirmationPanel.gameObject.SetActive(true);
+        if (AdMobController.isRewardedVideoReady)
+            TVAdsDemonstrationConfirmationPanel.gameObject.SetActive(true);
     }
     public void DeclineTVAdsDemonstration()
     {
@@ -262,11 +287,23 @@ public class UserInteraction : MonoBehaviour
     {
         TVAdsDemonstrationConfirmationPanel.gameObject.SetActive(false);
         AdMobController.ShowRewardedAd();
-        TVRewardPanel.gameObject.SetActive(true);
+        UIObjectActivator _act = gameObject.AddComponent<UIObjectActivator>();
+        _act.TargetObject = TVRewardPanel.gameObject;
+        _act.DeactivationEventList = new List<UIObjectActivator.ActivatorTargetEvent>();
+        _act.ActivationEventList = new List<UIObjectActivator.ActivatorTargetEvent>() { UIObjectActivator.ActivatorTargetEvent.adsRewardedVideoFinished };
+        //TVRewardPanel.gameObject.SetActive(true);
     }
     public void CollectTVWatchReward()
     {
         Engine.meta.garage.TVWatched();
+        UIObjectActivator[] _aarr = GetComponents<UIObjectActivator>();
+        foreach (UIObjectActivator _a in _aarr)
+        {
+            if (_a.TargetObject.name == TVRewardPanel.name)
+                Destroy(_a);
+            else
+                Debug.Log("This component has target " + _a.TargetObject.name + " , not " + TVRewardPanel.name);
+        }
         TVRewardPanel.gameObject.SetActive(false);
     }
 
