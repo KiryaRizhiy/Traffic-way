@@ -34,17 +34,17 @@ public static class Settings
     }
     public static string adMobApplicationId = "ca-app-pub-6138084763477006~9956003923";
     public static bool testMode = true;
-    public const float carSpeedLimit = 17f;
-    public const float carAcceleration = 1f;
-    public const float carBraking = 3f;
+    public const float carSpeedLimit = 23f;
+    public const float carAcceleration = 0.4f;
+    public const float carBraking = 0.8f;
     public const float carBoostMultiplyer = 1.2f;
     public const float carShieldDestroyRollBackDistance = 4f;
     public const int levelReward = 4;
     public const int extraRewardMultiplyer = 3;
     public const string privacyPolicyLink = "https://justforward.co/privacy-policy/";
     public const float tracesWidth = 0.2f;
-    public const float bulletSpeed = 19f;
-    public const float shootFrequency = 0.2f;
+    public const float bulletSpeed = 16f;
+    public const float shootFrequency = 0.5f;
     public const float trafficLightSwitchSpeed = 1.3f;
     public const int coinMakerTickMinutes = 1;
     public const int paidTicksLimit = 24;

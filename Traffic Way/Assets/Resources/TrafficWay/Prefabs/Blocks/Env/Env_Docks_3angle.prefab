@@ -619,7 +619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  classification: 0
+  classification: 6
 --- !u!1 &8508271668238923485
 GameObject:
   m_ObjectHideFlags: 0
