@@ -65,11 +65,21 @@ public class AdMobController : MonoBehaviour
         try
         {
             Logger.UpdateContent(UILogDataType.Monetization, "Ads initialization start");
-            request = new AdRequest.Builder().Build();
+            string _ph;
+            if (Engine.meta.GDPRAccepted)
+            {
+                request = new AdRequest.Builder().Build();
+                _ph = "Personalized ads initialized";
+            }
+            else
+            {
+                request = new AdRequest.Builder().AddExtra("npa", "1").Build();
+                _ph = "Non-personalized ads initialized";
+            }
             loadBanner();
             loadInterstitial();
             loadRewarded();
-            Logger.AddContent(UILogDataType.Monetization, "Ads initialized");
+            Logger.AddContent(UILogDataType.Monetization, _ph);
         }
         catch (Exception e)
         {
@@ -192,6 +202,7 @@ public class AdMobController : MonoBehaviour
     {
         Engine.Events.AdFinished(PlacementType.interstitial);
         GameAnalytics.NewAdEvent(GAAdAction.Show, GAAdType.Interstitial, "AdMob", PlacementType.interstitial.ToString());
+        interstitial.LoadAd(request);
     }
     public void interstitialHandleOnAdLeavingApplication(object sender, EventArgs args)
     {
@@ -225,6 +236,7 @@ public class AdMobController : MonoBehaviour
     {
         Engine.Events.AdFinished(PlacementType.rewardedVideo);
         GameAnalytics.NewAdEvent(GAAdAction.Show, GAAdType.RewardedVideo, "AdMob", PlacementType.rewardedVideo.ToString());
+        rewarded.LoadAd(request, Settings.adMobRewardedId);
     }
 
     #endregion
