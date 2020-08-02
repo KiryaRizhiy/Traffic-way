@@ -13,6 +13,7 @@ public class CarDriver : MonoBehaviour
     }
     public float cameraMaxVelocityOffset;
     public float cameraConstantOffset;
+    public bool accelerateAlways;
 
     private bool crashed = false;
 
@@ -74,7 +75,7 @@ public class CarDriver : MonoBehaviour
     {
         if (Engine.paused || crashed)
             return;
-        if (UserInteraction.gas)
+        if (UserInteraction.gas || (accelerateAlways && Settings.testMode))
             Accelerate();
         else
             Break();
