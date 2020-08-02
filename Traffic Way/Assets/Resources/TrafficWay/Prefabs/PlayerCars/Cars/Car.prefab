@@ -9640,8 +9640,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05644caca6a63b94d975e86a9e8c0472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraMaxVelocityOffset: -0.2
-  cameraConstantOffset: 3
+  cameraMaxVelocityOffset: -1
+  cameraConstantOffset: 2
+  accelerateAlways: 0
 --- !u!50 &7974016911904919750
 Rigidbody2D:
   serializedVersion: 4

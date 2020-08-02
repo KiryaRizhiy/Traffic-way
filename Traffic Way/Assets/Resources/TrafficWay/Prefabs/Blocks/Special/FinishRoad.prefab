@@ -652,7 +652,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   length: 37
   environmentType: 0
-  classification: 0
+  classification: 14
 --- !u!1001 &22491822113306736
 PrefabInstance:
   m_ObjectHideFlags: 0
