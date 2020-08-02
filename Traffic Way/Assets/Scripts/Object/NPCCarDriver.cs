@@ -341,9 +341,9 @@ public class NPCCarDriver : MonoBehaviour
     {
         while (true)
         {
-            waypoints.Reverse();
             moving = StartCoroutine(OnceMove());
             yield return moving;
+            waypoints.Reverse();
         }
     }
     private IEnumerator GoToWaypoint(Transform waypoint)

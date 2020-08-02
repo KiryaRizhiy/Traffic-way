@@ -11,6 +11,8 @@ public class LevelGenerator : MonoBehaviour
     private static GameObject[] Bosses;
     private static GameObject FinishBlock;
     private static GameObject FourCoins;
+    private static GameObject FourCarsBeforeBoss;
+    private static GameObject StartBlock;
 
 
     public static void LoadResources()
@@ -20,6 +22,8 @@ public class LevelGenerator : MonoBehaviour
         Bosses = Resources.LoadAll<GameObject>("TrafficWay/Prefabs/Blocks/Bosses");
         FinishBlock = Resources.Load<GameObject>("TrafficWay/Prefabs/Blocks/Special/FinishRoad");
         FourCoins = Resources.Load<GameObject>("TrafficWay/Prefabs/Blocks/Special/FourCoins");
+        FourCarsBeforeBoss = Resources.Load<GameObject>("TrafficWay/Prefabs/Blocks/Special/FourCarsBeforeBoss");
+        StartBlock = Resources.Load<GameObject>("TrafficWay/Prefabs/Blocks/Special/Start");
         Debug.Log("Level blocks loaded. Crosses - " + Crosses.Length + ", Situations - " + Situations.Length + ", Bosses - " + Bosses.Length + ". Also " + FinishBlock.name + " and " + FourCoins.name + " are loaded");
     }
 
@@ -72,6 +76,7 @@ public class LevelGenerator : MonoBehaviour
                 BlockSequence.Add(Crosses[UnityEngine.Random.Range(0, Crosses.Length)].name);
                 BlockSequence.Add(Situations[UnityEngine.Random.Range(0, Situations.Length)].name);
                 BlockSequence.Add(FourCoins.name);
+                BlockSequence.Add(FourCarsBeforeBoss.name);
                 BlockSequence.Add(Bosses[UnityEngine.Random.Range(0, Bosses.Length)].name);
                 isBossFignt = true;
                 break;
@@ -92,6 +97,7 @@ public class LevelGenerator : MonoBehaviour
             case 6:
                 BlockSequence.Add(Crosses[UnityEngine.Random.Range(0, Crosses.Length)].name);
                 BlockSequence.Add(FourCoins.name);
+                BlockSequence.Add(FourCarsBeforeBoss.name);
                 BlockSequence.Add(Bosses[UnityEngine.Random.Range(0, Bosses.Length)].name);
                 isBossFignt = true;
                 break;
@@ -105,6 +111,7 @@ public class LevelGenerator : MonoBehaviour
                 BlockSequence.Add(Situations[UnityEngine.Random.Range(0, Situations.Length)].name);
                 BlockSequence.Add(Crosses[UnityEngine.Random.Range(0, Crosses.Length)].name);
                 BlockSequence.Add(FourCoins.name);
+                BlockSequence.Add(FourCarsBeforeBoss.name);
                 BlockSequence.Add(Bosses[UnityEngine.Random.Range(0, Bosses.Length)].name);
                 isBossFignt = true;
                 break;
@@ -125,6 +132,7 @@ public class LevelGenerator : MonoBehaviour
                 Debug.LogError("Unknown lvl type " + lvlType);
                 BlockSequence.Add(Crosses[UnityEngine.Random.Range(0, Crosses.Length)].name);
                 BlockSequence.Add(Situations[UnityEngine.Random.Range(0, Situations.Length)].name);
+                BlockSequence.Add(FourCarsBeforeBoss.name);
                 BlockSequence.Add(Bosses[UnityEngine.Random.Range(0, Bosses.Length)].name);
                 isBossFignt = true;
                 BlockSequence.Add(FourCoins.name);
@@ -140,6 +148,7 @@ public class LevelGenerator : MonoBehaviour
     {
         //Build sequence
         int lvlLength = 0;
+        GameObject _currB;
         foreach (string _b in Engine.meta.currentRandomLevelBlocks)
         {
             GameObject _prefab;
@@ -161,18 +170,26 @@ public class LevelGenerator : MonoBehaviour
                             if (FourCoins.name == _b)
                                 _prefab = FourCoins;
                             else
-                            {
-                                Debug.LogError("Unknown level block type " + _b + ". Used Finish block instead");
-                                GameAnalytics.NewErrorEvent(GAErrorSeverity.Warning, "Unknown level block type " + _b + ". Used Finish block instead");
-                                _prefab = FinishBlock;
-                            }
-            GameObject _currB = Instantiate(_prefab, transform);
+                                if (FourCarsBeforeBoss.name == _b)
+                                    _prefab = FourCarsBeforeBoss;
+                                else
+                                {
+                                    Debug.LogError("Unknown level block type " + _b + ". Used Finish block instead");
+                                    GameAnalytics.NewErrorEvent(GAErrorSeverity.Warning, "Unknown level block type " + _b + ". Used Finish block instead");
+                                    _prefab = FinishBlock;
+                                }
+            _currB = Instantiate(_prefab, transform);
             _currB.GetComponent<Block>().environmentType = Engine.meta.environmentType;
             _currB.GetComponent<Block>().Show();
             _currB.transform.position = new Vector3(0f, lvlLength, 0f);
             _currB.name = _b;
             lvlLength += _prefab.GetComponent<Block>().length;
         }
+        _currB = Instantiate(StartBlock, transform);
+        _currB.GetComponent<Block>().environmentType = Engine.meta.environmentType;
+        _currB.GetComponent<Block>().Show();
+        _currB.transform.position = new Vector3(0f, -37f, 0f);
+        _currB.name = "Start block";
         //If boss fight
         if (isBossFignt)
             CarDriver.CurrentCar.GetComponent<CarShooter>().enabled = true;

@@ -32,8 +32,8 @@ public class Initializer : MonoBehaviour
         try
         {
             //Advertisement.Initialize(Settings.googlePlayId, Settings.testMode); UNCOMMENT TO IMPLEMENT UNITY ADS
-            MobileAds.Initialize(initStatus => { });
             Engine.Initialize();
+            MobileAds.Initialize(initStatus => { });
             AdMobController adController = new GameObject().AddComponent<AdMobController>();
             adController.gameObject.name = "AdMobController";
         }
