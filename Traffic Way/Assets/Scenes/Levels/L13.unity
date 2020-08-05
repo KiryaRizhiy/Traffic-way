@@ -1196,6 +1196,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: AngledFour-laneRoadCross_2
       objectReference: {fileID: 0}
+    - target: {fileID: 175883538378032911, guid: 1832e8e9c47cc6a4ca3860cf756b6e3e,
+        type: 3}
+      propertyPath: environmentType
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1832e8e9c47cc6a4ca3860cf756b6e3e, type: 3}
 --- !u!1001 &4189463588536253094
@@ -1205,6 +1210,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1664451728}
     m_Modifications:
+    - target: {fileID: -4616219111112703619, guid: 14fb98628a0783d448b340066b865baa,
+        type: 3}
+      propertyPath: environmentType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 632407686310100842, guid: 14fb98628a0783d448b340066b865baa,
         type: 3}
       propertyPath: m_LocalPosition.x

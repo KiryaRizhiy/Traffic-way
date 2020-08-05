@@ -470,7 +470,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   length: 37
-  environmentType: 2
+  environmentType: 0
   classification: 11
 --- !u!1 &632407686481503533
 GameObject:
@@ -1871,7 +1871,7 @@ MonoBehaviour:
   hitpoints: 2
   destroyShield: 0
   notStopOnCrash: 0
-  moveSpeed: 7
+  moveSpeed: 5
   rotationSpeed: 0
   moveType: 1
   circleMoveDiraction: 0

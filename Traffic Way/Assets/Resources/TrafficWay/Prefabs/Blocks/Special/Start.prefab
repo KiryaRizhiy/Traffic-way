@@ -528,7 +528,7 @@ GameObject:
   - component: {fileID: 3861712729053104362}
   - component: {fileID: -3412773003119169714}
   m_Layer: 0
-  m_Name: City_Start
+  m_Name: Start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -565,7 +565,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   length: 37
   environmentType: 0
-  classification: 0
+  classification: 15
 --- !u!1 &3861712729139703704
 GameObject:
   m_ObjectHideFlags: 0
