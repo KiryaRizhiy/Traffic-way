@@ -1138,7 +1138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   length: 37
-  environmentType: 3
+  environmentType: 0
   classification: 13
 --- !u!1 &7778542271371097503
 GameObject:

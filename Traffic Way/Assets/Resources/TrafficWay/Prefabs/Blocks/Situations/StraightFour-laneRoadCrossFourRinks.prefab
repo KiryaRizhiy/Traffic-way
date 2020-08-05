@@ -531,6 +531,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   length: 37
+  environmentType: 0
+  classification: 11
 --- !u!1 &1764483063541642320
 GameObject:
   m_ObjectHideFlags: 0
@@ -948,9 +950,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitpoints: 2
+  destroyShield: 0
+  notStopOnCrash: 0
   moveSpeed: 4
   rotationSpeed: 0
   moveType: 0
+  circleMoveDiraction: 0
   lookAtNextWaypoint: 1
   initialAngle: -90
   carType: 2
@@ -1706,9 +1711,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitpoints: 2
+  destroyShield: 0
+  notStopOnCrash: 0
   moveSpeed: 4
   rotationSpeed: 0
   moveType: 0
+  circleMoveDiraction: 0
   lookAtNextWaypoint: 1
   initialAngle: -90
   carType: 2
@@ -1854,9 +1862,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitpoints: 2
+  destroyShield: 0
+  notStopOnCrash: 0
   moveSpeed: 4
   rotationSpeed: 0
   moveType: 0
+  circleMoveDiraction: 0
   lookAtNextWaypoint: 1
   initialAngle: 90
   carType: 2
@@ -2247,9 +2258,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitpoints: 2
+  destroyShield: 0
+  notStopOnCrash: 0
   moveSpeed: 4
   rotationSpeed: 0
   moveType: 0
+  circleMoveDiraction: 0
   lookAtNextWaypoint: 1
   initialAngle: 90
   carType: 2

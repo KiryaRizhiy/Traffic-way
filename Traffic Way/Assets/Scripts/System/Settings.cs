@@ -43,8 +43,8 @@ public static class Settings
     public const int extraRewardMultiplyer = 3;
     public const string privacyPolicyLink = "https://justforward.co/privacy-policy/";
     public const float tracesWidth = 0.2f;
-    public const float bulletSpeed = 16f;
-    public const float shootFrequency = 0.5f;
+    public const float bulletSpeed = 18f;
+    public const float shootFrequency = 0.4f;
     public const float trafficLightSwitchSpeed = 1.3f;
     public const int coinMakerTickMinutes = 1;
     public const int paidTicksLimit = 24;
