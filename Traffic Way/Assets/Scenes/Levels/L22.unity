@@ -510,11 +510,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameplayInterface
       objectReference: {fileID: 0}
-    - target: {fileID: 5510993595828519688, guid: 55f34f8af7fd77a468f81d9fb94175b6,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5510993595828519692, guid: 55f34f8af7fd77a468f81d9fb94175b6,
         type: 3}
       propertyPath: m_LocalPosition.x

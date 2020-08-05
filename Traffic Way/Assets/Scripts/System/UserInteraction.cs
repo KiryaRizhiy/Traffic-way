@@ -54,6 +54,13 @@ public class UserInteraction : MonoBehaviour
             return CarSelectPanel.GetChild(0).GetChild(3);
         }
     }
+    private Transform CurrentCarImage
+    {
+        get
+        {
+            return transform.GetChild(0).GetChild(1).GetChild(2);
+        }
+    }
     private Transform GDPRPanel
     {
         get
@@ -102,7 +109,7 @@ public class UserInteraction : MonoBehaviour
     public void ShowCurrentCar()
     {
         if (gameObject.name == "Interface" && Engine.initialized)
-            transform.GetChild(0).GetChild(1).GetChild(1).GetComponent<Image>().sprite = Sprite.Create(
+            CurrentCarImage.GetComponent<Image>().sprite = Sprite.Create(
                 Engine.CarsAppearences[Engine.meta.car.currentAppearenceNum],
                 new Rect(0f, 0f, Engine.CarsAppearences[Engine.meta.car.currentAppearenceNum].width, Engine.CarsAppearences[Engine.meta.car.currentAppearenceNum].height),
                     Vector2.one * 0.5f);
@@ -314,7 +321,7 @@ public class UserInteraction : MonoBehaviour
     }
     public void HideGDPRPanel()
     {
-        if (Engine.initialized)
+        if (Engine.initialized && GDPRPanel.name == "GDPRAccept")
             GDPRPanel.gameObject.SetActive(!Engine.meta.GDPRAccepted);
     }
 }
