@@ -591,8 +591,8 @@ public static class Engine
             _version = Version;
             garage = new GarageData();
             car = new CarData();
-            if (Settings.testMode)
-                coinsCount = 5000;
+            //if (Settings.testMode)
+            //    coinsCount = 5000;
             GDPRAccepted = false;
         }
 
