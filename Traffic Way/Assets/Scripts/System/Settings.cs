@@ -46,11 +46,11 @@ public static class Settings
     public const float bulletSpeed = 18f;
     public const float shootFrequency = 0.4f;
     public const float trafficLightSwitchSpeed = 1.3f;
-    public const int coinMakerTickMinutes = 1;
+    public const int coinMakerTickMinutes = 30;
     public const int paidTicksLimit = 24;
-    public const int TVCooldownMinutes = 1;
+    public const int TVCooldownMinutes = 30;
     public const int TVWatchReward = 15;
-    public const int levelCarProgress = 51;
+    public const int levelCarProgress = 19;
     public const float carProgressDemoTime = 1.7f;
     public const float carProgressPauseTime = 0.12f;
     public const float carProgressBlinkTime = 2.0f;
