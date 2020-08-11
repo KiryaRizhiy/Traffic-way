@@ -1589,8 +1589,7 @@ PrefabInstance:
         type: 3}
       propertyPath: zone
       value: 
-      objectReference: {fileID: 7797174010079930855, guid: b08b151901b7968439763ada8eac384a,
-        type: 3}
+      objectReference: {fileID: 854845317968185495}
     - target: {fileID: 4946545677984278923, guid: 671cd86f80a1fc44fa1e852c8a270cc4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1738,6 +1737,12 @@ PrefabInstance:
 --- !u!4 &854845317968185488 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7782204336169806089, guid: 1a306b9e79a3dda4aa34c912708bbd51,
+    type: 3}
+  m_PrefabInstance: {fileID: 6927368373479252377}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &854845317968185495 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7782204336169806094, guid: 1a306b9e79a3dda4aa34c912708bbd51,
     type: 3}
   m_PrefabInstance: {fileID: 6927368373479252377}
   m_PrefabAsset: {fileID: 0}
