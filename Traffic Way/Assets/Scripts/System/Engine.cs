@@ -102,6 +102,16 @@ public static class Engine
         get;
         private set;
     }
+    public static List<Texture2D> CarsAppearencesAngled
+    {
+        get;
+        private set;
+    }
+    public static List<Texture2D> CarAppearencesShadowsAngled
+    {
+        get;
+        private set;
+    }
     public static bool initialized
     {
         get;
@@ -151,7 +161,8 @@ public static class Engine
         CarSelectInterface.LoadResources();
         Block.LoadResources();
         NPCCarController.LoadResources();
-        Localization.LoadLocals(Application.systemLanguage);
+        //Localization.LoadLocals(Application.systemLanguage);
+        Localization.LoadLocals(SystemLanguage.English);
         initialized = true;
     }
     public static void InitializeTest()
@@ -339,12 +350,16 @@ public static class Engine
 
         CarsAppearences = new List<Texture2D>();
         CarAppearencesShadows = new List<Texture2D>();
-        int _carsAmt = Resources.LoadAll<Texture2D>("TrafficWay/Textures/PlayerCar").Length / 2;
+        CarsAppearencesAngled = new List<Texture2D>();
+        CarAppearencesShadowsAngled = new List<Texture2D>();
+        int _carsAmt = Resources.LoadAll<Texture2D>("TrafficWay/Textures/PlayerCar").Length / 4;
         Debug.Log("Cars amount: " + _carsAmt);
         for (int i = 0; i < _carsAmt; i++)
         {
             CarsAppearences.Add(Resources.Load<Texture2D>("TrafficWay/Textures/PlayerCar/" + i.ToString() + "_Car"));
             CarAppearencesShadows.Add(Resources.Load<Texture2D>("TrafficWay/Textures/PlayerCar/" + i.ToString() + "_Shadow"));
+            CarsAppearencesAngled.Add(Resources.Load<Texture2D>("TrafficWay/Textures/PlayerCar/" + i.ToString() + "_Car_Angled"));
+            CarAppearencesShadowsAngled.Add(Resources.Load<Texture2D>("TrafficWay/Textures/PlayerCar/" + i.ToString() + "_Shadow_Angled"));
         }
         Debug.Log("Loaded " + CarsAppearences.Count + " cars and " + CarAppearencesShadows.Count + " shadows");
 

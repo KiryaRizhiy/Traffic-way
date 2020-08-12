@@ -40,18 +40,18 @@ public class UserInteraction : MonoBehaviour
             return transform.GetChild(0).GetChild(10);
         }
     }
-    private Transform CarUnlockConfirmationPanel
-    {
-        get
-        {
-            return CarSelectPanel.GetChild(0).GetChild(2);
-        }
-    }
+    //private Transform CarUnlockConfirmationPanel
+    //{
+    //    get
+    //    {
+    //        return CarSelectPanel.GetChild(2);
+    //    }
+    //}
     private Transform CarUnlockedPanel
     {
         get
         {
-            return CarSelectPanel.GetChild(0).GetChild(3);
+            return CarSelectPanel.GetChild(2);
         }
     }
     private Transform CurrentCarImage
@@ -254,11 +254,13 @@ public class UserInteraction : MonoBehaviour
 
     public void DeclineCarAdsDemonstration()
     {
-        CarUnlockConfirmationPanel.gameObject.SetActive(false);
+        //CarUnlockConfirmationPanel.gameObject.SetActive(false);
+        CarSelectPanel.gameObject.SetActive(true);
+        CarSelectPanel.GetComponent<CarSelectInterface>().Refresh();
     }
     public void ShowCarAds()
     {
-        CarUnlockConfirmationPanel.gameObject.SetActive(false);
+        //CarUnlockConfirmationPanel.gameObject.SetActive(false);
         AdMobController.ShowRewardedAd();
         UIObjectActivator _act = gameObject.AddComponent<UIObjectActivator>();
         _act.TargetObject = CarUnlockedPanel.gameObject;
@@ -279,6 +281,8 @@ public class UserInteraction : MonoBehaviour
             else
                 Debug.Log("This component has target " + _a.TargetObject.name + " , not " + CarUnlockedPanel.name);
         }
+        CarSelectPanel.gameObject.SetActive(true);
+        CarSelectPanel.GetComponent<CarSelectInterface>().Refresh();
     }
 
     public void RequestConfirmTVAdsDemonstration()
