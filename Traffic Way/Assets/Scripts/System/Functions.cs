@@ -72,5 +72,4 @@ public static class Functions
         renderTexture.Release();
         return _txt;
     }
-
 }

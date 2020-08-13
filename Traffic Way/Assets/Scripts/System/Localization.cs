@@ -28,6 +28,8 @@ public static class Localization
     }
     public static string GetLocal(string code)
     {
+        if (code == null)
+            return code;
         if (Array.IndexOf(indexes, code) > 0)
             return texts[Array.IndexOf(indexes, code)];
         else
