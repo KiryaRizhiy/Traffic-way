@@ -161,6 +161,7 @@ public static class Engine
         CarSelectInterface.LoadResources();
         Block.LoadResources();
         NPCCarController.LoadResources();
+        RandomEmoji.LoadResources();
         //Localization.LoadLocals(Application.systemLanguage);
         Localization.LoadLocals(SystemLanguage.English);
         initialized = true;
