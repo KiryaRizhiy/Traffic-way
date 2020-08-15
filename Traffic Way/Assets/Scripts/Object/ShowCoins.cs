@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+//using UnityEngine.UI;
+using TMPro;
 
-[RequireComponent(typeof(Text))]
+//[RequireComponent(typeof(Text))]
+[RequireComponent(typeof(TextMeshProUGUI))]
 public class ShowCoins : MonoBehaviour
 {
     void Awake()
@@ -17,10 +19,10 @@ public class ShowCoins : MonoBehaviour
     }
     public void Show()
     {
-        if (Engine.meta != null)
-            GetComponent<Text>().text = Engine.meta.coinsCount.ToString();
+        if (Engine.initialized)
+            GetComponent<TextMeshProUGUI>().text = Engine.meta.coinsCount.ToString();
         else
-            GetComponent<Text>().text = "0";
+            GetComponent<TextMeshProUGUI>().text = "0";
     }
     public void GaragePurchaseHandler(GarageCoinMakerType type)
     {

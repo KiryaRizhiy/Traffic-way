@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using GoogleMobileAds;
 //using UnityEngine.Advertisements; UNCOMMENT TO IMPLEMENT UNITY ADS
 using UnityEngine.UI;
 
@@ -17,6 +18,14 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
         newCarAppeareenceReceived, sceneLoaded, levelGenerated}
     public enum ActivatorTargetConditions { none, gameInProgress, gameWon, gameLost, gamePassed, readyToGiveNewCarAppearence, newCarAppearenceReceived, notReadyToGiveNewCarAppearence, isBossFight, isNotBossFight }
     public enum ActivatorActionType { activate, deactivate }
+    public bool threadSwitchRequired;
+
+    private bool performActionRequired;
+    private ActivatorActionType requiredActionType;
+    private bool forcePerform;
+
+    private int requiredFramesForSwitch = 7;
+    private int currentFramesAfterSwitch = 0;
 
     public List<ActivatorTargetEvent> ActivationEventList;
     public List<ActivatorTargetConditions> ActivationConditions;
@@ -26,6 +35,8 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
     // Start is called before the first frame update
     void Awake()
     {
+        performActionRequired = false;
+        forcePerform = false;
         //Validation
         if (TargetObject == null)
         {
@@ -95,6 +106,27 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
     //{
     //}
 
+    void Update()
+    {
+        if (threadSwitchRequired && performActionRequired)
+        {
+            if (currentFramesAfterSwitch < requiredFramesForSwitch)
+            {
+                //Debug.Log("Frames countdown: " + (requiredFramesForSwitch - currentFramesAfterSwitch).ToString());
+                currentFramesAfterSwitch++;
+            }
+            else
+            {
+                forcePerform = true;
+                PerformAction(requiredActionType);
+                performActionRequired = false;
+                currentFramesAfterSwitch = 0;
+            }
+        }
+        else
+            currentFramesAfterSwitch = 0;
+
+    }
 
     public void OnAdLoaded(PlacementType type)
     {
@@ -279,6 +311,12 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
     }
     private void PerformAction(ActivatorActionType action)
     {
+        if (threadSwitchRequired && !forcePerform)
+        {
+            performActionRequired = true;
+            requiredActionType = action;
+            return;
+        }
         if (
             (
                 action == ActivatorActionType.activate &&
@@ -321,5 +359,6 @@ public class UIObjectActivator : MonoBehaviour/*, IUnityAdsListener UNCOMMENT TO
             if (TargetObject.GetComponent<Button>() != null)
                 TargetObject.GetComponent<Button>().interactable = (action == ActivatorActionType.activate);
         }
+        forcePerform = false;
     }
 }
