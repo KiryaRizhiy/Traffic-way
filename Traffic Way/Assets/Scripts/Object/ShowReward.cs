@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+//using UnityEngine.UI;
+using TMPro;
 
-[RequireComponent(typeof(Text))]
+//[RequireComponent(typeof(Text))]
+[RequireComponent(typeof(TextMeshProUGUI))]
 public class ShowReward : MonoBehaviour
 {
     public enum DisplayableRewardType {levelFinishReward, TVWatchReward}
@@ -13,14 +15,14 @@ public class ShowReward : MonoBehaviour
         switch (rewardType)
         {
             case DisplayableRewardType.levelFinishReward:
-                GetComponent<Text>().text = Localization.GetLocal(prefix) + " " + Engine.rewardAmount;
+                GetComponent<TextMeshProUGUI>().text = Localization.GetLocal(prefix) + " " + Engine.rewardAmount;
                 break;
             case DisplayableRewardType.TVWatchReward:
-                GetComponent<Text>().text = Localization.GetLocal(prefix) + " " + Settings.TVWatchReward;
+                GetComponent<TextMeshProUGUI>().text = Localization.GetLocal(prefix) + " " + Settings.TVWatchReward;
                 break;
             default:
                 Debug.LogError("Unknown type of reward to display " + rewardType.ToString());
-                GetComponent<Text>().text = prefix + " undefined"; 
+                GetComponent<TextMeshProUGUI>().text = prefix + " undefined"; 
                 break;
         }
     }

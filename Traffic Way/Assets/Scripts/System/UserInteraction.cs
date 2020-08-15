@@ -68,6 +68,13 @@ public class UserInteraction : MonoBehaviour
             return transform.GetChild(1);
         }
     }
+    public Transform BottomControls
+    {
+        get
+        {
+            return transform.GetChild(0).GetChild(1);
+        }
+    }
 
     void Update()
     {
@@ -166,6 +173,7 @@ public class UserInteraction : MonoBehaviour
     {
         CarSelectPanel.gameObject.SetActive(true);
         CarSelectPanel.GetComponent<CarSelectInterface>().Open();
+        BottomControls.gameObject.SetActive(false);
     }
     public void ClearSaveFile()
     {
@@ -266,6 +274,7 @@ public class UserInteraction : MonoBehaviour
         _act.TargetObject = CarUnlockedPanel.gameObject;
         _act.DeactivationEventList = new List<UIObjectActivator.ActivatorTargetEvent>();
         _act.ActivationEventList = new List<UIObjectActivator.ActivatorTargetEvent>() { UIObjectActivator.ActivatorTargetEvent.adsRewardedVideoFinished };
+        _act.threadSwitchRequired = true;
         //CarUnlockedPanel.gameObject.SetActive(true);
     }
     public void CollectCarAdsWatchReward()

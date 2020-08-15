@@ -28,6 +28,14 @@ public class AdMobController : MonoBehaviour
         }
     }
 
+    //public static bool isAdActive
+    //{
+    //    //get
+    //    //{
+    //    //    return interstitial.
+    //    //}
+    //}
+
     private static BannerView banner;
     private static InterstitialAd interstitial;
     private static RewardBasedVideoAd rewarded;

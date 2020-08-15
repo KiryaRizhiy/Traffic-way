@@ -61,6 +61,14 @@ public class CarSelectInterface : MonoBehaviour
             return transform.GetChild(1);
         }
     }
+    private UserInteraction Interface
+    {
+        get
+        {
+            return transform.parent.parent.gameObject.GetComponent<UserInteraction>();
+        }
+
+    }
     private int _pagesAmt
     {
         get 
@@ -115,6 +123,7 @@ public class CarSelectInterface : MonoBehaviour
     {
         gameObject.SetActive(false);
         Engine.Events.adLoaded -= ActivateButtonAndUnsubscribe;
+        Interface.BottomControls.gameObject.SetActive(true);
     }
     public void AppearenceTapped(int panelNum)
     {
@@ -132,7 +141,7 @@ public class CarSelectInterface : MonoBehaviour
                 Debug.Log("It is passed");
                 if (!AdMobController.isRewardedVideoReady)
                     return;
-                transform.parent.parent.gameObject.GetComponent<UserInteraction>().ShowCarAds();
+                Interface.ShowCarAds();
                 //_carUnlockConfirmationPanel.gameObject.SetActive(true);
                 //_carUnlockConfirmationPanel.GetChild(0).GetComponent<Image>().sprite = Sprite.Create(
                 //    Engine.CarsAppearences[_currentPage * _carsOnPage + panelNum],
