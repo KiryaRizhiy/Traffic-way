@@ -12,4 +12,4 @@ public enum EnvironmentClassification { leftBottomToRightTopWidth1, leftBottomTo
     leftTopToRightBottomWidth1, leftTopToRightBottomWidth2, leftTopToRightBottomWidth3, leftTopToRightBottomWidth4,
     centerToCenterWidth1, centerToCenterWidth2, centerToCenterWidth3, centerToCenterWidth4,
     oneCircle, twoCircles,
-    finishRoad, startRoad, tripleSingleRoads, circleWithBoss}
+    finishRoad, startRoad, tripleSingleRoads, circleWithBoss, TwoTrainsAndStraightCross}
