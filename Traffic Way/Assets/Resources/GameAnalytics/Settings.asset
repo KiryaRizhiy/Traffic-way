@@ -30,7 +30,7 @@ MonoBehaviour:
   secretKey:
   - 020512eef21081c99ee651bc85612ff61464ecb0
   Build:
-  - 3.0
+  - 3.0.1
   SelectedPlatformStudio:
   - 
   SelectedPlatformGame:

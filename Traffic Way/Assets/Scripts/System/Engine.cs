@@ -252,6 +252,7 @@ public static class Engine
     public static void AcceptGDPR()
     {
         meta.GDPRAccepted = true;
+        Events.GdprChecked();
         Save();
     }
     private static void AddCoins(int count)
@@ -526,8 +527,8 @@ public static class Engine
             level = lvl;
             state = GameSessionState.InProgress;
             paused = false;
-            adController = new GameObject().AddComponent<AdMobController>();
-            adController.gameObject.name = "AdMobController";
+            //adController = new GameObject().AddComponent<AdMobController>();
+            //adController.gameObject.name = "AdMobController";
             ////Advertisement.AddListener(this); UNCOMMENT TO IMPLEMENT UNITY ADS
             GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start,"Traffic way", level.name,"Level progress",actualLevel);
         }
@@ -874,6 +875,7 @@ public static class Engine
         public static event Fact extraRewardReceived;
         public static event Fact newCarAppearenceReceived;
         public static event Fact carAppearenceChanged;
+        public static event Fact gdprChecked;
         public static event Fact initialized;
         public static event Fact levelGenerated;
         public static event Fact paused;
@@ -925,6 +927,12 @@ public static class Engine
             Debug.Log("Extra reward received");
             if (extraRewardReceived != null)
                 extraRewardReceived();
+        }
+        public static void GdprChecked()
+        {
+            Debug.Log("GDPR checked");
+            if (gdprChecked != null)
+                gdprChecked();
         }
         public static void CrashHappened()
         {
