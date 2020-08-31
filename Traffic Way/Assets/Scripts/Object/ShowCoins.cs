@@ -9,6 +9,7 @@ public class ShowCoins : MonoBehaviour
     void Awake()
     {
         Engine.Events.initialized += Show;
+        Engine.Events.coinReceived += Show;
         Engine.Events.onGarageStateChanged += GaragePurchaseHandler;
         Engine.Events.adFailed += HandleAdEvent;
         Engine.Events.adFinished += HandleAdEvent;
@@ -35,6 +36,7 @@ public class ShowCoins : MonoBehaviour
     void OnDestroy()
     {
         Engine.Events.initialized -= Show;
+        Engine.Events.coinReceived -= Show;
         Engine.Events.onGarageStateChanged -= GaragePurchaseHandler;
         Engine.Events.adFailed -= HandleAdEvent;
         Engine.Events.adFinished -= HandleAdEvent;
