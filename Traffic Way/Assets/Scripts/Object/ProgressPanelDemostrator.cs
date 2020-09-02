@@ -333,7 +333,7 @@ public class ProgressPanelDemostrator : MonoBehaviour
         while (blinkPassedTime >= Settings.carProgressBlinkTime / 2 && blinkPassedTime < Settings.carProgressBlinkTime)
         {
             _carTxt = Functions.CutAndLerpTexture(_carAppearence, Mathf.RoundToInt(currentPercent), (1 - blinkPassedTime / Settings.carProgressBlinkTime) * 2, Color.white);
-            _carShadowTxt = Functions.CutAndLerpTexture(_carAppearenceShadow, 100, (blinkPassedTime / Settings.carProgressBlinkTime) * 2, _transparent, false);
+            _carShadowTxt = Functions.CutAndLerpTexture(_carAppearenceShadow, 100, (1 - blinkPassedTime / Settings.carProgressBlinkTime) * 2, _transparent, false);
             carImg.GetComponent<Image>().sprite = Sprite.Create(_carTxt,
                 new Rect(0f, 0f, _carTxt.width, _carTxt.height),
                 Vector2.one * 0.5f);
