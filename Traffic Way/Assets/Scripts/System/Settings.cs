@@ -33,7 +33,7 @@ public static class Settings
         }
     }
     public static string adMobApplicationId = "ca-app-pub-6138084763477006~9956003923";
-    public static bool testMode = false;
+    public static bool testMode = true;
     public const float carSpeedLimit = 23f;
     public const float carAcceleration = 0.4f;
     public const float carBraking = 0.8f;
