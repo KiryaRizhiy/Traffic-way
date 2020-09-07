@@ -1175,6 +1175,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: StraightTwo-laneRoadCross_3
       objectReference: {fileID: 0}
+    - target: {fileID: 7168433865820834836, guid: bfd34620493b9ea428134026312101bd,
+        type: 3}
+      propertyPath: environmentType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7168433865820834837, guid: bfd34620493b9ea428134026312101bd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1623,6 +1628,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7474537233023746141, guid: 55f34f8af7fd77a468f81d9fb94175b6,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -3.300003
+      objectReference: {fileID: 0}
+    - target: {fileID: 8029079120616919887, guid: 55f34f8af7fd77a468f81d9fb94175b6,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -3.300003
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55f34f8af7fd77a468f81d9fb94175b6, type: 3}

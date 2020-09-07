@@ -252,6 +252,7 @@ public static class Engine
     public static void AcceptGDPR()
     {
         meta.GDPRAccepted = true;
+        Events.GdprChecked();
         Save();
     }
     private static void AddCoins(int count)
@@ -526,8 +527,8 @@ public static class Engine
             level = lvl;
             state = GameSessionState.InProgress;
             paused = false;
-            adController = new GameObject().AddComponent<AdMobController>();
-            adController.gameObject.name = "AdMobController";
+            //adController = new GameObject().AddComponent<AdMobController>();
+            //adController.gameObject.name = "AdMobController";
             ////Advertisement.AddListener(this); UNCOMMENT TO IMPLEMENT UNITY ADS
             GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start,"Traffic way", level.name,"Level progress",actualLevel);
         }
@@ -588,6 +589,7 @@ public static class Engine
             {
                 int diff = value - _coinsCount;
                     _coinsCount = value;
+                Events.CoinReceived();
                 if (diff>0)//Increase coins amount                
                     GameAnalytics.NewResourceEvent(GAResourceFlowType.Source, "Coin", diff,"Coin","Coin");                
                 else
@@ -874,6 +876,8 @@ public static class Engine
         public static event Fact extraRewardReceived;
         public static event Fact newCarAppearenceReceived;
         public static event Fact carAppearenceChanged;
+        public static event Fact coinReceived;
+        public static event Fact gdprChecked;
         public static event Fact initialized;
         public static event Fact levelGenerated;
         public static event Fact paused;
@@ -926,6 +930,18 @@ public static class Engine
             if (extraRewardReceived != null)
                 extraRewardReceived();
         }
+        public static void CoinReceived()
+        {
+            Debug.Log("Coin received");
+            if (coinReceived != null)
+                coinReceived();
+        }
+        public static void GdprChecked()
+        {
+            Debug.Log("GDPR checked");
+            if (gdprChecked != null)
+                gdprChecked();
+        }
         public static void CrashHappened()
         {
             Debug.Log("Crush happened");
@@ -977,42 +993,49 @@ public static class Engine
         public static void AdLoaded(PlacementType type)
         {
             Debug.Log(type + " placement loaded");
+            Logger.AddContent(UILogDataType.Monetization, type + " placement loaded");
             if (adLoaded != null)
                 adLoaded(type);
         }
         public static void AdNotReady(PlacementType type)
         {
             Debug.Log("Time to use " + type + " placement, but it is not ready");
+            Logger.AddContent(UILogDataType.Monetization, "Time to use " + type + " placement, but it is not ready");
             if (adNotReady != null)
                 adNotReady(type);
         }
         public static void AdFinished(PlacementType type)
         {
             Debug.Log(type + " placement finished");
+            Logger.AddContent(UILogDataType.Monetization, type + " placement finished");
             if (adFinished != null)
                 adFinished(type);
         }
         public static void AdSkipped(PlacementType type)
         {
             Debug.Log(type + " placement skipped");
+            Logger.AddContent(UILogDataType.Monetization, type + " placement skipped");
             if (adSkipped != null)
                 adSkipped(type);
         }
         public static void AdFailed(PlacementType type)
         {
             Debug.LogError(type + " placement failed");
+            Logger.AddContent(UILogDataType.Monetization, type + " placement failed");
             if (adFailed != null)
                 adFailed(type);
         }
         public static void AdOpened(PlacementType type)
         {
             Debug.Log(type + " placement clicked");
+            Logger.AddContent(UILogDataType.Monetization, type + " placement clicked");
             if (adOpened != null)
                 adOpened(type);
         }
         public static void AdUserLeave(PlacementType type)
         {
             Debug.Log("User left, wathing advertisment " + type);
+            Logger.AddContent(UILogDataType.Monetization, "User left, wathing advertisment " + type);
             if (adUserLeave != null)
                 adUserLeave(type);
         }

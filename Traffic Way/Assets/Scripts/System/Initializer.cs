@@ -36,6 +36,7 @@ public class Initializer : MonoBehaviour
             MobileAds.Initialize(initStatus => { });
             AdMobController adController = new GameObject().AddComponent<AdMobController>();
             adController.gameObject.name = "AdMobController";
+            DontDestroyOnLoad(adController);
         }
         catch (Exception e)
         {

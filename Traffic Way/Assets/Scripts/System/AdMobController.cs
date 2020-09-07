@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using GameAnalyticsSDK;
 using GoogleMobileAds.Api;
+using System.Diagnostics;
 
 public class AdMobController : MonoBehaviour
 {
@@ -69,6 +70,20 @@ public class AdMobController : MonoBehaviour
     }
     
     void Start()
+    {
+        if (!Engine.initialized)
+        {
+            UnityEngine.Debug.LogError("ADS start before engine initialize");
+            GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, "ADS start before engine initialize");
+            return;
+        }
+        if (Engine.meta.GDPRAccepted)
+            Initialize();
+        else
+            Engine.Events.gdprChecked += Initialize;
+    }
+
+    private void Initialize()
     {
         try
         {
@@ -167,7 +182,7 @@ public class AdMobController : MonoBehaviour
     }
     public void bannerHandleOnAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
     {
-        Debug.Log("HandleFailedToReceiveAd event received with message: "
+        UnityEngine.Debug.Log("HandleFailedToReceiveAd event received with message: "
                             + args.Message);
         Logger.AddContent(UILogDataType.Monetization, "Load fail event handling");
         Engine.Events.AdFailed(PlacementType.banner);
@@ -197,7 +212,7 @@ public class AdMobController : MonoBehaviour
     }
     public void interstitialHandleOnAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
     {
-        Debug.Log("HandleFailedToReceiveAd event received with message: "
+        UnityEngine.Debug.Log("HandleFailedToReceiveAd event received with message: "
                             + args.Message);
         Engine.Events.AdFailed(PlacementType.interstitial);
         GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, "Interstitial ad load error:" + Environment.NewLine + args.Message);
@@ -227,7 +242,7 @@ public class AdMobController : MonoBehaviour
     }
     public void rewardedHandleOnAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
     {
-        Debug.Log("HandleFailedToReceiveAd event received with message: "
+        UnityEngine.Debug.Log("HandleFailedToReceiveAd event received with message: "
                             + args.Message);
         Engine.Events.AdFailed(PlacementType.rewardedVideo);
         GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, "Rewarded ad load error:" + Environment.NewLine + args.Message);

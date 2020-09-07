@@ -39,13 +39,15 @@ public static class Functions
     {
         if (lerpCoeffitient > 1f)
         {
-            lerpCoeffitient = 1f;
             Debug.LogWarning("Unable to use interpolation coeffitient " + lerpCoeffitient + " used 1 instead");
+            lerpCoeffitient = 1f;
+            
         }
         if (percent > 100)
         {
-            percent = 100;
             Debug.LogWarning("Unable to use drawing percent" + percent + " used 100 instead");
+            percent = 100;
+            
         }
         Texture2D _txt = new Texture2D(source.width, source.height, source.format, false);
         Color currentColor = color;
