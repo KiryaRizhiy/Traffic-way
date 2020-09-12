@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CarDriver : MonoBehaviour
 {
+    //сделать по аналогии load resources в carshooter
     public static GameObject CurrentCar
     { get; private set; }
     public static float currentSpeed
@@ -14,6 +15,7 @@ public class CarDriver : MonoBehaviour
     public float cameraMaxVelocityOffset;
     public float cameraConstantOffset;
     public bool accelerateAlways;
+    private GameObject shield { get { return transform.GetChild(2).gameObject; } }
 
     private bool crashed = false;
 
@@ -29,6 +31,16 @@ public class CarDriver : MonoBehaviour
 
     void Start()
     {
+        //Engine.meta.car.isBoosted=true;                                                  //if true then car.shield.enabled=true
+        if (Engine.meta.car.isBoosted==true)
+        {
+            shield.SetActive(true);
+        }
+        else
+        {
+            shield.SetActive(false);
+        }
+
         transform.localScale = Settings.carsScale;
         transform.GetChild(1).localScale = new Vector3(1f / Settings.carsScale.x, 1f / Settings.carsScale.y, 1f / Settings.carsScale.z);
         transform.GetChild(1).position += Vector3.up * cameraConstantOffset;
@@ -42,6 +54,7 @@ public class CarDriver : MonoBehaviour
     {
         transform.Translate(Vector2.down * Settings.carShieldDestroyRollBackDistance);
         StartCoroutine(Blink());
+        shield.SetActive(false); 
     }
     private void OnCrhashHappened()
     {
