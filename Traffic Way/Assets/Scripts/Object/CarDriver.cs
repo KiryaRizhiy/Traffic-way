@@ -7,6 +7,7 @@ public class CarDriver : MonoBehaviour
     //сделать по аналогии load resources в carshooter
     public static GameObject CurrentCar
     { get; private set; }
+    public GameplayMode mode;
     public static float currentSpeed
     {
         get;
@@ -15,7 +16,22 @@ public class CarDriver : MonoBehaviour
     public float cameraMaxVelocityOffset;
     public float cameraConstantOffset;
     public bool accelerateAlways;
-    private GameObject shield { get { return transform.GetChild(2).gameObject; } }
+    private GameObject shield 
+    { get { return transform.GetChild(3).gameObject; } }
+    private Transform _cam
+    {
+        get
+        {
+            return transform.GetChild(1);
+        }
+    }
+    private Transform _particles
+    {
+        get
+        {
+            return transform.GetChild(2);
+        }
+    }
 
     private bool crashed = false;
 
@@ -31,23 +47,31 @@ public class CarDriver : MonoBehaviour
 
     void Start()
     {
-        //Engine.meta.car.isBoosted=true;                                                  //if true then car.shield.enabled=true
-        if (Engine.meta.car.isBoosted==true)
+        if (mode == GameplayMode.Drive)
         {
-            shield.SetActive(true);
+            //Engine.meta.car.isBoosted=true;                                                  //if true then car.shield.enabled=true
+            if (Engine.meta.car.isBoosted == true)
+            {
+                shield.SetActive(true);
+            }
+            else
+            {
+                shield.SetActive(false);
+            }
+            transform.localScale = Settings.carsScale;
+            _particles.localScale = new Vector3(1f / Settings.carsScale.x, 1f / Settings.carsScale.y, 1f / Settings.carsScale.z);
+            _particles.position += Vector3.up * cameraConstantOffset;
+            currentSpeed = 0f;
+            Engine.Events.crashHappened += OnCrhashHappened;
+            Engine.Events.shieldDestroyed += OnShieldDestroyed;
+            if (Settings.testMode) Functions.DrawPolygonCollider(GetComponent<PolygonCollider2D>());
+            _cam.gameObject.SetActive(true);
         }
-        else
+        if (mode == GameplayMode.Puzzle)
         {
             shield.SetActive(false);
+            _cam.gameObject.SetActive(false);
         }
-
-        transform.localScale = Settings.carsScale;
-        transform.GetChild(1).localScale = new Vector3(1f / Settings.carsScale.x, 1f / Settings.carsScale.y, 1f / Settings.carsScale.z);
-        transform.GetChild(1).position += Vector3.up * cameraConstantOffset;
-        currentSpeed = 0f;
-        Engine.Events.crashHappened += OnCrhashHappened;
-        Engine.Events.shieldDestroyed += OnShieldDestroyed;
-        if (Settings.testMode) Functions.DrawPolygonCollider(GetComponent<PolygonCollider2D>());
     }
 
     private void OnShieldDestroyed()
@@ -86,14 +110,14 @@ public class CarDriver : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Engine.paused || crashed)
+        if (Engine.paused || crashed || mode == GameplayMode.Puzzle)
             return;
         if (UserInteraction.gas || (accelerateAlways && Settings.testMode))
             Accelerate();
         else
             Break();
         //transform.GetChild(0).GetComponent<Camera>().orthographicSize = 15 + (1.5f / (Settings.carSpeedLimit * 1.2f)) * currentSpeed;
-        transform.GetChild(0).localPosition = new Vector3(0, cameraConstantOffset + (cameraMaxVelocityOffset / (Settings.carSpeedLimit * 1.2f)) * currentSpeed, transform.GetChild(0).localPosition.z);
+        _cam.localPosition = new Vector3(0, cameraConstantOffset + (cameraMaxVelocityOffset / (Settings.carSpeedLimit * 1.2f)) * currentSpeed, _cam.localPosition.z);
         transform.Translate(Vector2.up * currentSpeed * Time.deltaTime);
         Logger.UpdateContent(UILogDataType.Controls, "Car speed: " + currentSpeed);
     }
@@ -113,3 +137,4 @@ public class CarDriver : MonoBehaviour
         }
     }
 }
+public enum GameplayMode { Drive, Puzzle}
