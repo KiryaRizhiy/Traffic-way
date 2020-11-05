@@ -26,15 +26,15 @@ MonoBehaviour:
   UserMessagesFailed: 0
   CustomArea: 
   gameKey:
-  - 5f72a9d8b3413697497c203af7b97713
+  - e87dd0c120e34ecec36540d5a17e380d
   secretKey:
-  - 3a37ca6850677ecf8f634567881b0ae09944cae3
+  - 020512eef21081c99ee651bc85612ff61464ecb0
   Build:
   - 4.1.7
   SelectedPlatformStudio:
-  - KiryaRizhiy
+  - 
   SelectedPlatformGame:
-  - Traffic Way
+  - 
   SelectedPlatformGameID: 12870100
   SelectedStudio: 01000000
   SelectedGame: 02000000
