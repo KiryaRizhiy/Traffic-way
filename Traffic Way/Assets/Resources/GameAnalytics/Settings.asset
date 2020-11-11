@@ -30,7 +30,7 @@ MonoBehaviour:
   secretKey:
   - 3a37ca6850677ecf8f634567881b0ae09944cae3
   Build:
-  - 4.1.7
+  - 4.1.9
   SelectedPlatformStudio:
   - KiryaRizhiy
   SelectedPlatformGame:
@@ -38,28 +38,39 @@ MonoBehaviour:
   SelectedPlatformGameID: 12870100
   SelectedStudio: 01000000
   SelectedGame: 02000000
-  NewVersion: 6.3.1
-  Changes: '6.3.1
+  NewVersion: 6.3.3
+  Changes: '6.3.3
 
-    - improved user identifer flow for ios (ios)
+    - updated impression events
+
+
+    6.3.2
+
+    - fixed www build
+    errors on unity 2017
+
+
+    6.3.1
+
+    - improved user identifer flow for ios
+    (ios)
 
 
     6.3.0
 
-    -
-    updated user identifier flow to prepare for iOS 14 IDFA changes (ios)
+    - updated user identifier flow to prepare for iOS 14 IDFA
+    changes (ios)
 
 
     6.2.4
 
-    -
-    fixed progression events with scores (android)
+    - fixed progression events with scores (android)
 
 
     6.2.3
 
-    - editor ui error
-    fix
+    -
+    editor ui error fix
 
 
     6.2.2
@@ -69,8 +80,8 @@ MonoBehaviour:
 
     6.2.1
 
-    - added better error
-    messages for API calls potentially being removed in the future
+    - added
+    better error messages for API calls potentially being removed in the future
 
 
     6.2.0
