@@ -597,8 +597,34 @@ public static class Engine
         }
         [SerializeField]
         private int _coinsCount;
-        public List<string> currentRandomLevelBlocks;
-        public EnvironmentType environmentType;
+        [SerializeField]
+        private List<string> _currentRandomLevelBlocks;
+        [SerializeField]
+        private EnvironmentType _environmentType;
+        public List<string> currentRandomLevelBlocks
+        {
+            get
+            {
+                return _currentRandomLevelBlocks;
+            }
+            set
+            {
+                _currentRandomLevelBlocks = value;
+                Save();
+            }
+        }
+        public EnvironmentType environmentType
+        {
+            get
+            {
+                return _environmentType;
+            }
+            set
+            {
+                _environmentType = value;
+                Save();
+            }
+        }
         public bool GDPRAccepted;
         public GarageData garage;
         [SerializeField]
