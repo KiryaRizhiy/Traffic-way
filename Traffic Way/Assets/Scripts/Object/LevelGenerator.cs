@@ -17,7 +17,13 @@ public class LevelGenerator : MonoBehaviour
     private static GameObject FourCarsBeforeBoss;
     private static GameObject StartBlock;
 
-
+    private GameObject Car
+    {
+        get
+        {
+            return SceneManager.GetActiveScene().GetRootGameObjects()[2];
+        }
+    }
     public static void LoadResources()
     {
         Crosses = Resources.LoadAll<GameObject>("TrafficWay/Prefabs/Blocks/Crosses");
@@ -49,6 +55,7 @@ public class LevelGenerator : MonoBehaviour
         if (Engine.meta.currentRandomLevelBlocks == null || Engine.meta.currentRandomLevelBlocks.Count == 0)
         {
             isBossFignt = false;
+            isPuzzle = false;
             lvlType = Engine.actualLevel % 10;
             Debug.Log("Generator start. Level type - " + lvlType);
             Generate();
@@ -99,7 +106,7 @@ public class LevelGenerator : MonoBehaviour
                     BlockSequence.Add(Situations[UnityEngine.Random.Range(0, Situations.Length)].name);
                 }
                 else
-                if(_r>= 49 && _r <= 79)
+                if(_r>= 50 && _r <= 69)
                 {
                     BlockSequence.Add(Puzzles[UnityEngine.Random.Range(0, Puzzles.Length)].name);
                     isPuzzle = true;
@@ -225,7 +232,18 @@ public class LevelGenerator : MonoBehaviour
             _currB.name = _b;
         }
         if (isPuzzle)
-            SceneManager.GetActiveScene().GetRootGameObjects()[2].SetActive(false);        
+        {
+            try
+            {
+                Car.SetActive(false);
+                GasButton.staticGameObject.SetActive(false);
+                Logger.AddContent(UILogDataType.Init, "Car and gas button deactivated",false);
+            }
+            catch(Exception e)
+            {
+                Logger.AddContent(UILogDataType.Level, e.Message + Environment.NewLine + " TRACE :" + Environment.NewLine + e.StackTrace);
+            }
+        }
         else
         {
             _currB = Instantiate(StartBlock, transform);

@@ -4,6 +4,11 @@ using UnityEngine.EventSystems;
 
 public class GasButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 {
+    public static GameObject staticGameObject
+    {
+        get;
+        private set;
+    }
     public static bool pressed
     {
         get;
@@ -12,6 +17,7 @@ public class GasButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void Awake()
     {
         pressed = false;
+        staticGameObject = gameObject;
     }
     public void OnPointerDown (PointerEventData eventData)
     {
@@ -20,5 +26,9 @@ public class GasButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void OnPointerUp(PointerEventData eventData)
     {
         pressed = false;
+    }
+    public void OnDestroy()
+    {
+        staticGameObject = null;
     }
 }
