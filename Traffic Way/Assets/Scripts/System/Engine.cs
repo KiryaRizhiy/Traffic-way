@@ -135,6 +135,9 @@ public static class Engine
     private static LevelPlayingSession currentSession;
     private static String[] CoinMakersSettingsProfitRates;
     private static String[] CoinMakersSettingsUpgradePrices;
+    private static String[] CoinMakersSettingsUnpackTime;
+    private static String[] CarUpgradeSettingsUpgradePrices;
+    private static String[] CarUpgradeSettingsUpgradeRates;
     private static List<Texture2D> CoinMakersTextures;
     private static List<int> CoinMakersMaxUpdateLevels;
 
@@ -162,6 +165,7 @@ public static class Engine
         Block.LoadResources();
         NPCCarController.LoadResources();
         RandomEmoji.LoadResources();
+        CoinMaker.LoadResources();
         //добавить cardriver.loadResources
         //Localization.LoadLocals(Application.systemLanguage);
         Localization.LoadLocals(SystemLanguage.English);
@@ -172,7 +176,6 @@ public static class Engine
         if (currentSession == null)
             Initialize();
     }
-
     public static void ClearSaveFile()
     {
         File.Delete(Settings.saveFile);
@@ -198,17 +201,14 @@ public static class Engine
         meta.currentRandomLevelBlocks = null;
         Save();
         if (isBossFight)
+        {
+            meta.GarageOpened = true;
+            Save();
             ToMainMenu();
+        }
         else
             SwitchLevel();
     }
-    //public static void LevelFailed()
-    //{
-    //    if (isVideoReady)
-    //        Advertisement.Show(PlacementType.video.ToString());
-    //    else
-    //        RestartLevel();
-    //}
     public static void RestartLevel()
     {
         Save();
@@ -296,6 +296,49 @@ public static class Engine
     }
     private static void Load()
     {
+        //Loading resources
+        TextAsset _txt;
+        _txt = Resources.Load<TextAsset>("TrafficWay/Other/CoinMakersSettingsProfitRates");
+        CoinMakersSettingsProfitRates = _txt.text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None);
+        _txt = Resources.Load<TextAsset>("TrafficWay/Other/CoinMakersSettingsUpgradePrices");
+        CoinMakersSettingsUpgradePrices = new String[_txt.text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None).Length];
+        Array.Copy(_txt.text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None), CoinMakersSettingsUpgradePrices, CoinMakersSettingsUpgradePrices.Length);
+        _txt = Resources.Load<TextAsset>("TrafficWay/Other/CoinMakersSettingsUnpackTime");
+        CoinMakersSettingsUnpackTime = new String[_txt.text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None).Length];
+        Array.Copy(_txt.text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None), CoinMakersSettingsUnpackTime, CoinMakersSettingsUnpackTime.Length);
+
+        _txt = Resources.Load<TextAsset>("TrafficWay/Other/CarUpgradeSettingsUpgradePrices");
+        CarUpgradeSettingsUpgradePrices = new String[_txt.text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None).Length];
+        Array.Copy(_txt.text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None), CarUpgradeSettingsUpgradePrices, CarUpgradeSettingsUpgradePrices.Length);
+        _txt = Resources.Load<TextAsset>("TrafficWay/Other/CarUpgradeSettingsUpgradeRates");
+        CarUpgradeSettingsUpgradeRates = new String[_txt.text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None).Length];
+        Array.Copy(_txt.text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None), CarUpgradeSettingsUpgradeRates, CarUpgradeSettingsUpgradeRates.Length);
+
+        CoinMakersMaxUpdateLevels = new List<int>();
+        CoinMakersTextures = new List<Texture2D>();
+        foreach (GarageCoinMakerType _t in Enum.GetValues(typeof(GarageCoinMakerType)))
+        {
+            int previousCount = CoinMakersTextures.Count;
+            CoinMakersTextures.AddRange(Resources.LoadAll<Texture2D>("TrafficWay/Textures/Garage/"+_t.ToString()+"/"));
+            CoinMakersMaxUpdateLevels.Add(CoinMakersTextures.Count - previousCount - 1);
+            Debug.Log("Loaded textures of " + _t.ToString());
+        }
+
+        CarsAppearences = new List<Texture2D>();
+        CarAppearencesShadows = new List<Texture2D>();
+        CarsAppearencesAngled = new List<Texture2D>();
+        CarAppearencesShadowsAngled = new List<Texture2D>();
+        int _carsAmt = Resources.LoadAll<Texture2D>("TrafficWay/Textures/PlayerCar").Length / 4;
+        Debug.Log("Cars amount: " + _carsAmt);
+        for (int i = 0; i < _carsAmt; i++)
+        {
+            CarsAppearences.Add(Resources.Load<Texture2D>("TrafficWay/Textures/PlayerCar/" + i.ToString() + "_Car"));
+            CarAppearencesShadows.Add(Resources.Load<Texture2D>("TrafficWay/Textures/PlayerCar/" + i.ToString() + "_Shadow"));
+            CarsAppearencesAngled.Add(Resources.Load<Texture2D>("TrafficWay/Textures/PlayerCar/" + i.ToString() + "_Car_Angled"));
+            CarAppearencesShadowsAngled.Add(Resources.Load<Texture2D>("TrafficWay/Textures/PlayerCar/" + i.ToString() + "_Shadow_Angled"));
+        }
+        Debug.Log("Loaded " + CarsAppearences.Count + " cars and " + CarAppearencesShadows.Count + " shadows");
+
         if (!Directory.Exists(Settings.savePath))
         {//Create directory if not exists
             Directory.CreateDirectory(Settings.savePath);
@@ -333,38 +376,7 @@ public static class Engine
         {//load new game
             meta = new GameData();
         }
-
-        //Loading resources
-        TextAsset _txt = Resources.Load<TextAsset>("TrafficWay/Other/CoinMakersSettingsProfitRates");
-        CoinMakersSettingsProfitRates = _txt.text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None);
-        _txt = Resources.Load<TextAsset>("TrafficWay/Other/CoinMakersSettingsUpgradePrices");
-        CoinMakersSettingsUpgradePrices = new String[_txt.text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None).Length];
-        Array.Copy(_txt.text.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None), CoinMakersSettingsUpgradePrices, CoinMakersSettingsUpgradePrices.Length);
-        CoinMakersMaxUpdateLevels = new List<int>();
-        CoinMakersTextures = new List<Texture2D>();
-        foreach (GarageCoinMakerType _t in Enum.GetValues(typeof(GarageCoinMakerType)))
-        {
-            int previousCount = CoinMakersTextures.Count;
-            CoinMakersTextures.AddRange(Resources.LoadAll<Texture2D>("TrafficWay/Textures/Garage/"+_t.ToString()+"/"));
-            CoinMakersMaxUpdateLevels.Add(CoinMakersTextures.Count - previousCount - 1);
-            Debug.Log("Loaded textures of " + _t.ToString());
-        }
-
-        CarsAppearences = new List<Texture2D>();
-        CarAppearencesShadows = new List<Texture2D>();
-        CarsAppearencesAngled = new List<Texture2D>();
-        CarAppearencesShadowsAngled = new List<Texture2D>();
-        int _carsAmt = Resources.LoadAll<Texture2D>("TrafficWay/Textures/PlayerCar").Length / 4;
-        Debug.Log("Cars amount: " + _carsAmt);
-        for (int i = 0; i < _carsAmt; i++)
-        {
-            CarsAppearences.Add(Resources.Load<Texture2D>("TrafficWay/Textures/PlayerCar/" + i.ToString() + "_Car"));
-            CarAppearencesShadows.Add(Resources.Load<Texture2D>("TrafficWay/Textures/PlayerCar/" + i.ToString() + "_Shadow"));
-            CarsAppearencesAngled.Add(Resources.Load<Texture2D>("TrafficWay/Textures/PlayerCar/" + i.ToString() + "_Car_Angled"));
-            CarAppearencesShadowsAngled.Add(Resources.Load<Texture2D>("TrafficWay/Textures/PlayerCar/" + i.ToString() + "_Shadow_Angled"));
-        }
-        Debug.Log("Loaded " + CarsAppearences.Count + " cars and " + CarAppearencesShadows.Count + " shadows");
-
+        meta.garage.Initialize();
     }
     private static void Subscribe()
     {
@@ -376,7 +388,6 @@ public static class Engine
         Events.adFinished += OnAdFinished;
         SceneManager.activeSceneChanged += OnLevelChanged;
     }
-
     private static void OnLevelChanged(Scene current, Scene next)
     {
         //UNCOMMENT TO IMPLEMENT UNITY ADS
@@ -444,7 +455,6 @@ public static class Engine
             }
         }
     }
-
     private class LevelPlayingSession/*: IUnityAdsListener UNCOMMENT TO IMPLEMENT UNITY ADS*/
     {
         public Scene level 
@@ -570,7 +580,6 @@ public static class Engine
         //{
         //}
     }
-
     #region Metadata models versions    
     internal class GameData
     {
@@ -626,6 +635,14 @@ public static class Engine
             }
         }
         public bool GDPRAccepted;
+        public bool GarageOpened;
+        public bool FirstUpgradeNotPurchased
+        {
+            get
+            {
+                return meta.garage.GetCoinMaker(GarageCoinMakerType.ToolsWall).level == 0;
+            }
+        }
         public GarageData garage;
         [SerializeField]
         public CarData car;
@@ -637,6 +654,7 @@ public static class Engine
             //if (Settings.testMode)
             //    coinsCount = 5000;
             GDPRAccepted = false;
+            GarageOpened = false;
         }
 
         [Serializable]
@@ -645,6 +663,7 @@ public static class Engine
             public bool isBoosted;
             public List<int> unlockedAppearences;
             public List<int> passedAppearences;
+            private List<CarUpgradeData> upgrades;
             public int currentAppearenceNum
             {
                 get {return _currentAppearenceNum; }
@@ -703,6 +722,10 @@ public static class Engine
                         return -1;
                 }
             }
+            public CarUpgradeData GetCoinMaker(CarUpgradeType Type)
+            {
+                return upgrades.Find(x => x.type == Type);
+            }
             public void BoostOn()
             {
                 isBoosted = true;
@@ -756,6 +779,11 @@ public static class Engine
                 SwitchCurrentAppearenceTo(0);
                 nextAppearenceProgress = 0;
                 previousNextAppearenceProgress = 0;
+                upgrades = new List<CarUpgradeData>();
+                foreach (CarUpgradeType _t in Enum.GetValues(typeof(CarUpgradeType)))
+                {
+                    upgrades.Add(new CarUpgradeData(_t));
+                }
             }
         }
         [Serializable]
@@ -763,6 +791,7 @@ public static class Engine
         {
             [SerializeField]
             private List<CoinMakerData> CoinMakers;
+            private List<CarUpgradeData> CarUpgrades;
             public long lastTVWatched;
             public bool TVAbleToShow
             {
@@ -780,32 +809,20 @@ public static class Engine
                 {
                     CoinMakers.Add(new CoinMakerData(_t));
                 }
+                CarUpgrades = new List<CarUpgradeData>();
+                foreach (CarUpgradeType _t in Enum.GetValues(typeof(CarUpgradeType)))
+                {
+                    CarUpgrades.Add(new CarUpgradeData(_t));
+                }
                 lastTVWatched = DateTime.UtcNow.Ticks;
             }
             public CoinMakerData GetCoinMaker(GarageCoinMakerType Type)
             {
                 return CoinMakers.Find(x=>x.type == Type);
             }
-            public void UpgradeCoinMaker(GarageCoinMakerType Type)
+            public CarUpgradeData GetCarUpgrade(CarUpgradeType Type)
             {
-                if (meta.coinsCount < GetCoinMaker(Type).updatePrice)
-                {
-                    Debug.LogError("Invalid purchase attempt. Trying to purchase update for " + Type.ToString() + ". It's cost is " + GetCoinMaker(Type).updatePrice + " coins, but there is only " + meta.coinsCount + " coins");
-                    return;
-                }
-                meta.coinsCount = meta.coinsCount - GetCoinMaker(Type).updatePrice;
-                GetCoinMaker(Type).level = GetCoinMaker(Type).level + 1;
-                GetCoinMaker(Type).lastCoinCollect = DateTime.UtcNow.Ticks;
-                Save();
-                Engine.Events.GarageStateChanged(Type);
-                GameAnalytics.NewDesignEvent("Meta:Garage:Upg_" + Type.ToString() + "_" + GetCoinMaker(Type).level.ToString());
-            }
-            public void CollectProfit(GarageCoinMakerType Type)
-            {
-                Engine.AddCoins(GetCoinMaker(Type).currentProfit);
-                GetCoinMaker(Type).lastCoinCollect = DateTime.UtcNow.Ticks;
-                Save();
-                Engine.Events.GarageStateChanged(Type);
+                return CarUpgrades.Find(x => x.type == Type);
             }
             public void TVWatched()
             {
@@ -814,13 +831,67 @@ public static class Engine
                 Save();
                 GameAnalytics.NewDesignEvent("Meta:Garage:TV_Watched");
             }
+            public void Initialize()
+            {
+                foreach (CoinMakerData _cmd in CoinMakers)
+                    _cmd.GenerateTimeEvents();
+            }
         }
         [Serializable]
         public class CoinMakerData
         {
+            private enum CoinMakerInternalStatuses { NotPurchased, Normal, Unpacking};
             public GarageCoinMakerType type;
             public int level;
             public long lastCoinCollect;
+            public long unpackStartTicks;
+            private long unpackFinishTicks
+            {
+                get
+                {
+                    return (unpackStartTicks + unpackSeconds * TimeSpan.TicksPerSecond);
+                }
+            }
+            public DateTime unpackStartTime
+            {
+                get
+                {
+                    return new DateTime(unpackStartTicks);
+                }
+            }
+            public TimeSpan unpackTimeLeft
+            {
+                get
+                {
+                    return new DateTime(unpackStartTicks + unpackSeconds * TimeSpan.TicksPerSecond) - DateTime.UtcNow;
+                }
+            }
+            public CoinMakerStates state
+            {
+                get
+                {
+                    if (type != GarageCoinMakerType.ToolsWall && meta.garage.GetCoinMaker(GarageCoinMakerType.ToolsWall).level == 0)
+                        return CoinMakerStates.Blocked;
+                    else
+                        if (internalState == CoinMakerInternalStatuses.Normal)
+                            return CoinMakerStates.Normal;
+                        else
+                            if (internalState == CoinMakerInternalStatuses.Unpacking)
+                            {
+                                if ((DateTime.UtcNow - unpackStartTime).TotalSeconds < unpackSeconds)
+                                    return CoinMakerStates.Unpacking;
+                                else
+                                    return CoinMakerStates.UnpackingFinished;
+                            }
+                        else
+                            if (updatable)
+                                return CoinMakerStates.NotPurchased;
+                            else
+                                return CoinMakerStates.MaxLevelReached;
+                }
+            }
+            [SerializeField]
+            private CoinMakerInternalStatuses internalState;
             public Texture2D currentTexture
             {
                 get
@@ -828,7 +899,7 @@ public static class Engine
                     return Engine.GetCoinMakerTexture(type, level);
                 }
             }
-            public bool updatable
+            private bool updatable
             {
                 get
                 {
@@ -850,8 +921,17 @@ public static class Engine
                 get
                 {
                     int rowNum = Array.FindAll<Char>(Regex.Replace(CoinMakersSettingsUpgradePrices[0], type.ToString() + "{1}.*", String.Empty, RegexOptions.IgnoreCase).ToCharArray(), x => x == ',').Length;
-                    int profit = Int32.Parse(CoinMakersSettingsUpgradePrices[level + 1].Split(',')[rowNum]);
-                    return profit;
+                    int price = Int32.Parse(CoinMakersSettingsUpgradePrices[level + 1].Split(',')[rowNum]);
+                    return price;
+                }
+            }
+            public int unpackSeconds
+            {
+                get
+                {
+                    int rowNum = Array.FindAll<Char>(Regex.Replace(CoinMakersSettingsUnpackTime[0], type.ToString() + "{1}.*", String.Empty, RegexOptions.IgnoreCase).ToCharArray(), x => x == ',').Length;
+                    int time = Int32.Parse(CoinMakersSettingsUnpackTime[level + 1].Split(',')[rowNum]);
+                    return time;
                 }
             }
             public int profitRate
@@ -869,10 +949,11 @@ public static class Engine
                 {
                     TimeSpan t = DateTime.UtcNow - new DateTime(lastCoinCollect);
                     //Debug.Log("Last coin collect is " + new DateTime(lastCoinCollect).ToString() + " now " + DateTime.UtcNow + ". Difference in minutes - " + t.TotalMinutes);
-                    int ticks = Convert.ToInt32((Math.Floor(t.TotalMinutes / Settings.coinMakerTickMinutes)));
+                    int ticks = Convert.ToInt32(Math.Floor(t.TotalMinutes / Settings.coinMakerTickMinutes));
                     if (ticks > Settings.paidTicksLimit)
                         ticks = Settings.paidTicksLimit;
-                    return ticks*profitRate;
+                    //Debug.Log("Last coin collected : " + (new DateTime(lastCoinCollect)).ToString() + " time interval: " + t.ToString() + " tickMinutes: " + Settings.coinMakerTickMinutes + " ticks:" + ticks + " total profit:" + (ticks*profitRate));
+                    return ticks * profitRate;
                 }
             }
             public CoinMakerData(GarageCoinMakerType Type)
@@ -880,12 +961,159 @@ public static class Engine
                 type = Type;
                 level = 0;
                 lastCoinCollect = DateTime.UtcNow.Ticks;
+                unpackStartTicks = DateTime.UtcNow.Ticks;
+                if (type != GarageCoinMakerType.ToolsWall)
+                    internalState = CoinMakerInternalStatuses.NotPurchased;
+                else
+                    internalState = CoinMakerInternalStatuses.Unpacking;
+            }
+            public int StartUnpacking()
+            {
+                if (meta.coinsCount < updatePrice)
+                {
+                    Debug.LogError("Invalid purchase attempt. Trying to purchase update for " + type.ToString() + ". It's cost is " + updatePrice + " coins, but there is only " + meta.coinsCount + " coins");
+                    return -1;
+                }
+                unpackStartTicks = DateTime.UtcNow.Ticks;
+                internalState = CoinMakerInternalStatuses.Unpacking;
+                meta._coinsCount -= updatePrice;
+                Save();
+                RegisterUnpackFinishEvent();
+                Engine.Events.GarageStateChanged(type);
+
+                return unpackSeconds;
+            }
+            public void Unpack()
+            {
+                if (internalState == CoinMakerInternalStatuses.Unpacking)
+                {
+                    level += 1;
+                    internalState = CoinMakerInternalStatuses.Normal;
+                    if (level == 1)
+                        lastCoinCollect = DateTime.UtcNow.Ticks;
+                    Engine.Events.GarageStateChanged(type);
+                    Save();
+                    GameAnalytics.NewDesignEvent("Meta:Garage:Upg_" + type.ToString() + "_" + level.ToString());
+                }
+                else
+                    Debug.LogError("Attemt to finish unpacking coin maker " + type.ToString() + ", that din't start unpacking");
+            }
+            public void DecreaseUnpackTimeByHour()
+            {
+                unpackStartTicks -= TimeSpan.TicksPerHour;
+                Save();
+                UpdateUnpackFinishEvent(TimeSpan.TicksPerHour);
+            }
+            public void GenerateTimeEvents()
+            {
+                if (unpackFinishTicks < DateTime.UtcNow.Ticks)
+                    RegisterUnpackFinishEvent();
+            }
+            public void CollectACoin()
+            {
+                if (currentProfit > 0)
+                {
+                    int _newTicksLeft = currentProfit/profitRate;
+                    lastCoinCollect = DateTime.UtcNow.Ticks - (_newTicksLeft - 1) * Settings.coinMakerTickMinutes * TimeSpan.TicksPerMinute - 1;
+                    Debug.Log("New last coin collect time: " + (new DateTime(lastCoinCollect)).ToString()
+                        + " offset is" + (new TimeSpan((_newTicksLeft - 1) * Settings.coinMakerTickMinutes * TimeSpan.TicksPerMinute - 1)).ToString());
+                    Debug.Log(type.ToString() + " coins left: " + currentProfit);
+                    AddCoins(1);
+                    Save();
+                    Engine.Events.GarageStateChanged(type);
+                }
+            }
+            private void RegisterUnpackFinishEvent()
+            {
+                TimeEventsManager.RegisterTimeEvent(type.ToString() + "_unpackFinish", unpackFinishTicks);
+            }
+            private void UpdateUnpackFinishEvent(long offset)
+            {
+                TimeEventsManager.UpdateTimeEvent(type.ToString() + "_unpackFinish", unpackFinishTicks - offset, unpackFinishTicks);
+            }
+        }
+        [Serializable]
+        public class CarUpgradeData
+        {
+            public int level;
+            public int updatePrice
+            {
+                get
+                {
+                    int rowNum = Array.FindAll<Char>(Regex.Replace(CarUpgradeSettingsUpgradePrices[0], type.ToString() + "{1}.*", String.Empty, RegexOptions.IgnoreCase).ToCharArray(), x => x == ',').Length;
+                    int price = Int32.Parse(CarUpgradeSettingsUpgradePrices[level + 1].Split(',')[rowNum]);
+                    return price;
+                }
+            }
+            public int upgradeRate
+            {
+                get
+                {
+                    int rowNum = Array.FindAll<Char>(Regex.Replace(CarUpgradeSettingsUpgradeRates[0], type.ToString() + "{1}.*", String.Empty, RegexOptions.IgnoreCase).ToCharArray(), x => x == ',').Length;
+                    int profit = Int32.Parse(CarUpgradeSettingsUpgradeRates[level + 1].Split(',')[rowNum]);
+                    return profit;
+                }
+            }
+            public CarUpgradeType type;
+            private bool ugradable
+            {
+                get
+                {
+                    return level < CoinMakersMaxUpdateLevels[Array.FindAll<Char>(Regex.Replace(CoinMakersSettingsUpgradePrices[0], _correnspondentType.ToString() + "{1}.*", String.Empty, RegexOptions.IgnoreCase).ToCharArray(), x => x == ',').Length - 1];
+                }
+            }
+            private GarageCoinMakerType _correnspondentType
+            {
+                get
+                {
+                    switch (type)
+                    {
+                        case (CarUpgradeType.Gearbox):
+                            return GarageCoinMakerType.Workbench;
+                        case (CarUpgradeType.Brakes):
+                            return GarageCoinMakerType.MaterialsPedestal;
+                        default:
+                            return GarageCoinMakerType.MaterialsShelf;
+                    }
+                }
+            }
+            public CarUpgradeState state
+            {
+                get
+                {
+                    if (meta.garage.GetCoinMaker(_correnspondentType).level == 0)
+                        return CarUpgradeState.Blocked;
+                    else
+                        if (!ugradable)
+                        return CarUpgradeState.TopLevelReached;
+                    else
+                        return CarUpgradeState.Normal;
+                }
+            }
+            public CarUpgradeData(CarUpgradeType Type)
+            {
+                level = 0;
+                type = Type;
+            }
+            public void Upgrade()
+            {
+                if (!ugradable)
+                {
+                    Debug.LogError("Trying to upgrade top leveled car upgrade " + type.ToString() + ". Current level: " + level);
+                    return;
+                }
+                if (updatePrice > meta.coinsCount)
+                {
+                    Debug.LogWarning("Not enough coins to upgrade " + type.ToString() + ". Current coins: " + meta.coinsCount + ", upgrade cost: " + updatePrice);
+                    return;
+                }
+                meta._coinsCount -= updatePrice;
+                level += 1;
+                Save();
             }
         }
     }
-
     #endregion
-
     public static class Events
     {
         public delegate void GameStateHandler(GameSessionState state);
@@ -893,6 +1121,7 @@ public static class Engine
         public delegate void AdsInfo(PlacementType type);
         public delegate void ZoneReach(GameObject zone);
         public delegate void GarageStateChange(GarageCoinMakerType type);
+        public delegate void TimeEvent(string eventName);
 
         public static event Fact finishLineReached;
         public static event Fact passLineReached;
@@ -905,6 +1134,7 @@ public static class Engine
         public static event Fact levelGenerated;
         public static event Fact paused;
         public static event Fact unpaused;
+        public static event TimeEvent timeEventOccured;
         public static event ZoneReach zoneReached;
         public static event ZoneReach zoneLeft;
         public static event AdsInfo adLoaded;
@@ -989,6 +1219,12 @@ public static class Engine
             if (unpaused != null)
                 unpaused();
         }
+        public static void TimeEventOccured(string EventName)
+        {
+            Debug.Log("Time event " + EventName + " occured at " + DateTime.Now.ToString());
+            if (timeEventOccured != null)
+                timeEventOccured(EventName);
+        }
         public static void ZoneReached(GameObject zone)
         {
             Debug.Log(zone.name + " reached");
@@ -1053,4 +1289,7 @@ public static class Engine
 }
 public enum GameSessionState { InProgress,Passed, Won, Lost }
 public enum GarageCoinMakerType { MaterialsPedestal, MaterialsShelf, ToolsWall, Workbench }
-public enum CarAppearenceState {Locked, Passed, Unlocked, Missing }
+public enum CarAppearenceState { Locked, Passed, Unlocked, Missing }
+public enum CoinMakerStates { Blocked, NotPurchased, Normal, Unpacking, UnpackingFinished, MaxLevelReached }
+public enum CarUpgradeState { Blocked, Normal, TopLevelReached}
+public enum CarUpgradeType { Engine, Gearbox, Brakes}

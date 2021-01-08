@@ -30,7 +30,7 @@ MonoBehaviour:
   secretKey:
   - 3a37ca6850677ecf8f634567881b0ae09944cae3
   Build:
-  - 4.1.13
+  - 4.1.20
   SelectedPlatformStudio:
   - KiryaRizhiy
   SelectedPlatformGame:

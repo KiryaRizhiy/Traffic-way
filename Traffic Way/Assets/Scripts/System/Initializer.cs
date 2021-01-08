@@ -18,20 +18,21 @@ public class Initializer : MonoBehaviour
     }
     void Start()
     {
-        StartCoroutine(LoadingSimulation());
-        Debug.Log("Initialization started at :" + Time.realtimeSinceStartup + " seconds");
-        float startTime = Time.realtimeSinceStartup;
         if (Engine.initialized)
         {
             transform.GetChild(2).gameObject.SetActive(false);
             return;
         }
+        float startTime = Time.realtimeSinceStartup;
+        StartCoroutine(LoadingSimulation());
+        Debug.Log("Initialization started at :" + Time.realtimeSinceStartup + " seconds");
         //Logger.UpdateContent(UILogDataType.Init,"Game analytics initialization");
         GameAnalytics.Initialize();
         GameAnalytics.NewDesignEvent("Technical:Info:Version_" + Application.version);
         try
         {
             //Advertisement.Initialize(Settings.googlePlayId, Settings.testMode); UNCOMMENT TO IMPLEMENT UNITY ADS
+            TimeEventsManager.Initialize();
             Engine.Initialize();
             MobileAds.Initialize(initStatus => { });
             AdMobController adController = new GameObject().AddComponent<AdMobController>();
@@ -43,6 +44,10 @@ public class Initializer : MonoBehaviour
         }
         Engine.Events.Initialized();
         Debug.Log("Initialization done. Time spent: " + (Time.realtimeSinceStartup - startTime) + " seconds. Initialization start time: " + startTime + " seconds. Initialization end time: " + Time.realtimeSinceStartup + " seconds");
+        //for(int i=0; i<20; i++)
+        //{
+        //    TimeEventsManager.RegisterTimeEvent("Test event " + i.ToString(), DateTime.UtcNow.Ticks + i * 5 * TimeSpan.TicksPerSecond);
+        //}
     }
     private IEnumerator LoadingSimulation()
     {

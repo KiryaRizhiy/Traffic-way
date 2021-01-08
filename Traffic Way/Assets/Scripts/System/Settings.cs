@@ -46,8 +46,8 @@ public static class Settings
     public const float bulletSpeed = 18f;
     public const float shootFrequency = 0.4f;
     public const float trafficLightSwitchSpeed = 1.3f;
-    public const int coinMakerTickMinutes = 30;
-    public const int paidTicksLimit = 24;
+    public const int coinMakerTickMinutes = 1;
+    public const int paidTicksLimit = 2;
     public const int TVCooldownMinutes = 30;
     public const int TVWatchReward = 15;
     public const int levelCarProgress = 19;
