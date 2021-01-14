@@ -10,6 +10,7 @@ public class ShowCoins : MonoBehaviour
     {
         Engine.Events.initialized += Show;
         Engine.Events.onGarageStateChanged += GaragePurchaseHandler;
+        Engine.Events.onCarUpgradeStateChanged += CarUpgradeStateChanged;
         Engine.Events.adFailed += HandleAdEvent;
         Engine.Events.adFinished += HandleAdEvent;
         Engine.Events.adLoaded += HandleAdEvent;
@@ -28,6 +29,10 @@ public class ShowCoins : MonoBehaviour
     {
         Show();
     }
+    public void CarUpgradeStateChanged(CarUpgradeType Type)
+    {
+        Show();
+    }
     private void HandleAdEvent(PlacementType type)
     {
         Show();
@@ -36,6 +41,7 @@ public class ShowCoins : MonoBehaviour
     {
         Engine.Events.initialized -= Show;
         Engine.Events.onGarageStateChanged -= GaragePurchaseHandler;
+        Engine.Events.onCarUpgradeStateChanged -= CarUpgradeStateChanged;
         Engine.Events.adFailed -= HandleAdEvent;
         Engine.Events.adFinished -= HandleAdEvent;
         Engine.Events.adLoaded -= HandleAdEvent;

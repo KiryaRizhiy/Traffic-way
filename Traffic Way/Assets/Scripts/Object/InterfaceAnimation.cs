@@ -15,15 +15,16 @@ public class InterfaceAnimation : MonoBehaviour
                 (_c.playCondidion == PlayConditions.IsGarageOpened && Engine.meta.GarageOpened)
                 )
             {
-                if (_c.animType == AnimationTypes.CanvasGroupFadeIn)
+                if (_c.animType == AnimationTypes.CanvasGroupFadeIn || _c.animType == AnimationTypes.CanvasGroupFadeOut)
                 {
+                    float coeffitient = _c.animType == AnimationTypes.CanvasGroupFadeIn ? 1f : 0f;
                     if (_c.playType == PlayTypes.OnStart)
-                        currentAnimation = GetComponent<CanvasGroup>().DOFade(1f, _c.duration).SetDelay(_c.delay);
+                        currentAnimation = GetComponent<CanvasGroup>().DOFade(coeffitient, _c.duration).SetDelay(_c.delay);
                     if (_c.playType == PlayTypes.Loop)
                     {
                         Sequence _sq = DOTween.Sequence();
                         currentAnimation = DOTween.Sequence().PrependInterval(_c.delay)
-                            .Append(_sq.Append(GetComponent<CanvasGroup>().DOFade(1f, _c.duration))
+                            .Append(_sq.Append(GetComponent<CanvasGroup>().DOFade(coeffitient, _c.duration))
                             .AppendInterval(_c.actionPause)
                             .Append(GetComponent<CanvasGroup>().DOFade(GetComponent<CanvasGroup>().alpha, _c.duration))
                             .AppendInterval(_c.loopPasue)
@@ -88,7 +89,6 @@ public class InterfaceAnimation : MonoBehaviour
         }
     }
 
-
     [System.Serializable]
     public class Clip
     {
@@ -105,6 +105,6 @@ public class InterfaceAnimation : MonoBehaviour
         public int loops;
     }
 }
-public enum AnimationTypes { CanvasGroupFadeIn, ZoomInZoomOut, MoveUp}
+public enum AnimationTypes { CanvasGroupFadeIn, ZoomInZoomOut, MoveUp, CanvasGroupFadeOut}
 public enum PlayTypes { OnStart , Loop}
 public enum PlayConditions { None, IsGarageOpened}

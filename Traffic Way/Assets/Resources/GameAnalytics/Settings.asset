@@ -30,7 +30,7 @@ MonoBehaviour:
   secretKey:
   - 3a37ca6850677ecf8f634567881b0ae09944cae3
   Build:
-  - 4.1.20
+  - 4.1.30
   SelectedPlatformStudio:
   - KiryaRizhiy
   SelectedPlatformGame:
@@ -38,82 +38,107 @@ MonoBehaviour:
   SelectedPlatformGameID: 12870100
   SelectedStudio: 01000000
   SelectedGame: 02000000
-  NewVersion: 6.3.5
-  Changes: '6.3.5
+  NewVersion: 6.3.9
+  Changes: '6.3.9
 
-    - fixed user log in function in editor for unity 2017
+    - fixed ironsource impression event compile error
+
+
+    6.3.8
+
+    -
+    removed memory info from automatic crash reports
+
+    - updated sqlite lib
+
+
+    6.3.7
+
+    -
+    corrected ad event annotation
+
+
+    6.3.6
+
+    - updated validator for impression
+    events (android, ios)
+
+
+    6.3.5
+
+    - fixed user log in function in editor
+    for unity 2017
 
 
     6.3.4
 
-    -
-    fixed null exception happening some times on desktop platforms (mac, linux, windows)
+    - fixed null exception happening some times on
+    desktop platforms (mac, linux, windows)
 
 
     6.3.3
 
-    -
-    updated impression events
+    - updated impression
+    events
 
 
     6.3.2
 
-    - fixed www build errors on unity
-    2017
+    - fixed www build errors on unity 2017
 
 
     6.3.1
 
-    - improved user identifer flow for ios (ios)
+    -
+    improved user identifer flow for ios (ios)
 
 
     6.3.0
 
-    -
-    updated user identifier flow to prepare for iOS 14 IDFA changes (ios)
+    - updated user identifier
+    flow to prepare for iOS 14 IDFA changes (ios)
 
 
     6.2.4
 
-    -
-    fixed progression events with scores (android)
+    - fixed progression
+    events with scores (android)
 
 
     6.2.3
 
-    - editor ui error
-    fix
+    - editor ui error fix
 
 
     6.2.2
 
-    - tvos compile fix
+    -
+    tvos compile fix
 
 
     6.2.1
 
-    - added better error
-    messages for API calls potentially being removed in the future
+    - added better error messages for API calls
+    potentially being removed in the future
 
 
     6.2.0
 
-    -
-    exposed functions to get AB testing id and variant id
+    - exposed functions
+    to get AB testing id and variant id
 
 
     6.1.5
 
-    - fixed
-    bug in ui for settings.asset
+    - fixed bug in ui for settings.asset
 
 
     6.1.4
 
-    - fixed instant app bug(android)
-
     -
-    remember to update your proguard file (https://gameanalytics.com/docs/item/unity-sdk#proguard-only-android)
+    fixed instant app bug(android)
+
+    - remember to update your proguard file (https://gameanalytics.com/docs/item/unity-sdk#proguard-only-android)
 
 
     6.1.3

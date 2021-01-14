@@ -11,41 +11,63 @@ public class AdMobController : MonoBehaviour
     {
         get
         {
-            if (interstitial != null)
-                return interstitial.IsLoaded();
+            if (Application.isEditor)
+                return _c == null ? false : _c.testAdsReady;
             else
-                return false;
+            {
+                if (interstitial != null)
+                    return interstitial.IsLoaded();
+                else
+                    return false;
+            }
         }
     }
     public static bool isRewardedVideoReady
     {
         get
         {
-            if (rewarded != null)
-                return rewarded.IsLoaded();
+            if (Application.isEditor)
+                return _c == null ? false : _c.testAdsReady;
             else
-                return false;
+            {
+                if (rewarded != null)
+                    return rewarded.IsLoaded();
+                else
+                    return false;
+            }
         }
     }
-
-    //public static bool isAdActive
-    //{
-    //    //get
-    //    //{
-    //    //    return interstitial.
-    //    //}
-    //}
 
     private static BannerView banner;
     private static InterstitialAd interstitial;
     private static RewardBasedVideoAd rewarded;
     private static AdRequest request;
-
+    private static AdMobController _c;
+    public bool testAdsReady;
+    //{
+    //    get
+    //    {
+    //        return _tstAd;
+    //    }
+    //    set
+    //    {
+    //        if (value)
+    //        {
+    //            Engine.Events.AdLoaded(PlacementType.banner);
+    //            Engine.Events.AdLoaded(PlacementType.interstitial);
+    //            Engine.Events.AdLoaded(PlacementType.rewardedVideo);
+    //        }
+    //        _tstAd = value;
+    //    }
+    //}
     public static void ShowRegularAd()
     {
         try
         {
-            interstitial.Show();
+            if (Application.isEditor)
+                Engine.Events.AdFinished(PlacementType.interstitial);
+            else
+                interstitial.Show();
             //GameAnalytics.NewAdEvent(GAAdAction.Request, GAAdType.Interstitial, "AdMob",PlacementType.interstitial.ToString());
         }
         catch (Exception e)
@@ -58,7 +80,10 @@ public class AdMobController : MonoBehaviour
     {
         try
         {
-            rewarded.Show();
+            if (Application.isEditor)
+                Engine.Events.AdFinished(PlacementType.rewardedVideo);
+            else
+                rewarded.Show();
             //GameAnalytics.NewAdEvent(GAAdAction.Request, GAAdType.RewardedVideo, "AdMob", PlacementType.rewardedVideo.ToString());
         }
         catch (Exception e)
@@ -67,7 +92,12 @@ public class AdMobController : MonoBehaviour
             GameAnalytics.NewErrorEvent(GAErrorSeverity.Error, e.Message + Environment.NewLine + "-------Trace------" + Environment.NewLine + e.StackTrace);
         }
     }
-    
+
+    private void Awake()
+    {
+        _c = this;
+        testAdsReady = true;
+    }
     void Start()
     {
         try
@@ -139,6 +169,7 @@ public class AdMobController : MonoBehaviour
 
     void OnDestroy()
     {
+        _c = null;
         banner.Hide();
         banner.OnAdLoaded -= this.bannerHandleOnAdLoaded;
         banner.OnAdFailedToLoad -= this.bannerHandleOnAdFailedToLoad;

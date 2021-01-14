@@ -78,11 +78,50 @@ public static class Engine
                 return currentSession.ExtraRewardRequired;
         }
     }
+    public static bool carTuningAvailable
+    {
+        get
+        {
+            return (
+                meta.garage.GetCoinMaker(GarageCoinMakerType.MaterialsPedestal).level > 0
+                ||
+                meta.garage.GetCoinMaker(GarageCoinMakerType.MaterialsShelf).level > 0
+                ||
+                meta.garage.GetCoinMaker(GarageCoinMakerType.Workbench).level > 0
+                );
+        }
+    }
+    public static bool firstGarageUpgradeUnpacked
+    {
+        get
+        {
+            return
+                (
+                meta.garage.GetCoinMaker(GarageCoinMakerType.MaterialsPedestal).level
+                +
+                meta.garage.GetCoinMaker(GarageCoinMakerType.MaterialsShelf).level
+                +
+                meta.garage.GetCoinMaker(GarageCoinMakerType.Workbench).level
+                ==
+                1
+                );
+        }
+    }
     public static bool isInPlayMode
     {
         get
         {
             return currentSession != null;
+        }
+    }
+    public static float maxPossibleSpeed
+    {
+        get
+        {
+            int maxLevel = CoinMakersMaxUpdateLevels[Array.FindAll<Char>(Regex.Replace(CoinMakersSettingsUpgradePrices[0], meta.garage.GetCarUpgrade(CarUpgradeType.Gearbox).correnspondentType.ToString() + "{1}.*", String.Empty, RegexOptions.IgnoreCase).ToCharArray(), x => x == ',').Length - 1];
+            int rowNum = Array.FindAll<Char>(Regex.Replace(CarUpgradeSettingsUpgradeRates[0], CarUpgradeType.Gearbox.ToString() + "{1}.*", String.Empty, RegexOptions.IgnoreCase).ToCharArray(), x => x == ',').Length;
+            int profit = Int32.Parse(CarUpgradeSettingsUpgradeRates[maxLevel + 1].Split(',')[rowNum]);
+            return Settings.carSpeedLimit * (1 + profit / 100f) * Settings.carBoostMultiplyer;
         }
     }
     public static int rewardAmount
@@ -166,10 +205,12 @@ public static class Engine
         NPCCarController.LoadResources();
         RandomEmoji.LoadResources();
         CoinMaker.LoadResources();
+        CarUpgradeInterface.LoadResources();
         //добавить cardriver.loadResources
         //Localization.LoadLocals(Application.systemLanguage);
         Localization.LoadLocals(SystemLanguage.English);
         initialized = true;
+        Debug.Log("Max car speed is " + maxPossibleSpeed);
     }
     public static void InitializeTest()
     {
@@ -254,6 +295,10 @@ public static class Engine
     {
         meta.GDPRAccepted = true;
         Save();
+    }
+    public static void AddCoin()
+    {
+        meta.coinsCount++;
     }
     private static void AddCoins(int count)
     {
@@ -675,6 +720,38 @@ public static class Engine
             }
             public int nextAppearenceProgress;
             public int previousNextAppearenceProgress;
+            public int availableNitroBottles
+            {
+                get
+                {
+                    return _availableNitroBottles;
+                }
+            }
+            public NitroState nitroState
+            {
+                get
+                {
+                    if (meta.garage.GetCoinMaker(GarageCoinMakerType.ToolsWall).level == 0)
+                        return NitroState.Blocked;
+                    else
+                    {
+                        if (!nitroPurchased)
+                            return NitroState.NotPurchased;
+                        else
+                        {
+                            if (_availableNitroBottles == 0)
+                                return NitroState.Empty;
+                            else
+                                return NitroState.Available;
+                        }
+                    }
+                }
+            }
+
+            [SerializeField]
+            private int _availableNitroBottles;
+            [SerializeField]
+            private bool nitroPurchased;
             [SerializeField]
             private int _currentAppearenceNum;
             public bool hasShield
@@ -730,7 +807,10 @@ public static class Engine
             {
                 isBoosted = true;
                 hasShield = true;
+                _availableNitroBottles--;
+                Save();
                 GameAnalytics.NewDesignEvent("Meta:Car:Boosted");
+                Engine.Events.NitroActivated();
             }
             public void BoostOff()
             {
@@ -771,6 +851,24 @@ public static class Engine
                     nextAppearenceProgress = 0;
                 }
             }
+            public void PurchaseNitro()
+            {
+                if(meta.coinsCount < Settings.nitroCost)
+                {
+                    Debug.LogError("Trying to buy a nitro with unenough coins");
+                    return;
+                }
+                nitroPurchased = true;
+                meta._coinsCount -= Settings.nitroCost;
+                Save();
+                Engine.Events.GarageStateChanged(GarageCoinMakerType.ToolsWall);
+            }
+            public void AddBaloon()
+            {
+                _availableNitroBottles += 1;
+                Save();
+            }
+
             public CarData()
             {
                 BoostOff();
@@ -779,6 +877,8 @@ public static class Engine
                 SwitchCurrentAppearenceTo(0);
                 nextAppearenceProgress = 0;
                 previousNextAppearenceProgress = 0;
+                nitroPurchased = false;
+                _availableNitroBottles = 1;
                 upgrades = new List<CarUpgradeData>();
                 foreach (CarUpgradeType _t in Enum.GetValues(typeof(CarUpgradeType)))
                 {
@@ -791,15 +891,24 @@ public static class Engine
         {
             [SerializeField]
             private List<CoinMakerData> CoinMakers;
+            [SerializeField]
             private List<CarUpgradeData> CarUpgrades;
             public long lastTVWatched;
-            public bool TVAbleToShow
+            public TVSetState tvSetState
             {
                 get
                 {
-                    Logger.UpdateContent(UILogDataType.GameState, "Video ready: " + Engine.isRewardedVideoReady);
-                    Logger.AddContent(UILogDataType.GameState, "TV cooldown passed: " + (DateTime.UtcNow - new DateTime(lastTVWatched) >= new TimeSpan(0,Settings.TVCooldownMinutes,0)));
-                    return Engine.isRewardedVideoReady && (DateTime.UtcNow - new DateTime(lastTVWatched) >= new TimeSpan(0,Settings.TVCooldownMinutes,0));
+                    //    Logger.UpdateContent(UILogDataType.GameState, "Video ready: " + Engine.isRewardedVideoReady);
+                    //    Logger.AddContent(UILogDataType.GameState, "TV cooldown passed: " + (DateTime.UtcNow - new DateTime(lastTVWatched) >= new TimeSpan(0,Settings.TVCooldownMinutes,0)));
+                    if (DateTime.UtcNow - new DateTime(lastTVWatched) >= new TimeSpan(0, Settings.TVCooldownMinutes, 0))
+                    {
+                        if (AdMobController.isRewardedVideoReady)
+                            return TVSetState.ReadyToWatch;
+                        else
+                            return TVSetState.VideoNotReady;
+                    }
+                    else
+                        return TVSetState.RecentlyWatched;
                 }
             }
             public GarageData()
@@ -830,11 +939,20 @@ public static class Engine
                 AddCoins(Settings.TVWatchReward);
                 Save();
                 GameAnalytics.NewDesignEvent("Meta:Garage:TV_Watched");
+                RegisterTVSetTimeEvent();
             }
             public void Initialize()
             {
                 foreach (CoinMakerData _cmd in CoinMakers)
                     _cmd.GenerateTimeEvents();
+                if(tvSetState == TVSetState.RecentlyWatched)
+                {
+                    RegisterTVSetTimeEvent();
+                }
+            }
+            private void RegisterTVSetTimeEvent()
+            {
+                TimeEventsManager.RegisterTimeEvent("tvSetReady", lastTVWatched + new TimeSpan(0, Settings.TVCooldownMinutes, 0).Ticks);
             }
         }
         [Serializable]
@@ -956,6 +1074,26 @@ public static class Engine
                     return ticks * profitRate;
                 }
             }
+            public string description
+            {
+                get
+                {
+                    switch (type)
+                    {
+                        case GarageCoinMakerType.MaterialsPedestal:
+                            return level==0 ? "Earns coins. Allows to upgrade car brakes" : "Earn more coins and increase brakes max level";
+                        case GarageCoinMakerType.Workbench:
+                            return level == 0 ? "Earns coins. Allows to upgrade gearbox" : "Earn more coins and increase gearbox max level";
+                        case GarageCoinMakerType.MaterialsShelf:
+                            return level == 0 ? "Earns coins. Allows to upgrade engine" : "Earn more coins and increase engine max level";
+                        case GarageCoinMakerType.ToolsWall:
+                            return level == 0 ? "Earns coins and unlocks other garage upgrades" : "Earn more coins. More effective than other upgrades";
+                        default:
+                            Debug.LogError("Attempt to read description of unknown type garage element " + type.ToString());
+                            return "Unknown garage element";
+                    }
+                }
+            }
             public CoinMakerData(GarageCoinMakerType Type)
             {
                 type = Type;
@@ -1006,8 +1144,9 @@ public static class Engine
             }
             public void GenerateTimeEvents()
             {
-                if (unpackFinishTicks < DateTime.UtcNow.Ticks)
-                    RegisterUnpackFinishEvent();
+                if (internalState == CoinMakerInternalStatuses.Unpacking)
+                    if (unpackFinishTicks > DateTime.UtcNow.Ticks)
+                        RegisterUnpackFinishEvent();
             }
             public void CollectACoin()
             {
@@ -1031,11 +1170,26 @@ public static class Engine
             {
                 TimeEventsManager.UpdateTimeEvent(type.ToString() + "_unpackFinish", unpackFinishTicks - offset, unpackFinishTicks);
             }
+            public override string ToString()
+            {
+                switch (type)
+                {
+                    case GarageCoinMakerType.MaterialsPedestal:
+                        return "Materials pedestal";
+                    case GarageCoinMakerType.MaterialsShelf:
+                        return "Materials shelf";
+                    case GarageCoinMakerType.Workbench:
+                        return "Workbench";
+                    default:
+                        return "Tools wall";
+                }
+            }
         }
         [Serializable]
         public class CarUpgradeData
         {
             public int level;
+            public bool unlockDemonstrated;
             public int updatePrice
             {
                 get
@@ -1045,13 +1199,13 @@ public static class Engine
                     return price;
                 }
             }
-            public int upgradeRate
+            public float upgradeRate
             {
                 get
                 {
                     int rowNum = Array.FindAll<Char>(Regex.Replace(CarUpgradeSettingsUpgradeRates[0], type.ToString() + "{1}.*", String.Empty, RegexOptions.IgnoreCase).ToCharArray(), x => x == ',').Length;
                     int profit = Int32.Parse(CarUpgradeSettingsUpgradeRates[level + 1].Split(',')[rowNum]);
-                    return profit;
+                    return 1 + profit/100f;
                 }
             }
             public CarUpgradeType type;
@@ -1059,10 +1213,10 @@ public static class Engine
             {
                 get
                 {
-                    return level < CoinMakersMaxUpdateLevels[Array.FindAll<Char>(Regex.Replace(CoinMakersSettingsUpgradePrices[0], _correnspondentType.ToString() + "{1}.*", String.Empty, RegexOptions.IgnoreCase).ToCharArray(), x => x == ',').Length - 1];
+                    return level < CoinMakersMaxUpdateLevels[Array.FindAll<Char>(Regex.Replace(CoinMakersSettingsUpgradePrices[0], correnspondentType.ToString() + "{1}.*", String.Empty, RegexOptions.IgnoreCase).ToCharArray(), x => x == ',').Length - 1];
                 }
             }
-            private GarageCoinMakerType _correnspondentType
+            public GarageCoinMakerType correnspondentType
             {
                 get
                 {
@@ -1077,15 +1231,21 @@ public static class Engine
                     }
                 }
             }
-            public CarUpgradeState state
+            public CoinMakerData correspondentCoinMaker
             {
                 get
                 {
-                    if (meta.garage.GetCoinMaker(_correnspondentType).level == 0)
-                        return CarUpgradeState.Blocked;
-                    else
-                        if (!ugradable)
+                    return meta.garage.GetCoinMaker(correnspondentType);
+                }
+            }
+            public CarUpgradeState state
+            {
+                get
+                {   if (!ugradable)
                         return CarUpgradeState.TopLevelReached;
+                    else
+                        if (correspondentCoinMaker.level == level)
+                        return CarUpgradeState.Blocked;
                     else
                         return CarUpgradeState.Normal;
                 }
@@ -1094,6 +1254,7 @@ public static class Engine
             {
                 level = 0;
                 type = Type;
+                unlockDemonstrated = false;
             }
             public void Upgrade()
             {
@@ -1109,7 +1270,30 @@ public static class Engine
                 }
                 meta._coinsCount -= updatePrice;
                 level += 1;
+                if (state == CarUpgradeState.Blocked)
+                {
+                    unlockDemonstrated = false;
+                    Debug.LogWarning("Unlock demonstration flag dropped");
+                }
                 Save();
+                Engine.Events.CarUpgradeStateChanged(type);
+            }
+            public void UnlockDemonstrated()
+            {
+                unlockDemonstrated = true;
+                Debug.LogWarning("Unlock demonstrated");
+            }
+            public override string ToString()
+            {
+                switch (type)
+                {
+                    case CarUpgradeType.Engine:
+                        return "Engine improves acceleration";
+                    case CarUpgradeType.Brakes:
+                        return "Car brakes for faster slow down";
+                    default:
+                        return "Gearbox increases speed limit";
+                }    
             }
         }
     }
@@ -1121,6 +1305,7 @@ public static class Engine
         public delegate void AdsInfo(PlacementType type);
         public delegate void ZoneReach(GameObject zone);
         public delegate void GarageStateChange(GarageCoinMakerType type);
+        public delegate void CarUpgradeStateChange(CarUpgradeType Type);
         public delegate void TimeEvent(string eventName);
 
         public static event Fact finishLineReached;
@@ -1134,6 +1319,7 @@ public static class Engine
         public static event Fact levelGenerated;
         public static event Fact paused;
         public static event Fact unpaused;
+        public static event Fact nitroActivated;
         public static event TimeEvent timeEventOccured;
         public static event ZoneReach zoneReached;
         public static event ZoneReach zoneLeft;
@@ -1146,6 +1332,7 @@ public static class Engine
         public static event AdsInfo adUserLeave;
         public static event GameStateHandler gameSessionStateChanged;
         public static event GarageStateChange onGarageStateChanged;
+        public static event CarUpgradeStateChange onCarUpgradeStateChanged;
 
         public static void GameSessionStateChanged(GameSessionState state)
         {
@@ -1219,6 +1406,12 @@ public static class Engine
             if (unpaused != null)
                 unpaused();
         }
+        public static void NitroActivated()
+        {
+            Debug.Log("Nitro activated");
+            if (nitroActivated != null)
+                nitroActivated();
+        }
         public static void TimeEventOccured(string EventName)
         {
             Debug.Log("Time event " + EventName + " occured at " + DateTime.Now.ToString());
@@ -1285,6 +1478,12 @@ public static class Engine
             if (onGarageStateChanged != null)
                 onGarageStateChanged(type);
         }
+        public static void CarUpgradeStateChanged(CarUpgradeType Type)
+        {
+            Debug.Log("Car " + Type + " upgraded");
+            if (onCarUpgradeStateChanged != null)
+                onCarUpgradeStateChanged(Type);
+        }
     }
 }
 public enum GameSessionState { InProgress,Passed, Won, Lost }
@@ -1293,3 +1492,5 @@ public enum CarAppearenceState { Locked, Passed, Unlocked, Missing }
 public enum CoinMakerStates { Blocked, NotPurchased, Normal, Unpacking, UnpackingFinished, MaxLevelReached }
 public enum CarUpgradeState { Blocked, Normal, TopLevelReached}
 public enum CarUpgradeType { Engine, Gearbox, Brakes}
+public enum TVSetState { RecentlyWatched, VideoNotReady, ReadyToWatch}
+public enum NitroState { Blocked, NotPurchased, Available, Empty}

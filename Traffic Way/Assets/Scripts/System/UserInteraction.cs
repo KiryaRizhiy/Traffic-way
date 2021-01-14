@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +15,7 @@ public class UserInteraction : MonoBehaviour
         private set;
     }
     private GarageCoinMakerType currentCoinMakerType;
+    private CarUpgradeType currentCarUpgradeType;
     private Transform TVRewardPanel
     {
         get { return transform.GetChild(0).GetChild(6); }
@@ -66,11 +67,67 @@ public class UserInteraction : MonoBehaviour
             return VictoryPanel.GetChild(0);
         }
     }
+    private Transform Garage
+    {
+        get
+        {
+            return transform.GetChild(0).GetChild(3);
+        }
+    }
+    private Transform TVSet
+    {
+        get
+        {
+            return Garage.GetChild(0);
+        }
+    }
     private Transform GarageElementUpgradePanel
     {
         get
         {
             return transform.GetChild(0).GetChild(0).GetChild(1);
+        }
+    }
+    private Transform GarageElementUpgradeText
+    {
+        get
+        {
+            return GarageElementUpgradePanel.GetChild(1);
+        }
+    }
+    private Transform CarUpgradeUpgradePanel
+    {
+        get
+        {
+            return transform.GetChild(0).GetChild(0).GetChild(2);
+        }
+    }
+    private Transform CarUpgradeText
+    {
+        get
+        {
+            return CarUpgradeUpgradePanel.GetChild(1);
+        }
+    }
+    private Transform CarUpgradeBuyButton
+    {
+        get
+        {
+            return CarUpgradeUpgradePanel.GetChild(2);
+        }
+    }
+    private Transform CarUpgradeBuyButtonPrice
+    {
+        get
+        {
+            return CarUpgradeBuyButton.GetChild(0).GetChild(0);
+        }
+    }
+    private Transform CarUpgradeGarageUpgradeButton
+    {
+        get
+        {
+            return CarUpgradeUpgradePanel.GetChild(3);
         }
     }
     private Transform CarUnlockedPanel
@@ -98,35 +155,147 @@ public class UserInteraction : MonoBehaviour
     {
         get
         {
-            return transform.GetChild(0).GetChild(3).GetChild(6);
+            return Garage.GetChild(6);
         }
     }
     private Transform ToolsWallPanel
     {
         get
         {
-            return transform.GetChild(0).GetChild(3).GetChild(3);
+            return Garage.GetChild(3);
         }
     }
     private Transform MaterialsPedestalPanel
     {
         get
         {
-            return transform.GetChild(0).GetChild(3).GetChild(1);
+            return Garage.GetChild(1);
         }
     }
     private Transform MaterialsShelfPanel
     {
         get
         {
-            return transform.GetChild(0).GetChild(3).GetChild(2);
+            return Garage.GetChild(2);
         }
     }
     private Transform WorkbenchPanel
     {
         get
         {
-            return transform.GetChild(0).GetChild(3).GetChild(4);
+            return Garage.GetChild(4);
+        }
+    }
+    private Transform CarUpgradePanel
+    {
+        get
+        {
+            return transform.GetChild(0).GetChild(10);
+        }
+    }
+    private Transform CarUpgradeBrakes
+    {
+        get
+        {
+            return CarUpgradePanel.GetChild(0).GetChild(0).GetChild(1);
+        }
+    }
+    private Transform CarUpgradeGearbox
+    {
+        get
+        {
+            return CarUpgradePanel.GetChild(0).GetChild(0).GetChild(2);
+        }
+    }
+    private Transform CarUpgradeEngine
+    {
+        get
+        {
+            return CarUpgradePanel.GetChild(0).GetChild(0).GetChild(3);
+        }
+    }
+    private Transform CarUpgradeBrakesInterface
+    {
+        get
+        {
+            return CarUpgradePanel.GetChild(0).GetChild(2);
+        }
+    }
+    private Transform CarUpgradeGearboxInterface
+    {
+        get
+        {
+            return CarUpgradePanel.GetChild(0).GetChild(3);
+        }
+    }
+    private Transform CarUpgradeEngineInterface
+    {
+        get
+        {
+            return CarUpgradePanel.GetChild(0).GetChild(1);
+        }
+    }
+    private Transform NitroPanel
+    {
+        get
+        {
+            return transform.GetChild(0).GetChild(0).GetChild(3);
+        }
+    }
+    private Transform NitroPanelBuyButton
+    {
+        get
+        {
+            return NitroPanel.GetChild(2);
+        }
+    }
+    private Transform NitroPanelBuyButtonPrice
+    {
+        get
+        {
+            return NitroPanelBuyButton.GetChild(0).GetChild(0);
+        }
+    }
+    private Transform NitroPanelWatchButton
+    {
+        get
+        {
+            return NitroPanel.GetChild(3);
+        }
+    }
+    private Transform NitroPanelText
+    {
+        get
+        {
+            return NitroPanel.GetChild(1);
+        }
+    }
+    private Transform SpeedometerMask
+    {
+        get
+        {
+            return transform.GetChild(0).GetChild(1).GetChild(7).GetChild(0);
+        }
+    }
+    private Transform SpeedometerImage
+    {
+        get
+        {
+            return SpeedometerMask.GetChild(0);
+        }
+    }
+    private Transform GameplayNitroPurchasePanel
+    {
+        get
+        {
+            return transform.GetChild(0).GetChild(1).GetChild(9);
+        }
+    }
+    private Transform GameplayNitroAlreadyPurchasedPanel
+    {
+        get
+        {
+            return transform.GetChild(0).GetChild(1).GetChild(10);
         }
     }
     public Transform BottomControls
@@ -134,6 +303,20 @@ public class UserInteraction : MonoBehaviour
         get
         {
             return transform.GetChild(0).GetChild(0);
+        }
+    }
+    public Transform TuningButton
+    {
+        get
+        {
+            return BottomControls.GetChild(0).GetChild(3);
+        }
+    }
+    public Transform TuningButtonLockImage
+    {
+        get
+        {
+            return TuningButton.GetChild(0);
         }
     }
     public Transform TopPanelCoinIcon
@@ -144,7 +327,15 @@ public class UserInteraction : MonoBehaviour
         }
     }
 
+
     private Sequence GarageFirstPurchaseDemonstration;
+    private bool isGamePlayInactive
+    {
+        get
+        {
+            return transform.name != "GameplayInterface";
+        }
+    }
 
 
     void Update()
@@ -165,10 +356,30 @@ public class UserInteraction : MonoBehaviour
             gas = true;
         else
             gas = false;
+        if (!isGamePlayInactive)
+        {
+            if (CarDriver.CurrentCar.GetComponent<CarDriver>().mode == GameplayMode.Drive)
+            {
+                float gasPower = 0.012f + 0.035f * Mathf.Abs(Mathf.Sin(Time.time * 16));
+                if (CarDriver.currentSpeed / Engine.maxPossibleSpeed > gasPower / 0.5f)
+                    gasPower = 0.5f * (CarDriver.currentSpeed / Engine.maxPossibleSpeed);
+                RectTransform _maskRect = SpeedometerMask.GetComponent<RectTransform>();
+                RectTransform _imageRect = SpeedometerImage.GetComponent<RectTransform>();
+                _maskRect.anchorMin = new Vector2(0.5f - gasPower, 0f);
+                _maskRect.anchorMax = new Vector2(0.5f + gasPower, 1f);
+                _imageRect.anchorMin = new Vector2(-(0.5f / (2 * gasPower) - 0.5f), 0f);
+                _imageRect.anchorMax = new Vector2((0.5f / (2 * gasPower) + 0.5f), 1f);
+            }
+            else
+            if (CarDriver.CurrentCar.GetComponent<CarDriver>().mode == GameplayMode.Puzzle)
+            {
+                SpeedometerMask.gameObject.SetActive(false);
+            }
+        }      
     }
     void Awake()
     {
-        Engine.Events.initialized += ShowCurrentCar;
+        Engine.Events.initialized += OnInitialized;
         Engine.Events.carAppearenceChanged += ShowCurrentCar;
         Engine.Events.initialized += HideGDPRPanel;
         Engine.Events.timeEventOccured += TimeEventHandler;
@@ -176,6 +387,19 @@ public class UserInteraction : MonoBehaviour
     }
     void Start()
     {
+        OnInitialized();
+    }
+    void OnDestroy()
+    {
+        Engine.Events.initialized -= OnInitialized;
+        Engine.Events.carAppearenceChanged -= ShowCurrentCar;
+        Engine.Events.initialized -= HideGDPRPanel;
+        Engine.Events.timeEventOccured -= TimeEventHandler;
+    }
+    private void OnInitialized()
+    {
+        if (!isGamePlayInactive || !Engine.initialized)
+            return;
         ShowCurrentCar();
         if (Engine.meta.GarageOpened)
         {
@@ -187,17 +411,25 @@ public class UserInteraction : MonoBehaviour
         {
             DemonstrateFirstGarageUpdate();
         }
-    }
-    void OnDestroy()
-    {
-        Engine.Events.initialized -= ShowCurrentCar;
-        Engine.Events.carAppearenceChanged -= ShowCurrentCar;
-        Engine.Events.initialized -= HideGDPRPanel;
-        Engine.Events.timeEventOccured -= TimeEventHandler;
+        if (Engine.carTuningAvailable)
+        {
+            //Debug.LogWarning("Car tunung available");
+            TuningButton.GetComponent<Button>().interactable = true;
+            TuningButtonLockImage.gameObject.SetActive(false);
+        }
+        else
+        {
+            //Debug.LogWarning("Car tunung unavailable");
+            TuningButton.GetComponent<Button>().interactable = false;
+            TuningButtonLockImage.gameObject.SetActive(true);
+        }
     }
 
     private void DemonstrateFirstGarageUpdate()
     {
+        if (GarageFirstPurchaseDemonstration != null)
+            return;
+        ToolsWallPanel.GetChild(0).GetComponent<CoinMaker>().Draw();
         ToolsWallPanel.GetChild(0).GetComponent<CoinMaker>().isUnderAnimation = true;
         ToolsWallPanel.GetComponent<CanvasGroup>().ignoreParentGroups = true;
         GarageFirstPurchaseDemonstration = DOTween.Sequence();
@@ -225,8 +457,9 @@ public class UserInteraction : MonoBehaviour
     public void TimeEventHandler(string EventName)
     {
         //Reloading coin maker upgrade panel on unpacking finish
-        if (EventName == currentCoinMakerType.ToString() + "_unpackFinish" && GarageElementUpgradePanel.gameObject.activeInHierarchy)
-            CoinMakerUpgradeRequest(currentCoinMakerType);
+        if (isGamePlayInactive)
+            if (EventName == currentCoinMakerType.ToString() + "_unpackFinish" && GarageElementUpgradePanel.gameObject.activeInHierarchy)
+                CoinMakerUpgradeRequest(currentCoinMakerType);
     }
     public void ShowCurrentCar()
     {
@@ -301,6 +534,119 @@ public class UserInteraction : MonoBehaviour
     {
         Engine.ClearSaveFile();
     }
+
+    public void DemonstrateTuningUnlock()
+    {
+        //Debug.Log("Start tuning unlock demonstration");
+        if (Engine.carTuningAvailable)
+        {
+            Button _bt = TuningButton.GetComponent<Button>();
+            RawImage _lock = TuningButtonLockImage.GetComponent<RawImage>();
+            RectTransform _lockRect = TuningButtonLockImage.GetComponent<RectTransform>();
+            float _duration = 1.6f;
+            _bt.image.color = _bt.colors.disabledColor;
+            _bt.interactable = true;
+            DOTween.Sequence()
+                .AppendInterval(0.2f)
+                .Append(_bt.image.DOColor(Color.white, _duration))
+                .Join(_lock.DOFade(0f, _duration))
+                .Join(_lockRect.DOAnchorMax(new Vector2(_lockRect.anchorMax.x, 1.3f), _duration))
+                .Join(_lockRect.DOAnchorMin(new Vector2(_lockRect.anchorMin.x, 1.3f), _duration))
+                .Join(TuningButtonLockImage.DOScale(2.5f, _duration))
+                .AppendCallback(() => TuningButtonLockImage.gameObject.SetActive(false));
+        }
+        else
+        {
+            Debug.LogError("Invalid attempt to demonstrate tuning unlock while tuning still locked");
+        }
+    }
+
+    public void CallCarUpgradeInterface()
+    {
+        CarUpgradePanel.gameObject.SetActive(true);
+        CarUpgradeBrakes.gameObject.SetActive(false);
+        CarUpgradeEngine.gameObject.SetActive(false);
+        CarUpgradeGearbox.gameObject.SetActive(false);
+        CarUpgradeBrakesInterface.GetComponent<CarUpgradeInterface>().Show();
+        CarUpgradeEngineInterface.GetComponent<CarUpgradeInterface>().Show();
+        CarUpgradeGearboxInterface.GetComponent<CarUpgradeInterface>().Show();
+    }
+    public void HideCarUpgradeInterface()
+    {
+        CarUpgradePanel.gameObject.SetActive(false);
+        CarUpgradeUpgradePanel.gameObject.SetActive(false);
+    }
+    public void CarUpgradeUpgradeRequest(CarUpgradeType Type)
+    {
+        currentCarUpgradeType = Type;
+        TextMeshProUGUI _txt = CarUpgradeText.GetComponent<TextMeshProUGUI>();
+        Engine.GameData.CarUpgradeData data = Engine.meta.garage.GetCarUpgrade(currentCarUpgradeType);
+        CarUpgradeBrakes.gameObject.SetActive(false);
+        CarUpgradeEngine.gameObject.SetActive(false);
+        CarUpgradeGearbox.gameObject.SetActive(false);
+        switch (currentCarUpgradeType)
+        {
+            case CarUpgradeType.Engine:
+                CarUpgradeEngine.gameObject.SetActive(true);
+                break;
+            case CarUpgradeType.Brakes:
+                CarUpgradeBrakes.gameObject.SetActive(true);
+                break;
+            case CarUpgradeType.Gearbox:
+                CarUpgradeGearbox.gameObject.SetActive(true);
+                break;
+        }
+        switch (data.state)
+        {
+            case CarUpgradeState.Normal:
+                CarUpgradeGarageUpgradeButton.gameObject.SetActive(false);
+                CarUpgradeBuyButton.gameObject.SetActive(true);
+                CarUpgradeBuyButtonPrice.GetComponent<TextMeshProUGUI>().text = data.updatePrice.ToString();
+                if (Engine.meta.coinsCount < data.updatePrice)
+                {
+                    _txt.text = data.ToString()
+                        + System.Environment.NewLine + "More coins required";
+                    CarUpgradeBuyButton.GetComponent<Button>().interactable = false;
+                }
+                else
+                {
+                    _txt.text = data.ToString();
+                    CarUpgradeBuyButton.GetComponent<Button>().interactable = true;
+                }
+                break;
+            case CarUpgradeState.Blocked:
+                _txt.text = data.ToString()
+                    + System.Environment.NewLine + data.correspondentCoinMaker.ToString() + " upgrade required";
+                CarUpgradeGarageUpgradeButton.gameObject.SetActive(true);
+                CarUpgradeBuyButton.gameObject.SetActive(false);
+                break;
+            case CarUpgradeState.TopLevelReached:
+                _txt.text = data.ToString()
+                    + System.Environment.NewLine + "Top level reached!";
+                CarUpgradeGarageUpgradeButton.gameObject.SetActive(false);
+                CarUpgradeBuyButton.gameObject.SetActive(false);
+                break;
+        }
+        CarUpgradeUpgradePanel.gameObject.SetActive(true);
+    }
+    public void HideCarUpgradeUpgradePanel()
+    {
+        CarUpgradeUpgradePanel.gameObject.SetActive(false);
+        CarUpgradeBrakes.gameObject.SetActive(false);
+        CarUpgradeEngine.gameObject.SetActive(false);
+        CarUpgradeGearbox.gameObject.SetActive(false);
+    }
+    public void OpenGarageUpgrade()
+    {
+        HideCarUpgradeInterface();
+        CoinMakerUpgradeRequest(Engine.meta.garage.GetCarUpgrade(currentCarUpgradeType).correnspondentType);
+    }
+    public void PurchaseCarUpgrade()
+    {
+        Engine.meta.garage.GetCarUpgrade(currentCarUpgradeType).Upgrade();
+        HideCarUpgradeUpgradePanel();
+    }
+
     public void CoinMakerUpgradeRequest(GarageCoinMakerType type)
     {
         currentCoinMakerType = type;
@@ -308,7 +654,7 @@ public class UserInteraction : MonoBehaviour
             return;
         if (GarageFirstPurchaseDemonstration != null && type == GarageCoinMakerType.ToolsWall)
         {
-            GarageFirstPurchaseDemonstration.Complete(true);
+            GarageFirstPurchaseDemonstration.Complete();
             ToolsWallPanel.GetChild(0).GetComponent<CoinMaker>().isUnderAnimation = true;
             ToolsWallPanel.GetComponent<CanvasGroup>().ignoreParentGroups = true;
             DOTween.Sequence()
@@ -338,16 +684,20 @@ public class UserInteraction : MonoBehaviour
                 GarageElementUpgradePanel
                     .GetChild(3)
                     .GetChild(0)
-                    .GetChild(0) 
+                    .GetChild(0)
                     .GetComponent<TextMeshProUGUI>().text = Engine.meta.garage.GetCoinMaker(currentCoinMakerType).updatePrice.ToString();
                 if (Engine.meta.coinsCount < Engine.meta.garage.GetCoinMaker(currentCoinMakerType).updatePrice)
                 {
+                    GarageElementUpgradeText.GetComponent<TextMeshProUGUI>().text =
+                        Engine.meta.garage.GetCoinMaker(currentCoinMakerType).description
+                        + System.Environment.NewLine
+                        + "Not enough coins to purchase";
                     GarageElementUpgradePanel
                         .GetChild(3)
                         .GetChild(0)
                         .GetChild(0)
                         .GetComponent<TextMeshProUGUI>().color = Color.red;
-                    if (Engine.meta.garage.TVAbleToShow)
+                    if (Engine.meta.garage.tvSetState == TVSetState.ReadyToWatch)
                     {
                         GarageElementUpgradePanel
                             .GetChild(3)
@@ -359,11 +709,13 @@ public class UserInteraction : MonoBehaviour
                         GarageElementUpgradePanel
                             .GetChild(3)
                             .GetChild(0)
-                            .GetComponent<TextMeshProUGUI>().text = Localization.GetLocal("PlayWhenNoMoneyToBuyUpgrade");
+                            .GetComponent<TextMeshProUGUI>().text = Localization.GetLocal("PlayWhenNoMoneyToBuyUpgradeButton");
                     }
                 }
                 else
                 {
+                    GarageElementUpgradeText.GetComponent<TextMeshProUGUI>().text =
+                        Engine.meta.garage.GetCoinMaker(currentCoinMakerType).description;
                     GarageElementUpgradePanel
                         .GetChild(3)
                         .GetChild(0)
@@ -376,6 +728,7 @@ public class UserInteraction : MonoBehaviour
                 }
                 break;
             case CoinMakerStates.Unpacking:
+                GarageElementUpgradeText.GetComponent<TextMeshProUGUI>().text = Engine.meta.garage.GetCoinMaker(currentCoinMakerType).ToString() + " is unpacking";
                 //Turn off purchase button
                 GarageElementUpgradePanel
                     .GetChild(3)
@@ -390,6 +743,7 @@ public class UserInteraction : MonoBehaviour
                     .gameObject.SetActive(false);
                 break;
             case CoinMakerStates.UnpackingFinished:
+                GarageElementUpgradeText.GetComponent<TextMeshProUGUI>().text = Engine.meta.garage.GetCoinMaker(currentCoinMakerType).ToString() + " ready!";
                 //Turn off purchase button
                 GarageElementUpgradePanel
                     .GetChild(3)
@@ -415,8 +769,8 @@ public class UserInteraction : MonoBehaviour
         GarageElementUpgradePanel.gameObject.SetActive(false);
         if (Engine.meta.coinsCount < Engine.meta.garage.GetCoinMaker(currentCoinMakerType).updatePrice)
         {
-            if (Engine.meta.garage.TVAbleToShow)
-                ShowTVAds();
+            if (Engine.meta.garage.tvSetState == TVSetState.ReadyToWatch)
+                TVSet.GetComponent<TVSetController>().Tap();
             else
                 Play();
         }
@@ -493,53 +847,96 @@ public class UserInteraction : MonoBehaviour
     }
     public void SuccessfullUnpackTimeDecrease(PlacementType Type)
     {
-        CancelCoinMakerUpgrade();
-        Engine.meta.garage.GetCoinMaker(currentCoinMakerType).DecreaseUnpackTimeByHour();
-        Engine.Events.adFailed -= UnsuccesssfullUnpackTimeDecrease;
-        Engine.Events.adFinished -= SuccessfullUnpackTimeDecrease;
-        Engine.Events.adSkipped -= UnsuccesssfullUnpackTimeDecrease;
-        Engine.Events.adUserLeave -= UnsuccesssfullUnpackTimeDecrease;
+        if (Type == PlacementType.rewardedVideo && isGamePlayInactive)
+        {
+            CancelCoinMakerUpgrade();
+            Engine.meta.garage.GetCoinMaker(currentCoinMakerType).DecreaseUnpackTimeByHour();
+            Engine.Events.adFailed -= UnsuccesssfullUnpackTimeDecrease;
+            Engine.Events.adFinished -= SuccessfullUnpackTimeDecrease;
+            Engine.Events.adSkipped -= UnsuccesssfullUnpackTimeDecrease;
+            Engine.Events.adUserLeave -= UnsuccesssfullUnpackTimeDecrease;
+        }
     }
     public void UnsuccesssfullUnpackTimeDecrease(PlacementType Type)
     {
-        CancelCoinMakerUpgrade();
-        Engine.Events.adFailed -= UnsuccesssfullUnpackTimeDecrease;
-        Engine.Events.adFinished -= SuccessfullUnpackTimeDecrease;
-        Engine.Events.adSkipped -= UnsuccesssfullUnpackTimeDecrease;
-        Engine.Events.adUserLeave -= UnsuccesssfullUnpackTimeDecrease;
+        if (Type == PlacementType.rewardedVideo && isGamePlayInactive)
+        {
+            CancelCoinMakerUpgrade();
+            Engine.Events.adFailed -= UnsuccesssfullUnpackTimeDecrease;
+            Engine.Events.adFinished -= SuccessfullUnpackTimeDecrease;
+            Engine.Events.adSkipped -= UnsuccesssfullUnpackTimeDecrease;
+            Engine.Events.adUserLeave -= UnsuccesssfullUnpackTimeDecrease;
+        }
     }
 
-    public void RequestConfirmNitroAdsDemonstration()
+    public void OpenNitroPanel()
     {
-        if (!Engine.meta.car.isBoosted /*&& AdMobController.isRewardedVideoReady*/ && AdMobController.isRewardedVideoReady)
-            NitroAdsDemonstrationConfirmationPanel.gameObject.SetActive(true);
-    }
-    public void DeclineNitroAdsDemonstration()
-    {
-        NitroAdsDemonstrationConfirmationPanel.gameObject.SetActive(false);
-    }
-    public void ShowNitroAds()
-    {
-        NitroAdsDemonstrationConfirmationPanel.gameObject.SetActive(false);
-        AdMobController.ShowRewardedAd();
-        UIObjectActivator _act = gameObject.AddComponent<UIObjectActivator>();
-        _act.TargetObject = NitroRewardPanel.gameObject;
-        _act.DeactivationEventList = new List<UIObjectActivator.ActivatorTargetEvent>();
-        _act.ActivationEventList = new List<UIObjectActivator.ActivatorTargetEvent>() { UIObjectActivator.ActivatorTargetEvent.adsRewardedVideoFinished };
-        //NitroRewardPanel.gameObject.SetActive(true);
-    }
-    public void CollectNitroWatchReward()
-    {
-        Engine.meta.car.BoostOn();
-        NitroRewardPanel.gameObject.SetActive(false);
-        UIObjectActivator[] _aarr = GetComponents<UIObjectActivator>();
-        foreach (UIObjectActivator _a in _aarr)
+        switch (Engine.meta.car.nitroState)
         {
-            if (_a.TargetObject.name == NitroRewardPanel.name)
-                Destroy(_a);
-            else
-                Debug.Log("This component has target " + _a.TargetObject.name + " , not " + NitroRewardPanel.name);
+            case NitroState.Blocked:
+                NitroPanel.gameObject.SetActive(false);
+                break;
+            case NitroState.NotPurchased:
+                NitroPanel.gameObject.SetActive(true);
+                if (Engine.meta.coinsCount < Settings.nitroCost)
+                {
+                    NitroPanelText.GetComponent<TextMeshProUGUI>().text = "Nitro boost provides extra speed"
+                        + System.Environment.NewLine + "and protects a car with shield."
+                        + System.Environment.NewLine + "Not enough coins";
+                    NitroPanelBuyButton.GetComponent<Button>().interactable = false;
+                }
+                else
+                {
+                    NitroPanelText.GetComponent<TextMeshProUGUI>().text = "Nitro boost provides extra speed"
+                        + System.Environment.NewLine + "and protects a car with shield.";
+                    NitroPanelBuyButton.GetComponent<Button>().interactable = true;
+                }
+                NitroPanelBuyButtonPrice.GetComponent<TextMeshProUGUI>().text = Settings.nitroCost.ToString();
+                NitroPanelWatchButton.gameObject.SetActive(false);
+                NitroPanelBuyButton.gameObject.SetActive(true);
+                break;
+            case NitroState.Available:
+                NitroPanel.gameObject.SetActive(true);
+                NitroPanelWatchButton.gameObject.SetActive(true);
+                NitroPanelBuyButton.gameObject.SetActive(false);
+                NitroPanelText.GetComponent<TextMeshProUGUI>().text = "Nitro provides extra speed"
+                    + System.Environment.NewLine + "and shield." + 
+                    "Yoh have " + Engine.meta.car.availableNitroBottles.ToString() + (Engine.meta.car.availableNitroBottles > 1 ? " nitro baloons." : "nitro baloon");
+                break;
+            case NitroState.Empty:
+                NitroPanel.gameObject.SetActive(true);
+                NitroPanelWatchButton.gameObject.SetActive(true);
+                NitroPanelBuyButton.gameObject.SetActive(false);
+                NitroPanelText.GetComponent<TextMeshProUGUI>().text = "Nitro provides extra speed"
+                    + System.Environment.NewLine + "and shield."
+                    + System.Environment.NewLine + "Watch video to get baloon";
+                break;
         }
+    }
+    public void CloseNitroPanel()
+    {
+        NitroPanel.gameObject.SetActive(false);
+    }
+    public void OpenGameplayNitroPanel()
+    {
+        Engine.SwitchPause();
+        GameplayNitroPurchasePanel.gameObject.SetActive(true);
+    }
+    public void OpenGameplayNitroAlreadyPurchasedPanel()
+    {
+        GameplayNitroPurchasePanel.gameObject.SetActive(false);
+        GameplayNitroAlreadyPurchasedPanel.gameObject.SetActive(true);
+    }
+    public void CloseGameplayNitroAplreadyPurchasedPanel()
+    {
+        Engine.SwitchPause();
+        GameplayNitroAlreadyPurchasedPanel.gameObject.SetActive(false);
+    }
+    public void CloseAllGameplayNitroPanels()
+    {
+        Engine.SwitchPause();
+        GameplayNitroPurchasePanel.gameObject.SetActive(true);
+        GameplayNitroAlreadyPurchasedPanel.gameObject.SetActive(true);
     }
 
     public void DeclineCarAdsDemonstration()
@@ -574,39 +971,6 @@ public class UserInteraction : MonoBehaviour
         }
         CarSelectPanel.gameObject.SetActive(true);
         CarSelectPanel.GetComponent<CarSelectInterface>().Refresh();
-    }
-
-    public void RequestConfirmTVAdsDemonstration()
-    {
-        if (AdMobController.isRewardedVideoReady)
-            TVAdsDemonstrationConfirmationPanel.gameObject.SetActive(true);
-    }
-    public void DeclineTVAdsDemonstration()
-    {
-        TVAdsDemonstrationConfirmationPanel.gameObject.SetActive(false);
-    }
-    public void ShowTVAds()
-    {
-        TVAdsDemonstrationConfirmationPanel.gameObject.SetActive(false);
-        AdMobController.ShowRewardedAd();
-        UIObjectActivator _act = gameObject.AddComponent<UIObjectActivator>();
-        _act.TargetObject = TVRewardPanel.gameObject;
-        _act.DeactivationEventList = new List<UIObjectActivator.ActivatorTargetEvent>();
-        _act.ActivationEventList = new List<UIObjectActivator.ActivatorTargetEvent>() { UIObjectActivator.ActivatorTargetEvent.adsRewardedVideoFinished };
-        //TVRewardPanel.gameObject.SetActive(true);
-    }
-    public void CollectTVWatchReward()
-    {
-        Engine.meta.garage.TVWatched();
-        UIObjectActivator[] _aarr = GetComponents<UIObjectActivator>();
-        foreach (UIObjectActivator _a in _aarr)
-        {
-            if (_a.TargetObject.name == TVRewardPanel.name)
-                Destroy(_a);
-            else
-                Debug.Log("This component has target " + _a.TargetObject.name + " , not " + TVRewardPanel.name);
-        }
-        TVRewardPanel.gameObject.SetActive(false);
     }
 
     public void AcceptGDPR()

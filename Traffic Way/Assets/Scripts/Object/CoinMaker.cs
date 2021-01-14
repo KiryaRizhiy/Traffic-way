@@ -80,6 +80,13 @@ public class CoinMaker : MonoBehaviour
             return transform.parent.GetChild(2).GetComponent<ParticleSystem>();
         }
     }
+    public ParticleSystem miniSparkles
+    {
+        get
+        {
+            return statePanel.GetChild(1).GetChild(0).GetComponent<ParticleSystem>();
+        }
+    }
     public static void LoadResources()
     {
         wrench = Resources.Load<Texture2D>("TrafficWay/Textures/Interface/T_14_wrench_");
@@ -121,6 +128,8 @@ public class CoinMaker : MonoBehaviour
     {
         try
         {
+            if (isUnderAnimation)
+                return;
             switch (currentState)
             {
                 case CoinMakerStates.UnpackingFinished:
@@ -139,8 +148,6 @@ public class CoinMaker : MonoBehaviour
                     stateText.text = "UP to lvl " + (Engine.meta.garage.GetCoinMaker(type).level + 1);
                     break;
             }
-            if (isUnderAnimation)
-                return;
             if (currentState == CoinMakerStates.Blocked)
             {
                 lockPanel.gameObject.SetActive(true);
@@ -200,11 +207,19 @@ public class CoinMaker : MonoBehaviour
             }
             //Player unpacked
             if(currentState == CoinMakerStates.Normal && savedState != CoinMakerStates.Normal)
-            {
+            {                
+                isUnderAnimation = true;
                 UpdateStatePanel(wrench);
-                DOTween.Sequence()
-                    .Append(GetComponent<RawImage>().DOColor(Color.white, 0.8f))
-                    .AppendCallback(sparkles.Play);
+                Sequence _sq = DOTween.Sequence()
+                    .Append(GetComponent<RawImage>().DOColor(Color.white, 0.4f))
+                    .AppendCallback(() =>
+                    { if (data.level == 1) sparkles.Play(); else miniSparkles.Play(); })
+                    .AppendCallback(()=>isUnderAnimation = false)
+                    .AppendCallback(Stabilize);
+                if (Engine.firstGarageUpgradeUnpacked)
+                    _sq.AppendCallback(UI.DemonstrateTuningUnlock);
+                //else
+                //    Debug.Log("No reason to demonstrate tuning unlock");
                 return;
             }
             Draw();
@@ -218,13 +233,14 @@ public class CoinMaker : MonoBehaviour
         }
         else
         {
+            isUnderAnimation = true;
             coinIcon.GetComponent<InterfaceAnimation>().currentAnimation.Complete();
             coinIcon.GetComponent<InterfaceAnimation>().enabled = false;
             coinIcon.gameObject.SetActive(false);
             DOTween.Sequence()
                 .AppendCallback(SendACoin)
                 .AppendInterval(0.05f)
-                .SetLoops(data.currentProfit - 1);
+                .SetLoops(data.currentProfit);
         }
     }
     public void CallUpdateInterface()
@@ -261,7 +277,10 @@ public class CoinMaker : MonoBehaviour
             .Append(_coin.transform.DOScale(3, fadeTime))
             .Join(_coin.GetComponent<Image>().DOFade(0f, fadeTime))
             .AppendCallback(data.CollectACoin)
-            .AppendCallback(() => Destroy(_coin));
+            .AppendCallback(() => Destroy(_coin))
+            .AppendCallback(() => 
+                { if (data.currentProfit == 0) 
+                    isUnderAnimation = false; });
     }
     void Update()
     {
